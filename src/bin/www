@@ -5,7 +5,7 @@
  */
 
 var app = require('../index');
-var debug = require('debug')('file-storage-file-storage-0---heroku:server');
+var debug = require('debug')('page-for-tests---heroku:server');
 var http = require('http');
 
 /**

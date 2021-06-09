@@ -5,8 +5,91 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Document</title>
+
+	<!-- CSS -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+	<link rel="stylesheet/less" type="text/css" href="/less/index.less">
+
+	<script src="//cdn.jsdelivr.net/npm/less@3.13" ></script>
 </head>
 <body>
-	Test
+	<!-- ICON <img src="https://cdn.discordapp.com/icons/455476931463217174/216061d3c7daa6c9525dcdc296eddc86.png?size=64"> -->
+
+	<header>
+		<div class="left">
+			<a class="icon" href="/">
+				<img src="https://cdn.discordapp.com/icons/455476931463217174/216061d3c7daa6c9525dcdc296eddc86.png?size=128" />
+			</a>
+			<div class="options">
+				<a href="#" class="option"> Tienda </a>
+				<a href="#" class="option"> Sanciones </a>
+				<a href="#" class="option"> Votar </a>
+				<a href="#" class="option"> Foro </a>
+			</div>
+		</div>
+
+		<div class="right">
+			<div class="buttons">
+				<a href="#" class="login"> Ingresar </a>
+				<a href="#" class="signup"> Registrarse </a>
+			</div>
+		</div>
+	</header>
+	<div class="body">
+		<div class="present">
+			<img src="img/bannerIp.png" class="banner-ip">
+		</div>
+	</div>
+
+
+	<script>
+		const options = document.querySelector("header .options");
+		const aBtns = options.querySelectorAll("a");
+
+		aBtns.forEach((elm) => {
+			elm.onmouseenter = () => {
+				options.classList.add("already-there-is-hovered-a");
+				elm.style.color = "#FFF";
+			}
+
+			elm.onmouseleave = () => {
+				options.classList.remove("already-there-is-hovered-a");
+				elm.style.color = "currentColor";
+			}
+		});
+
+
+		document.querySelector(".banner-ip").onclick = () => {
+			const server_IP = "nasgar.online";
+			if(!navigator.clipboard) {
+				var textArea = document.createElement("textarea");
+				textArea.value = server_IP;
+				
+				textArea.style.top = "0";
+				textArea.style.left = "0";
+				textArea.style.position = "fixed";
+
+				document.body.appendChild(textArea);
+				textArea.focus();
+				textArea.select();
+
+				try {
+					var successful = document.execCommand('copy');
+					var msg = successful ? 'successful' : 'unsuccessful';
+					console.log('Fallback copied: ' + msg);
+				} catch (err) {
+					console.error('Fallback error copying: ', err);
+				}
+
+				document.body.removeChild(textArea);
+			} else {
+				navigator.clipboard.writeText(server_IP).then(() => {
+					console.log("Copied");
+				}, (err) => {
+					console.log("Error copying: ", err);
+				});
+			}
+		};
+	</script>
 </body>
 </html>
