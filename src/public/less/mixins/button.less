@@ -1,0 +1,39 @@
+#btn() {
+	.common(@_colors) {
+		@p-color: {
+			light: var(--p-color-light);
+			color: var(--p-color);
+			dark: var(--p-color-dark);
+			text: var(--t-color);
+		};
+
+		cursor: pointer;
+
+		padding: 5px 10px;
+
+		border: solid 2px transparent;
+		border-radius: 5px;
+
+		transition: background ease .3s, color ease .3s;
+	}
+
+	.fill {
+		color: @p-color[text];
+		background-color: @p-color[color];
+
+		&:hover {
+			background-color: @p-color[dark];
+		}
+	}
+
+	.outline {
+		color: @p-color[color];
+		background-color: transparent;
+		border-color: @p-color[color];
+
+		&:hover {
+			color: @p-color[text];
+			background-color: @p-color[color];
+		}
+	}
+}

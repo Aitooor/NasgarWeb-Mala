@@ -6,11 +6,15 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Document</title>
 
+	<!-- Fonts -->
+	<style>
+		@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+	</style>
 	<!-- CSS -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
 	<link rel="stylesheet/less" type="text/css" href="/less/index.less">
 
-	<script src="//cdn.jsdelivr.net/npm/less@3.13" ></script>
+	<script src="https://unpkg.com/less@4.1.1/dist/less.min.js" ></script>
 </head>
 <body>
 	<!-- ICON <img src="https://cdn.discordapp.com/icons/455476931463217174/216061d3c7daa6c9525dcdc296eddc86.png?size=64"> -->
@@ -38,9 +42,24 @@
 	<div class="body">
 		<div class="present">
 			<img src="img/bannerIP.png" class="banner-ip">
+			<img src="img/bannerDiscord.png" class="banner-discord">
 		</div>
 	</div>
 
+
+	<div class="toasts">
+		<div class="toast" data-toast-id="test">
+			<div class="header">
+				Copied to clipboard
+			</div>
+			<div class="body">
+				Text copied: <i>nasgar.online</i>
+			</div>
+			<div class="actions">
+				<button class="action-danger" data-action="close" data-action-params="test"> Close </button>
+			</div>
+		</div>
+	</div>
 
 	<script>
 		const options = document.querySelector("header .options");
@@ -59,8 +78,10 @@
 		});
 
 
-		document.querySelector(".banner-ip").onclick = () => {
+		document.querySelector(".banner-ip").onclick = async () => {
 			const server_IP = "nasgar.online";
+			let copied = false;
+			
 			if(!navigator.clipboard) {
 				var textArea = document.createElement("textarea");
 				textArea.value = server_IP;
@@ -77,19 +98,28 @@
 					var successful = document.execCommand('copy');
 					var msg = successful ? 'successful' : 'unsuccessful';
 					console.log('Fallback copied: ' + msg);
+					copied = true;
 				} catch (err) {
 					console.error('Fallback error copying: ', err);
 				}
 
 				document.body.removeChild(textArea);
 			} else {
-				navigator.clipboard.writeText(server_IP).then(() => {
+				try {
+					await navigator.clipboard.writeText(server_IP);
 					console.log("Copied");
-				}, (err) => {
+					copied = true;
+				} catch (err) {
 					console.log("Error copying: ", err);
-				});
+				}
+			}
+
+			if(copied) {
+
 			}
 		};
 	</script>
+
+	<script src="/pg/index.js" type="module"></script>
 </body>
 </html>

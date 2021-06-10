@@ -1,0 +1,53 @@
+.toasts {
+	position: fixed;
+	right: 2rem;
+	bottom: 2rem;
+
+	width: 20rem;
+}
+
+.toast {
+	max-width: 100%;
+	width: auto;
+
+	background-color: #FFF;
+
+	border-radius: 10px;
+
+	box-shadow: 0px 0px 10px #000;
+
+	.header {
+		padding: 5px;
+		font-size: 1.2rem;
+		font-weight: 600;
+	}
+
+	.body {
+		padding: 10px;
+	}
+
+	.actions {
+		padding: 2px 5px 5px 5px;
+		display: flex;
+		justify-content: flex-end;
+
+		button[class*="action-"] {
+			#btn.common(@colors);
+
+			&[class*="-danger"] {
+				--t-color: #FFF;
+				--p-color-dark: @colors[danger-dark];
+				--p-color: @colors[danger];
+				--p-color-light: @colors[danger-light];
+			}
+
+			&:not([class*="action-out"]) {
+				#btn.fill();
+			}
+
+			&[class*="action-out-"] {
+				#btn.outline();
+			}
+		}
+	}
+}

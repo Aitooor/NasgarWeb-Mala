@@ -1,4 +1,5 @@
 // Modules
+const createError = require("http-errors");
 const express = require('express');
 const { join } = require("path");
 const morgan = require('morgan');
@@ -22,9 +23,22 @@ app.use(cookieParser());
 app.use(express.static(join(__dirname, "public")));
 
 
-
-app.use((req, res) => {
-	res.render("Tests")
+app.get("/", (req, res) => {
+	res.render("Tests");
 })
+
+//* Error - 404
+app.use((req, res, next) => {
+	next(createError(404));
+});
+
+app.use((err, req, res, next) => {
+	res.locals = {
+		error: err
+	};
+
+	res.status(404);
+	res.render("errors/404");
+});
 
 module.exports = app;
