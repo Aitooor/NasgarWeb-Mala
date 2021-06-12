@@ -17,7 +17,7 @@ a {
 
 header {
 	position: fixed;
-	width: 100vw;
+	width: calc(100vw - 15px);
 	height: 75px;
 
 	background-color: #28619290;
@@ -107,10 +107,15 @@ header {
 .present {
 	position: relative;
 
-	width: 100vw;
+	width: 100%;
 	height: 300px;
 
 	background-color: lighten(@primary, @semi-light-modify);
+	background-image: url("/img/background.jpg");
+	background-repeat: no-repeat;
+	background-position-y: 30%;
+	background-size: cover;
+	background-blend-mode: multiply;
 
 	display: flex;
 
@@ -134,6 +139,22 @@ header {
 		width: 200px;
 	}
 
+	.svg-back {
+		position: absolute;
+		bottom: 0;
+
+		width: 100%;
+		height: 150px;
+
+		display: flex;
+		flex-direction: column-reverse;
+		justify-content: flex-start;
+
+		svg path {
+			transform: scaleX(5) translateX(-25%);
+		}
+	}
+
 	@media screen and (max-width: 500px) {
 		height: 500px;
 
@@ -150,9 +171,42 @@ header {
 	}
 }
 
+.main {
+	width: calc(100vw - 15px);
 
-@media screen and (max-width: 500px) {
+	.body {
+		width: 100%;
+
+		padding-bottom: 5rem;
+		display: grid;
+		grid-template-columns: auto 25%;
+		grid-template-rows: 1fr;
+
+		@media screen and (max-width: 1000px) {
+			& {
+				grid-template-columns: auto 35%;
+			}
+		}
+
+		main {
+			padding: .5rem 2rem;
+		}
+	}
+}
+
+.discord-members {
+	width: calc(100% - .1rem);
+	height: 40rem;
+
+	iframe {
+		width: 100%;
+		height: 100%;
+	}
+}
+
+@media screen and (max-width: 600px) {
 	header {
+		width: 99vw;
 		height: 50px;
 		
 		.icon img {
@@ -170,4 +224,34 @@ header {
 			font-size: .7rem;
 		}
 	}
+}
+
+@media screen and (max-width: 600px) {
+	.main {
+		width: 99vw;
+		.body {
+			padding: .1rem;
+			grid-template-columns: auto;
+			grid-template-rows: 2fr;
+		}
+	}
+}
+
+
+::-webkit-scrollbar {
+	width: 15px;
+}
+
+::-webkit-scrollbar-track {
+	background-color: #a8c6e1;
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: #6cabe2;
+	border-radius: 5px;
+	border: 6px solid transparent;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background-color: #4c7da9;
 }

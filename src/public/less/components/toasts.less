@@ -23,7 +23,7 @@
 
 	background-color: #FFF;
 	border-radius: 10px;
-	box-shadow: 0px 0px 10px #000;
+	box-shadow: 0px 0px 10px #000A;
 
 	animation: ToastIn .5s forwards;
 
@@ -66,22 +66,34 @@
 	}
 }
 
+@media screen and (max-width: 500px) {
+	.toasts {
+		right: 1.3rem;
+		bottom: 1.3rem;
+		width: 15rem;
+	}
+	.toast {
+		margin-top: 10px;
+		min-width: 10rem;
+	}
+}
+
 @keyframes ToastIn {
 	from {
-		transform: translateY(100vh);
+		transform: translateX(100vh);
 	}
 
 	to {
-		transform: translateY(0vh);
+		transform: translateX(0vh);
 	}
 }
 
 @keyframes ToastOut {
 	from {
-		transform: translateX(0vh);
+		transform: translateY(0vh);
 	}
 
 	to {
-		transform: translateX(50vw);
+		transform: translateY(50vw);
 	}
 }

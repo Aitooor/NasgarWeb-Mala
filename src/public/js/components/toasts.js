@@ -41,6 +41,7 @@ const ToastMain = document.querySelector("body > div.toasts");
 let TotalToasts = 0;
 /** @type {Toast[]} */
 const allToasts = [];
+let maxToasts = 5;
 
 class Toast {
 	/**
@@ -73,8 +74,8 @@ class Toast {
 
 		allToasts.push(this);
 
-		if(allToasts.length >= 5) {
-			allToasts.shift().close();
+		if(allToasts.length >= maxToasts) {
+			while(allToasts.length >= maxToasts) allToasts.shift().close();
 		}
 	}
 
@@ -92,6 +93,9 @@ class Toast {
 					if(actionArgs[0] === "@me") {
 						this.close();
 					}
+				} else 
+				if(action === "link") {
+					window.open(...actionArgs);
 				}
 			})
 		}
@@ -102,7 +106,7 @@ class Toast {
 	}
 
 	close() {
-		this.dom.main.style.animationDuration = ".3s";
+		this.dom.main.style.animationDuration = ".2s";
 		this.dom.main.style.animationName = "ToastOut";
 		this.dom.main.addEventListener("animationend", () => {
 			ToastMain.removeChild(this.dom.main);
@@ -151,7 +155,10 @@ class Toast {
 
 					button.className = g;
 
+					action = action.toLowerCase();
 					button.dataset.action = action;
+					if(action === "link") {button.title = "link: " + actionArgs;}
+					
 					if(typeof actionArgs === 'string') {
 						button.dataset.actionParams = actionArgs.replace(/^\s+/, "").replace(/\s+$/, "");
 					} else 
@@ -183,8 +190,8 @@ class Toast {
 		};
 	}
 
-	static all(callback) {
-		for(let _ of allToasts) callback?.(_, [...allToasts]);
+	static async all(callback) {
+		for(let _ of allToasts) await callback?.(_, [...allToasts]);
 	}
 }
 

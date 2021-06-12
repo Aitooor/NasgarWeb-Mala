@@ -56,8 +56,8 @@ document.querySelector(".banner-ip").onclick = async () => {
 	}
 
 	if(copied) {
-		Toasts.all((toast) => {
-			if(toast.data.fired === "copy") return toast.close();
+		await Toasts.all(async (toast) => {
+			if(toast.data.fired === "copy") return await toast.close();
 			return;
 		});
 		
@@ -66,6 +66,9 @@ document.querySelector(".banner-ip").onclick = async () => {
 			body: "Text copied: <i> nasgar.online </i>", 
 			data: { 
 				fired: "copy"
-			}}).show();
+			}
+		}).show();
 	}
 };
+
+document.querySelector(".banner-discord").onclick = () => {window.open("https://discord.gg/PJk9uyhv6S", "_blank")};
