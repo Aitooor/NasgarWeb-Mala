@@ -6,36 +6,6 @@
 	font-weight: 400;
 }
 
-@primary: #3880be;
-@success: #28a745;
-@info: #17a2b8;
-@warning: #ffc107;
-@danger: #dc3545;
-
-@colors: {
-	@modify-percent: 20%;
-
-	primary-light: lighten(@primary, @modify-percent);
-	primary: @primary;
-	primary-dark: darken(@primary, @modify-percent);
-
-	success-light: lighten(@success, @modify-percent);
-	success: @success;
-	success-dark: darken(@success, @modify-percent);
-	
-	info-light: lighten(@info, @modify-percent);
-	info: @info;
-	info-dark: darken(@info, @modify-percent);
-	
-	warning-light: lighten(@warning, @modify-percent);
-	warning: @warning;
-	warning-dark: darken(@warning, @modify-percent);
-	
-	danger-light: lighten(@danger, @modify-percent);
-	danger: @danger;
-	danger-dark: darken(@danger, @modify-percent);
-}
-
 body {
 	background-color: #EEE;
 }
@@ -140,7 +110,7 @@ header {
 	width: 100vw;
 	height: 300px;
 
-	background-color: lighten(@primary, 10%);
+	background-color: lighten(@primary, @semi-light-modify);
 
 	display: flex;
 

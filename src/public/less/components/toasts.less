@@ -1,20 +1,31 @@
+@import "../mixins/button.less";
+@import "../common/colors.less";
+
 .toasts {
 	position: fixed;
 	right: 2rem;
 	bottom: 2rem;
 
 	width: 20rem;
+
+	user-select: none;
+
+	display: flex;
+	flex-direction: column-reverse;
+	align-items: flex-end;
 }
 
 .toast {
 	max-width: 100%;
 	width: auto;
+	min-width: 15rem;
+	margin-top: 20px;
 
 	background-color: #FFF;
-
 	border-radius: 10px;
-
 	box-shadow: 0px 0px 10px #000;
+
+	animation: ToastIn .5s forwards;
 
 	.header {
 		padding: 5px;
@@ -32,22 +43,45 @@
 		justify-content: flex-end;
 
 		button[class*="action-"] {
-			#btn.common(@colors);
+			margin-left: 5px;
 
-			&[class*="-danger"] {
-				--t-color: #FFF;
-				--p-color-dark: @colors[danger-dark];
-				--p-color: @colors[danger];
-				--p-color-light: @colors[danger-light];
+			.render(@color) {
+				#btn.common(@color);
+				
+				&:not([class*="action-out"]) {
+					#btn.fill();
+				}
+	
+				&[class*="action-out-"] {
+					#btn.outline();
+				}
 			}
 
-			&:not([class*="action-out"]) {
-				#btn.fill();
-			}
-
-			&[class*="action-out-"] {
-				#btn.outline();
-			}
+			&[class*="-primary"] { .render(@primary-button-colors); }
+			&[class*="-success"] { .render(@success-button-colors); }
+			&[class*="-info"]	 { .render(@info-button-colors); }
+			&[class*="-warning"] { .render(@warning-button-colors); }
+			&[class*="-danger"]  { .render(@danger-button-colors); }
 		}
+	}
+}
+
+@keyframes ToastIn {
+	from {
+		transform: translateY(100vh);
+	}
+
+	to {
+		transform: translateY(0vh);
+	}
+}
+
+@keyframes ToastOut {
+	from {
+		transform: translateX(0vh);
+	}
+
+	to {
+		transform: translateX(50vw);
 	}
 }
