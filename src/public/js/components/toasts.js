@@ -195,4 +195,14 @@ class Toast {
 	}
 }
 
+window.addEventListener("resize", (ui) => {
+	const w = window.innerWidth;
+
+	if(w <= 600) {
+		maxToasts = 3;
+	} else {
+		maxToasts = 5;
+	}
+})
+
 export default Toast;

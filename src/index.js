@@ -24,6 +24,10 @@ app.use(express.static(join(__dirname, "public")));
 
 
 app.get("/", (req, res) => {
+	res.render("pags/index");
+});
+
+app.get("/Tests", (req, res) => {
 	res.render("Tests");
 })
 

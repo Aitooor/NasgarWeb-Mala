@@ -1,0 +1,202 @@
+@import "../common/colors.less";
+
+header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+
+	height: 75px;
+
+	background-color: fadeout(@primary, 10%);
+
+	display: flex;
+	justify-content: space-between;
+
+	z-index: 1000;
+
+	transition: background-color ease .1s;
+
+	&.menu-show {
+		background-color: @primary;
+	}
+
+	// Mobile
+	.menu-btn {
+		cursor: pointer;
+
+		height: 100%;
+
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		user-select: none;
+		-webkit-user-select: none;
+	}
+
+	.icon-sm {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		.icon img {
+			width: 50px;
+		}
+	}
+
+	.menu {
+		position: absolute;
+		bottom: 0px;
+
+		width: 100%;
+		height: 0px;
+		padding: 2px 10px;
+
+		background-color: @primary;
+
+		display: flex;
+		flex-direction: column;
+
+		transition: height ease .3s;
+		transform: translateY(100%);
+
+		overflow: hidden;
+
+		&.show {
+			height: auto;
+		}
+
+		.account {
+			padding-bottom: 5px;
+			margin-bottom: 5px;
+			border-bottom: solid 1px #212121;
+
+			display: flex;
+			flex-direction: column;
+
+			.login {
+				margin-bottom: 2px;
+			}
+		}
+
+		.options {
+			display: flex;
+			flex-direction: column;
+
+			color: #FFF;
+
+			a {
+				padding-bottom: 2px;
+				margin-bottom: 2px;
+				margin-left: 2px;
+
+				text-transform: uppercase;
+
+				transition: color ease .3s;
+			}
+
+			&.already-there-is-hovered-a {
+				color: #999;
+			}
+		}
+	}
+
+	// Desktop
+	.left {
+		padding-left: 1rem;
+
+		display: flex;
+		align-items: center;
+
+		.icon img {
+			width: 64px;
+		}
+
+		.options {
+			margin-left: calc(2rem - 10px);
+			color: #FFF;
+
+			a {
+				margin-left: 10px;
+
+				text-transform: uppercase;
+
+				transition: color ease .3s;
+			}
+
+			&.already-there-is-hovered-a {
+				color: #999;
+			}
+		}
+	}
+
+
+	.right {
+		margin-right: 1rem;
+		display: flex;
+		align-items: center;
+
+		.buttons {
+			padding: 5px 5px;
+			
+			color: #FFF;
+
+			border: solid 2px #a5e422;
+			border-radius: 50px;
+
+			display: flex;
+			
+			.signup {
+				padding: 7px 5px;
+				margin-right: 5px;				
+
+				border-radius: 50px;
+
+				transition: background-color ease .3s;
+
+				&:hover {
+
+					& +.login {
+						background-color: transparent;
+					}
+
+					
+					background-color: #61bd8a;
+				}
+			}
+
+			.login {
+				padding: 7px 5px;
+				
+				background-color: #7abd61;
+
+				border-radius: 50px;
+
+				transition: background-color ease .3s;
+			}
+		}
+	}
+}
+
+@media screen and (min-width: 600px) {
+	header {
+		.menu-btn, .icon-sm, .menu {
+			display: none;
+		}
+	}
+}
+
+
+@media screen and (max-width: 600px) {
+	header {
+		height: 50px;
+
+		display: grid;
+		grid-template-columns: 1fr 10fr 1fr;
+		
+		.left, .right {
+			display: none;
+		}
+	}
+}

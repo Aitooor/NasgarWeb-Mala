@@ -2,23 +2,6 @@ import Toasts from  "../components/toasts.js";
 
 globalThis.Toasts = Toasts;
 
-
-const options = document.querySelector("header .options");
-const aBtns = options.querySelectorAll("a");
-
-aBtns.forEach((elm) => {
-	elm.onmouseenter = () => {
-		options.classList.add("already-there-is-hovered-a");
-		elm.style.color = "#FFF";
-	}
-
-	elm.onmouseleave = () => {
-		options.classList.remove("already-there-is-hovered-a");
-		elm.style.color = "currentColor";
-	}
-});
-
-
 document.querySelector(".banner-ip").onclick = async () => {
 	const server_IP = "nasgar.online";
 	let copied = false;
