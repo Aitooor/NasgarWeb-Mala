@@ -1,0 +1,14 @@
+<div class="alert">
+	<%- alertText %>
+</div>
+
+<script>
+	window.addEventListener("DOMContentLoaded", () => {
+		/** @type {HTMLDivElement} */
+		const alert = document.querySelector(".alert");
+
+		alert.addEventListener("animationend", () => {
+			alert.remove();
+		})
+	})
+</script>

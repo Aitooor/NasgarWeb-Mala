@@ -11,6 +11,10 @@
 	<%- include("../partials/less.ejs") -%>
 </head>
 <body>
+	<% let _alert = typeof alert === "object" ? alert : { show: false } %> 
+	<% if (_alert.show) { %>
+		<%- include("../partials/alert.ejs", { alertText: _alert.text }) -%> 
+	<% } %>
 	<%- include("../partials/nav.ejs") -%> 
 
 	<div class="main">

@@ -13,7 +13,7 @@ var http = require('http');
  */
 
 var port = normalizePort(process.env.PORT || '1403');
-var host = process.argv[2] ==  "dev" ?  "192.168.100.9" : undefined
+var host = process.argv[2] ==  "dev" ?  "localhost" : undefined
 app.set('port', port);
 app.set('host', host);
 
