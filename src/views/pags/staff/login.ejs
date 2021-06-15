@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<%- include("../../partials/header.ejs") %> 
-	<title> Tester Login </title>
+	<title> Staff Login - Nasgar Network </title>
 
 	<!-- CSS -->
 	<link rel="stylesheet/less" href="/less/pags/staff/login.less">
@@ -10,7 +10,7 @@
 	<%- include("../../partials/less.ejs") %> 
 </head>
 <body>
-	<%- include("../../partials/nav.ejs") %> 
+	<%- include("../../partials/nav.ejs", { userData }) %> 
 
 	<div class="header-separator"></div>
 
@@ -20,6 +20,11 @@
 				<input type="password" name="password" id="password">
 				<button type="submit" class="btn-primary"> Test </button>
 			</form>
+		</div>
+
+		<div class="adv-warning">
+			<i class="material">error_outline</i>
+			<span>You have limited attempts, think what you do</span>
 		</div>
 	</div>
 </body>

@@ -8,10 +8,19 @@ declare global {
 	}
 }
 
+type AccountLevelString = "nologged" | "common" | "tester" | "staff" | "admin";
+type AccountLevelInt = -1 | 0 | 1 | 2 | 3;
+
 
 class UserData {
 	private constructor(req: express.Request, res: express.Response);
-	accountLevel: "noLogged" | "Common" | "Staff" | "Admin";
+
+	account: {
+		level: {
+			string: AccountLevelString,
+			int: AccountLevelInt
+		}
+	}
 }
 
 declare module 'express-session' {
@@ -20,6 +29,7 @@ declare module 'express-session' {
 		alert: string;
 		showAlert: boolean;
 
-		accountLevel: "noLogged" | "Common" | "Staff" | "Admin";
+		accountLevelString: AccountLevelString;
+		accountLevelInt: AccountLevelInt;
 	}
 }

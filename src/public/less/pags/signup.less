@@ -1,0 +1,35 @@
+@import "../common/super.less";
+@import "../components/toasts.less";
+@import "../components/card/common.less";
+@import "../partials/nav.less";
+@import "../partials/alert.less";
+
+.card {
+	#card.common();
+
+	margin: 0px auto;
+	min-width: 200px;
+	width: 90%;
+
+	flex-direction: column;
+
+	span {
+		margin: 0px 10px;
+		font-size: 1.7rem;
+	}
+	ul {
+		padding: 0px 20px;
+		list-style: none;
+
+		& > li {
+			font-size: 1.1rem ;
+			display: flex;
+			align-items: center;
+
+			i {
+				cursor: pointer;
+				font-size: 20px;
+			}
+		}
+	}
+}

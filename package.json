@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node src/bin/www",
     "dev": "nodemon src/bin/www",
-    "publish": "git add . && git commit -am \"Auto commited\" && git push heroku master"
+    "publish": "git add . && git commit -am \"Auto commited\" && git push heroku master",
+    "Build_Less_Common": "lessc ./src/public/less/common/super.less ./src/public/css/common.css -x --source-map"
   },
   "keywords": [],
   "author": "",

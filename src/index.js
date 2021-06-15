@@ -6,6 +6,10 @@ const morgan = require('morgan');
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 
+// My libs
+const userDataByReq = require("./helpers/userDataByReq");
+const normalizeSession = require("./helpers/normalizeSession");
+
 // DotEnv
 require("dotenv").config({ path: ".env" });
 
@@ -28,18 +32,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(join(__dirname, "public")));
 
-app.use((req, res, next) => {
-	req.session.accountLevel = req.session.accountLevel || (req.session.isStaff ? "Staff" : false) || "noLogged";
-
-	req.userData = {
-		accountLevel: req.session.accountLevel
-	};
-
-	res.locals.userData = req.userData;
-	next();
-})
+app.use(normalizeSession);
+app.use(userDataByReq.middleware);
 
 app.get("/", (req, res) => {
+	console.log(req.userData);
+	console.log(req.session.showAlert);
+
 	const showAlert = req.session.showAlert;
 	req.session.showAlert = false;
 
@@ -55,6 +54,9 @@ app.get("/", (req, res) => {
 
 app.get("/login", (req, res) => {
 	res.render("pags/login");
+});
+app.get("/signup", (req, res) => {
+	res.render("pags/signup");
 });
 
 
@@ -73,6 +75,7 @@ app.get("/login", (req, res) => {
 		function middleware(password, {req, res} = {}) {
 			if(password === process.env.TESTER_PASSWORD) {
 				req.session.isStaff = true;
+				req.session.accountLevelInt = 2;
 				req.session.alert = "Now, you are part of the staff";
 				req.session.showAlert = true;
 				res.redirect("/");

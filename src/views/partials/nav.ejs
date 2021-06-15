@@ -19,29 +19,33 @@
 			<a href="https://www.40servidoresmc.es/nasgar-network-votar" target="_blank" class="option"> Votar </a>
 			<a href="#" class="option"> Foro </a>
 
-			<% if(userData.accountLevel === "Staff") { %>
-				<a href="#" class="option"> Staff </a>
+			<% if(userData.account.level.int >= 2) { %>
+				<a href="#" class="option"> Staff Controls </a>
 			<% } %>
 		</div>
 	</div>
 
 	<div class="right">
 		<div class="buttons">
-			<a href="#" class="signup"> Registrarse </a>
-			<a href="#" class="login"> Ingresar </a>
+			<a href="/signup" class="signup"> Registrarse </a>
+			<a href="/login" class="login"> Ingresar </a>
 		</div>
 	</div>
 
 	<div class="menu">
 		<div class="account">
-			<a href="#" class="login"> Ingresar </a>
-			<a href="#" class="signup"> Registrarse </a>
+			<a href="/login" class="login"> Ingresar </a>
+			<a href="/signup" class="signup"> Registrarse </a>
 		</div>
 		<div class="options">
 			<a href="#" class="option"> Tienda </a>
 			<a href="#" class="option"> Sanciones </a>
 			<a href="https://www.40servidoresmc.es/nasgar-network-votar" target="_blank" class="option"> Votar </a>
 			<a href="#" class="option"> Foro </a>
+
+			<% if(userData.account.level.int >= 2) { %>
+				<a href="#" class="option"> Staff Controls </a>
+			<% } %>
 		</div>
 	</div>
 </header>

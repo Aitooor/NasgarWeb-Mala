@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<%- include("../partials/header.ejs") %>
+	<title> Sign up - Nasgar Network </title>
+
+	<link rel="stylesheet/less" href="/less/pags/signup.less" />
+
+	<%- include("../partials/less.ejs") %> 
+</head>
+<body>
+	<%- include("../partials/nav.ejs", { userData }) %> 
+
+	<div class="header-separator"></div>
+	<div class="card">
+		<span>Enter in minecraft server to <b>Sign Up</b>.</span>
+		<ul>
+			<li>IP: nasgar.online <i class="material" data-commons-onclick="copy, <%= server.ip %>">content_copy</i></li>
+		</ul>
+	</div>
+
+	<div class="toasts"></div>
+</body>
+</html>
