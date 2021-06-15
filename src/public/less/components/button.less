@@ -1,0 +1,21 @@
+@import "../mixins/button.less";
+
+[class*="btn-"]:is(button, a) {
+	.render(@color) {
+		#btn.common(@color);
+		
+		&:not([class*="btn-out"]) {
+			#btn.fill();
+		}
+
+		&[class*="btn-out-"] {
+			#btn.outline();
+		}
+	}
+
+	&[class*="-primary"] { .render(@primary-button-colors); }
+	&[class*="-success"] { .render(@success-button-colors); }
+	&[class*="-info"]	 { .render(@info-button-colors); }
+	&[class*="-warning"] { .render(@warning-button-colors); }
+	&[class*="-danger"]  { .render(@danger-button-colors); }
+}

@@ -6,7 +6,7 @@
 	<title> Nasgar Online </title>
 
 	<!-- CSS -->
-	<link rel="stylesheet/less" type="text/css" href="/less/index.less">
+	<link rel="stylesheet/less" href="/less/pags/index.less">
 	
 	<%- include("../partials/less.ejs") -%>
 </head>
@@ -15,7 +15,7 @@
 	<% if (_alert.show) { %>
 		<%- include("../partials/alert.ejs", { alertText: _alert.text }) -%> 
 	<% } %>
-	<%- include("../partials/nav.ejs") -%> 
+	<%- include("../partials/nav.ejs", { userData }) -%> 
 
 	<div class="main">
 		<div class="present">

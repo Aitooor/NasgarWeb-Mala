@@ -21,13 +21,23 @@ app.use(session({
 	secret: process.env.SESSION_KEY,
 	saveUninitialized: true,
 	resave: true
-}))
+}));
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(join(__dirname, "public")));
 
+app.use((req, res, next) => {
+	req.session.accountLevel = req.session.accountLevel || (req.session.isStaff ? "Staff" : false) || "noLogged";
+
+	req.userData = {
+		accountLevel: req.session.accountLevel
+	};
+
+	res.locals.userData = req.userData;
+	next();
+})
 
 app.get("/", (req, res) => {
 	const showAlert = req.session.showAlert;
@@ -47,42 +57,43 @@ app.get("/login", (req, res) => {
 	res.render("pags/login");
 });
 
-function TesterMiddleware(req, res) {
-	if(req.session?.isTester === true) return next();
-
-	req.session.alert = "You are not a tester, please enter a correct password in <b class\"code\">/Tester?password=[password]</b>";
-	req.session.showAlert = true;
-	res.redirect("/");
-}
 
 {
-	function middleware(password, {req, res} = {}) {
-		if(password === process.env.TESTER_PASSWORD) {
-			req.session.isTester = true;
-			req.session.alert = "Now, you are a tester";
-			req.session.showAlert = true;
-			res.redirect("/");
-		} else {
-			req.session.alert = "You are not a tester, please enter a correct password in <b class\"code\">/Tester</b>";
-			req.session.showAlert = true;
-			res.redirect("/");
-		}
+	function alertNotStaff(req, res) {
+		req.session.alert = "You are not part of the staff, please enter a correct password for your level in <b class\"code\">/staff</b>";
+		req.session.showAlert = true;
+		res.redirect("/");
+	}
+	function StaffMiddleware(req, res) {
+		if(req.session?.isStaff === true) next();
+		else alertNotStaff(req, res);
 	}
 
-	app.get("/Tester", (req, res) => {
-		if(!req.session.isTester) return res.render("pags/tester/login");
-		res.redirect("/");
-	});
+	{
+		function middleware(password, {req, res} = {}) {
+			if(password === process.env.TESTER_PASSWORD) {
+				req.session.isStaff = true;
+				req.session.alert = "Now, you are part of the staff";
+				req.session.showAlert = true;
+				res.redirect("/");
+			} else alertNotStaff(req, res);
+		}
 
-	app.post("/Tester", (req, res) => {
-		console.log(req.body);
-		middleware(req.body.password, {req, res});
+		app.get("/staff", (req, res) => {
+			if(!req.session.isStaff) return res.render("pags/staff/login");
+			res.redirect("/");
+		});
+
+		app.post("/staff", (req, res) => {
+			console.log(req.body);
+			middleware(req.body.password, {req, res});
+		});
+	}
+
+	app.get("/Tests", StaffMiddleware, (req, res) => {
+		res.render("Tests");
 	});
 }
-
-app.get("/Tests", TesterMiddleware, (req, res) => {
-	res.render("Tests");
-});
 
 
 app.get("/ResetSession", (req, res) => {

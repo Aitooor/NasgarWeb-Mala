@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<%- include("../../partials/header.ejs") %> 
+	<title> Tester Login </title>
+
+	<!-- CSS -->
+	<link rel="stylesheet/less" href="/less/pags/staff/login.less">
+
+	<%- include("../../partials/less.ejs") %> 
+</head>
+<body>
+	<%- include("../../partials/nav.ejs") %> 
+
+	<div class="header-separator"></div>
+
+	<div class="login-card centered">
+		<div class="form">
+			<form action="/staff" method="post">
+				<input type="password" name="password" id="password">
+				<button type="submit" class="btn-primary"> Test </button>
+			</form>
+		</div>
+	</div>
+</body>
+</html>

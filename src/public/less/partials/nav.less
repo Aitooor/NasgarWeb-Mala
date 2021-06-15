@@ -15,7 +15,7 @@ header {
 
 	z-index: 1000;
 
-	transition: background-color ease .1s;
+	transition: background-color ease .25s;
 
 	&.menu-show {
 		background-color: @primary;
@@ -64,7 +64,7 @@ header {
 		overflow: hidden;
 
 		&.show {
-			height: auto;
+			height: calc(100vh - 50px);
 		}
 
 		.account {
@@ -179,6 +179,13 @@ header {
 	}
 }
 
+
+.header-separator {
+	margin-bottom: 1rem;
+	height: 75px;
+	display: block;
+}
+
 @media screen and (min-width: 600px) {
 	header {
 		.menu-btn, .icon-sm, .menu {
@@ -198,5 +205,9 @@ header {
 		.left, .right {
 			display: none;
 		}
+	}
+
+	.header-separator {
+		height: 75px;
 	}
 }
