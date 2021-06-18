@@ -1,6 +1,5 @@
-// TODO: Connect paypal to this shit server
 // TODO: Connect minecraft server to, again, this server of shit
-
+const inProduction = process.env.NODE_ENV === "production";
 
 // Modules
 const createError = require("http-errors");
@@ -9,15 +8,14 @@ const { join } = require("path");
 const morgan = require('morgan');
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
-// const paypal = require("paypal-rest-sdk");
-// const paypal = require("paypal");
+const paypal = require("paypal-rest-sdk");
 
 // My libs
 const userDataByReq = require("./helpers/userDataByReq");
 const normalizeSession = require("./helpers/normalizeSession");
 
-// DotEnv
-require("dotenv").config({ path: ".env" });
+// DotEnv - Dev
+if(!inProduction) require("dotenv").config({ path: ".env" });
 
 // Setup
 const app = express();
@@ -38,17 +36,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(join(__dirname, "public")));
 
-// paypal.configure({
-// 	mode: "sandbox",
-// 	client_id: "Afl20x8iHhEekyvHPb9InWvRH58uj794Og9fwtkuJfk3tQX4UO7umCR1zxUs7sBQpT_B0aL2w5bLL1Oz",
-// 	client_secret: process.env.PAYPAL_SECRET
-// })
-// const environmentPaypal = new paypal.core.SandboxEnvironment(
-// 	"Afl20x8iHhEekyvHPb9InWvRH58uj794Og9fwtkuJfk3tQX4UO7umCR1zxUs7sBQpT_B0aL2w5bLL1Oz",
-// 	process.env.PAYPAL_SECRET);
-
-// const clientPaypal = 
-
+paypal.configure({
+	mode: inProduction ? "live" : "sandbox",
+	client_id: process.env.PAYPAL_ID,
+	client_secret: process.env.PAYPAL_SECRET
+});
 
 app.use(normalizeSession);
 app.use(userDataByReq.middleware);
@@ -69,38 +61,38 @@ app.get("/", (req, res) => {
 		return res.render("pags/index");
 });
 
-// app.get("/PaypalTest", (req, res) => {
-// 	paypal.payment.create({
-// 		"intent": "sale",
-// 		"payer": {
-// 			"payment_method": "paypal"
-// 		},
-// 		"redirect_urls": {
-// 			"return_url": "/",
-// 			"cancel_url": "/Tests" // REMEMBER TO DESTORY ALL COOKIES WHEN CALLING THIS
-// 		},
-// 		"transactions": [{
-// 			"item_list": {
-// 				"items": [{
-// 					"name": "package_name",
-// 					"sku": "package_name",
-// 					"price": 25,
-// 					"currency": "USD",
-// 					"quantity": 1
-// 				}]
-// 			},
-// 			"amount": {
-// 				"currency": "USD",
-// 				"total": 25
-// 			},
-// 			"description": "My description - Oh yeah"
-// 		}]
-// 	  }, (err, payment) => {
-// 		  if(err) throw err;
-// 		  console.log(payment);
-// 		  res.redirect(payment.links[1].href);
-// 	  });
-// })
+app.get("/PaypalTest", (req, res) => {
+	paypal.payment.create({
+		"intent": "sale",
+		"payer": {
+			"payment_method": "paypal"
+		},
+		"redirect_urls": {
+			"return_url": "http://localhost:1403/",
+			"cancel_url": "http://localhost:1403/login" // REMEMBER TO DESTORY ALL COOKIES WHEN CALLING THIS
+		},
+		"transactions": [{
+			"item_list": {
+				"items": [{
+					"name": "package_name",
+					"sku": "package_name",
+					"price": 25,
+					"currency": "USD",
+					"quantity": 1
+				}]
+			},
+			"amount": {
+				"currency": "USD",
+				"total": 25
+			},
+			"description": "My description - Oh yeah"
+		}]
+	  }, (err, payment) => {
+		  if(err) throw err;
+		  console.log(payment);
+		  res.redirect(payment.links[1].href);
+	  });
+})
 
 app.get("/login", (req, res) => {
 	res.render("pags/login");
@@ -148,6 +140,9 @@ app.get("/signup", (req, res) => {
 	});
 }
 
+app.get("/shop", (req, res) => {
+	res.render("pags/shop/index");
+})
 
 app.get("/ResetSession", (req, res) => {
 	req.session.destroy((err) => {

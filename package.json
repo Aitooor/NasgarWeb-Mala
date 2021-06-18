@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node src/bin/www",
+    "start": "node src/bin/www --production",
     "dev": "nodemon src/bin/www",
     "publish": "git add . && git commit -am \"Auto commited\" && git push heroku master",
     "Build_Less_Common": "lessc ./src/public/less/common/super.less ./src/public/css/common.css -x --source-map"
@@ -13,22 +13,19 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@paypal/checkout-server-sdk": "^1.0.2",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
     "debug": "^4.3.1",
-    "dotenv": "^10.0.0",
     "ejs": "^3.1.6",
     "express": "^4.17.1",
     "express-session": "^1.17.2",
     "http-errors": "^1.8.0",
     "morgan": "^1.10.0",
     "mysql": "^2.18.1",
-    "paypal": "^1.0.1",
-    "paypal-rest-sdk": "^1.8.1",
-    "request": "^2.88.2"
+    "paypal-rest-sdk": "^1.8.1"
   },
   "devDependencies": {
+    "dotenv": "^10.0.0",
     "nodemon": "^2.0.7"
   }
 }
