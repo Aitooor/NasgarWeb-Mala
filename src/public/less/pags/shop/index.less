@@ -1,5 +1,7 @@
 @import  "../../common/super.less";
 @import  "../../components/card/index.less";
+@import  "../../components/select.less";
+@import  "../../components/toasts.less";
 @import  "../../mixins/button.less";
 @import  "../../partials/alert.less";
 @import  "../../partials/nav.less";
@@ -12,7 +14,8 @@
 }
 
 .categories {
-	width: 90%;
+	max-width: 1100px;
+	width: 85%;
 	padding: 10px 0px;
 
 	display: flex;
@@ -37,98 +40,148 @@
 	}
 }
 
-.select {
-	position: relative;
+.mainbox {
+	max-width: 1200px;
+	width: 90%;
+	padding: .5rem;
+
+	background-color: #FFF;
+	border-radius: .5rem;
+
+	box-shadow: 0px 1px 2px #555;
+
 	display: flex;
 
-	& > .trigger {
-		cursor: pointer;
-
-		min-width: 70px;
-		height: 25px;
-		padding: 2px 2px 2px 5px;
-
-		background: #CCC;
-		border: solid 2px transparent;
-		box-shadow: 0px 1px 3px #555;
+	> aside {
+		width: 50%;
 
 		display: flex;
-		justify-content: space-between;
+		gap: .5rem;
+		flex-direction: column;
 		align-items: center;
 
-		&:hover { background: #BBB; }
-		&:active { background: #AAA; }
+		@section-color: #b7b8bf;
 
-		& span {
-			max-width: 75px;
-			white-space: nowrap;
-			text-overflow: ellipsis;
-			overflow: hidden;
-		}
+		> section {
+			width: 90%;
 
-		& > i {
-			user-select: none;
-			max-width: 100px;
-			margin-left: 1rem;
-			display: flex;
+			background-color: #FFF;
+			border: solid 1px @section-color;
+			border-radius: 5px;
 
-			transition: transform ease .5s;
-			transform: rotateX(0deg);
+			> .header {
+				padding: .5rem .7rem;
+
+				background-color: @section-color;
+				border-top-left-radius: 3px;
+				border-top-right-radius: 3px;
+			}
+
+			> .body {
+				padding: .5rem 1rem;
+			}
 		}
 	}
+}
 
-	& > .options {
-		position: absolute;
-		top: 0%;
-		left: 2px;
+.products {
+	margin: .5rem 0 1rem .5rem;
 
-		min-width: 100px;
-		width: auto;
+	display: grid;
+	gap: 10px 10px;
+	grid-template-columns: 1fr 1fr 1fr;
 
-		background: #FFF;
-		border-radius: 5px;
-		box-shadow: 0px 2px 5px #555;
+	.product {
+		@p-color: #999999d0;
 
-		line-height: 1.5;
-		z-index: 100;
-		overflow: hidden;
+		position: relative;
 
-		transform: scale(0) translateY(-100%);
-		transition: transform ease .3s,  top ease .3s;
+		border: solid 1px @p-color;
+		border-radius: 7px;
 
-		option {
-			cursor: pointer;
+		box-shadow: 0px 1px 1px #5555;
+
+		display: flex;
+		flex-direction: column;
+
+		transition: box-shadow ease .3s;
+
+		&:hover {
+			box-shadow: 0px 2px 2px #5559;
+		}
+
+		> .dots {
 			user-select: none;
+			cursor: pointer;
 
-			padding: 5px 8px;
-			border-bottom: solid 2px #BBB;
+			position: absolute;
+			top: 0px;
+			right: 7px;
+		}
+
+		> .img {
+			border-bottom: solid 1px @p-color;
+
+			display: flex;
+			justify-content: center;
+
+			img {
+				max-height: 150px;
+
+				overflow: hidden;
+			}
+		}
+
+		> .product-name {
+			padding: 2px 5px;
+			font-family: 'Lato', 'Poppins', sans-serif;
+			font-weight: 600;
+		}
+
+		> .footer {
+			padding: 5px 10px;
 
 			display: flex;
 			justify-content: space-between;
-			align-items: center;
+			align-items: flex-start;
 
-			&:last-of-type { border-bottom: none; }
-			&:hover { background: #0002; }
-			&:active { background: #0005; }
+			> .product-price {
+				font-family: 'Lato', 'Poppins', sans-serif;
+				&::before {
+					content: "$";
+					font-family: 'Lato', 'Poppins', sans-serif;
+				}
 
-			&[selected]::after {
-				.material-icons();
-				content: "check_circle";
-				color: #090;
+				&::after {
+					content: " USD";
+					font-family: 'Lato', 'Poppins', sans-serif;
+				}
+			}
+
+			> button {
+				#btn.common(@primary-button-colors);
+				#btn.fill();
 			}
 		}
 	}
+}
 
-	&.active{
-		& > .trigger {
-			& > i {
-				transform: rotateX(180deg);
-			}
-		}
+@media screen and (max-width: 990px) {
+	.mainbox {
+		flex-direction: column;
 
-		& > .options {
-			top: 100%;
-			transform: scale(1) translateY(0%);
+		> aside {
+			width: 100%;
 		}
+	}
+
+	.products {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	.products {
+		grid-template-columns: 1fr;
 	}
 }

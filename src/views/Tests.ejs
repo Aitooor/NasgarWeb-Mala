@@ -5,13 +5,20 @@
 	<title> Tests - Nasgar Network </title>
 
 	<!-- CSS -->
-	<link rel="stylesheet/less" href="less/index.less">
+	<link rel="stylesheet/less" href="less/pags/index.less">
 
 	<%- include("./partials/less.ejs") %> 
 </head>
 <body>
-	<%- include("./partials/nav.ejs") -%> 
+	<%- include("./partials/nav.ejs", { userData }) -%> 
+	<div class="header-separator"></div>
 
-	
+	<form action="/Tests/DB/PushProduct" method="post">
+		<input type="text" placeholder="Product name">
+		<input type="number" placeholder="Product ID">
+		<input type="number" placeholder="Product quantity">
+		<input type="number" placeholder="Product price">
+		<button type="submit"> Push Product </button>
+	</form>
 </body>
 </html>
