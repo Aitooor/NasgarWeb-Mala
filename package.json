@@ -7,13 +7,14 @@
     "start": "node src/bin/www --production",
     "dev": "nodemon src/bin/www",
     "publish": "git add . && git commit -am \"Auto commited\" && git push heroku master",
-    "Build_Less_Common": "lessc ./src/public/less/common/super.less ./src/public/css/common.css -x --source-map"
+    "Build_Less_Common": "lessc ./src/public/less/common/super.less ./src/public/css/common.css -x --source-map",
+    "compile_less_components": "lessc ./src/public/less/components/select.less ./src/public/css/components/select.css -x --source-map"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.19.0",
+    "@types/node-persist": "^3.1.1",
     "cookie-parser": "^1.4.5",
     "debug": "^4.3.1",
     "ejs": "^3.1.6",

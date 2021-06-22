@@ -1,6 +1,6 @@
 const { alertNotStaff } = require("../../middlewares/staff");
 
-module.exports = function(app) {
+module.exports = function(app, storage) {
 	app.get("/staffLogin", (req, res) => {
 		if(!req.session.isStaff) return res.render("pags/staff/login");
 		res.redirect("/");
@@ -16,5 +16,5 @@ module.exports = function(app) {
 		} else alertNotStaff(req, res);
 	});
 
-	require("./tests")(app);
+	require("./tests")(app, storage);
 }

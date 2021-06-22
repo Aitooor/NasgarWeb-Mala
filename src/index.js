@@ -43,6 +43,11 @@ app.use(express.static(join(__dirname, "public")));
 app.use(normalizeSession);
 app.use(userDataByReq.middleware);
 
+app.use((req, res, next) => {
+	if(req.method !== "GET" || !inProduction) return next();
+	if(req.protocol === "http") res.redirect(`https://${req.hostname}${req.path}`);
+})
+
 paypal.configure({
 	mode: inProduction ? "live" : "sandbox",
 	client_id: process.env.PAYPAL_ID,
@@ -52,7 +57,7 @@ paypal.configure({
 storage.init({
 	dir: "./storage"
 }).then(() => {
-	Routes(app);
+	Routes(app, storage);
 });
 
 module.exports = app;

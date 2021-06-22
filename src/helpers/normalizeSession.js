@@ -14,7 +14,7 @@ function undefinedCrit(orgValue, value) {
 /**
  * 
  * @param {string} paramName 
- * @param {(orgValue: any, value: any, newValueObj: object) => void} crit 
+ * @param {(orgValue: any, value: any) => void} crit 
  * @param {any} value
  * @param {express.Request<RouteParameters<string>, any, any, qs.ParsedQs, Record<string, any>>} req 
  */

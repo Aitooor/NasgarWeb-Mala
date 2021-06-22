@@ -1,8 +1,5 @@
-module.exports = function(app) {
+module.exports = function(app, storage) {
 	app.get("/", (req, res) => {
-		console.log(req.userData);
-		console.log(req.session.showAlert);
-
 		const showAlert = req.session.showAlert;
 		req.session.showAlert = false;
 
@@ -66,7 +63,7 @@ module.exports = function(app) {
 		});
 	});
 
-	require("./routes/staff/index")(app);
+	require("./routes/staff/index")(app, storage)
 
 	//* Error - 404
 	app.use((req, res, next) => {
