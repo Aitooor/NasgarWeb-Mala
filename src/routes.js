@@ -56,9 +56,7 @@ module.exports = function(app, db) {
 	});
 
 	app.post("/login", async (req, res) => {
-		console.log(crypto.createHmac("sha256", "Nasgar19992%").update("quirte").digest("hex"));
-
-		res.send("Hola");
+		res.redirect("/login");
 	})
 	app.get("/signup", (req, res) => {
 		res.render("pags/signup");
