@@ -22,6 +22,11 @@ function middleware(req, res, next) {
 		ip: "nasgar.online"
 	}
 
+	res.locals.alert = {
+		show: false,
+		text: ""
+	};
+
 	next();
 }
 

@@ -11,7 +11,7 @@
 	<script src="/js/pg/shop/index.js" type="module"></script>
 </head>
 <body>
-	<%- include("../../partials/nav.ejs", { userData }) %>
+	<%- include("../../partials/nav.ejs", { userData, alert }) %>
 	<div class="header-separator"></div>
 	 
 	<div class="centered">
@@ -45,7 +45,7 @@
 					Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit repellendus consequatur nam dignissimos quam modi. Quisquam ducimus adipisci sunt odio voluptatem ea officia a. Ut quidem delectus earum ratione ipsam?
 				</div>
 				<div class="products">
-					<div class="product" data-product-id="key0">
+					<div class="product" data-product-id="key0" data-commons-onclick="link, /, _blank">
 						<div class="dots"><i class="material">more_horiz</i></div>
 						<div class="img"><img src="/img/defaultKey.png"></div>
 						<div class="product-name">Product Name</div>

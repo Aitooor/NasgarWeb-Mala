@@ -1,3 +1,5 @@
+<%- include("./alert.ejs", { alert }) %> 
+
 <header>
 	<div class="menu-btn">
 		<i class="material">menu</i>
@@ -20,7 +22,7 @@
 			<a href="#" class="option"> Foro </a>
 
 			<% if(userData.account.level.int >= 2) { %>
-				<a href="#" class="option"> Staff Controls </a>
+				<a href="/staff/controls" class="option"> Staff Controls </a>
 			<% } %>
 		</div>
 	</div>
@@ -44,7 +46,7 @@
 			<a href="#" class="option"> Foro </a>
 
 			<% if(userData.account.level.int >= 2) { %>
-				<a href="#" class="option"> Staff Controls </a>
+				<a href="/staff/controls" class="option"> Staff Controls </a>
 			<% } %>
 		</div>
 	</div>

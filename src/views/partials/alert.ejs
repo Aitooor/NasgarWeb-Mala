@@ -1,14 +1,17 @@
-<div class="alert">
-	<%- alertText %>
-</div>
-
-<script>
-	window.addEventListener("DOMContentLoaded", () => {
-		/** @type {HTMLDivElement} */
-		const alert = document.querySelector(".alert");
-
-		alert.addEventListener("animationend", () => {
-			alert.remove();
+<% let _alert = typeof alert === "object" ? alert : { show: false } %> 
+<% if (_alert.show) { %>
+	<div class="alert">
+		<%- _alert.text %>
+	</div>
+	
+	<script>
+		window.addEventListener("DOMContentLoaded", () => {
+			/** @type {HTMLDivElement} */
+			const alert = document.querySelector(".alert");
+	
+			alert.addEventListener("animationend", () => {
+				alert.remove();
+			})
 		})
-	})
-</script>
+	</script>
+<% } %>

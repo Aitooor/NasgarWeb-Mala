@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<%- include("../../partials/header.ejs") %> 
+	<title> Staff Controls - Nasgar Network </title>
+
+
+
+	<%- include("../../partials/less.ejs") %>
+</head>
+<body>
+	<%- include("../../partials/nav.ejs", { userData, alert }) %> 
+	<div class="header-separator"></div>
+	
+	<div class="app">
+		<div class="card">
+			<div class="header">
+				Go to __
+			</div>
+			<div class="body">
+				<button data-common-onclick="link, /Tests"> Tests </button>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

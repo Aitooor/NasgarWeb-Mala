@@ -1,33 +1,34 @@
 {
-  "name": "nasgar-web",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "start": "node src/bin/www --production",
-    "dev": "nodemon src/bin/www",
-    "publish": "git add . && git commit -am \"Auto commited\" && git push heroku master",
-    "Build_Less_Common": "lessc ./src/public/less/common/super.less ./src/public/css/common.css -x --source-map",
-    "compile_less_components": "lessc ./src/public/less/components/select.less ./src/public/css/components/select.css -x --source-map"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@types/node-persist": "^3.1.1",
-    "cookie-parser": "^1.4.5",
-    "debug": "^4.3.1",
-    "ejs": "^3.1.6",
-    "express": "^4.17.1",
-    "express-session": "^1.17.2",
-    "http-errors": "^1.8.0",
-    "morgan": "^1.10.0",
-    "mysql": "^2.18.1",
-    "node-persist": "^3.1.0",
-    "paypal-rest-sdk": "^1.8.1"
-  },
-  "devDependencies": {
-    "dotenv": "^10.0.0",
-    "nodemon": "^2.0.7"
-  }
+    "name": "nasgar-web",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "node bin/www --production",
+        "dev": "nodemon bin/www",
+        "prepublish": "git add . && git commit -am \"Auto commited\"",
+        "hub": "git push hub master",
+        "publish": "git push heroku master",
+        "compile_less_common": "lessc ./src/public/less/common/super.less ./src/public/css/common.css -x --source-map",
+        "compile_less_components": "lessc ./src/public/less/components/select.less ./src/public/css/components/select.css -x --source-map",
+        "compile_less_partials": "cd src/public && lessc ./less/partials/partials.less ./css/partials/partials.css -x --source-map --source-map-url=/css/partials/partials.css.map",
+        "compile_less": "npm run compile_less_common && npm run compile_less_components && npm run compile_less_partials"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "cookie-parser": "^1.4.5",
+        "ejs": "^3.1.6",
+        "express": "^4.17.1",
+        "express-session": "^1.17.2",
+        "http-errors": "^1.8.0",
+        "mysql": "^2.18.1",
+        "paypal-rest-sdk": "^1.8.1"
+    },
+    "devDependencies": {
+        "morgan": "^1.10.0",
+        "dotenv": "^10.0.0",
+        "nodemon": "^2.0.7"
+    }
 }

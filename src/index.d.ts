@@ -29,6 +29,8 @@ declare module 'express-session' {
 		alert: string;
 		showAlert: boolean;
 
+		staffLogin_landing: string;
+
 		accountLevelString: AccountLevelString;
 		accountLevelInt: AccountLevelInt;
 	}

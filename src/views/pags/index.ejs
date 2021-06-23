@@ -13,11 +13,7 @@
 	<script src="/js/pg/index.js" type="module" defer></script>
 </head>
 <body>
-	<% let _alert = typeof alert === "object" ? alert : { show: false } %> 
-	<% if (_alert.show) { %>
-		<%- include("../partials/alert.ejs", { alertText: _alert.text }) -%> 
-	<% } %>
-	<%- include("../partials/nav.ejs", { userData }) -%> 
+	<%- include("../partials/nav.ejs", { userData, alert }) -%> 
 
 	<div class="main">
 		<div class="present">

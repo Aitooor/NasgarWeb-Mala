@@ -55,6 +55,18 @@ async function copyText(txt, {silent = false} = {}) {
 	}
 }
 
+/**
+ * @param {string} str 
+ * @param {string} separator 
+ * @param {number} [limit] 
+ * @returns {string[]}
+ */
+function antiSpacesSplit(str, separator, limit) {
+	return str.split(separator, limit).map(s => {
+		return s.replace("^\s+", "").replace("\s+$");
+	});
+}
+
 document
 	.querySelectorAll("[data-commons-onclick]")
 	.forEach(async (_elm) => {
@@ -63,9 +75,12 @@ document
 
 		elm.addEventListener("click", async () => {
 			const dataAttr = elm.dataset.commonsOnclick;
-			const dataParts = dataAttr.split(",", 2);
+			const dataParts = antiSpacesSplit(dataAttr, ",");
 			if(dataParts[0] === "copy") {
 				await copyText(dataParts[1]);
+			} else 
+			if(dataParts[0] === "link") {
+				window.open(dataParts[1], dataParts[2] || "_self");
 			}
 		});
 	});

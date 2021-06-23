@@ -1,4 +1,9 @@
-module.exports = function(app, storage) {
+/**
+ * 
+ * @param {import("express").Express} app 
+ * @param {() => import("mysql").Pool} db 
+ */
+module.exports = function(app, db) {
 	app.get("/", (req, res) => {
 		const showAlert = req.session.showAlert;
 		req.session.showAlert = false;
@@ -20,7 +25,7 @@ module.exports = function(app, storage) {
 			},
 			"redirect_urls": {
 				"return_url": "http://localhost:1403/",
-				"cancel_url": "http://localhost:1403/login" // REMEMBER TO DESTORY ALL COOKIES WHEN CALLING THIS
+				"cancel_url": "http://localhost:1403/login"
 			},
 			"transactions": [{
 				"item_list": {
@@ -63,7 +68,7 @@ module.exports = function(app, storage) {
 		});
 	});
 
-	require("./routes/staff/index")(app, storage)
+	require("./routes/staff/index")(app, db);
 
 	//* Error - 404
 	app.use((req, res, next) => {

@@ -8,7 +8,7 @@
 	<%- include("../partials/less.ejs") %> 
 </head>
 <body>
-	<%- include("../partials/nav.ejs", { userData }) %> 
+	<%- include("../partials/nav.ejs", { userData, alert }) %> 
 
 	<div class="header-separator"></div>
 
@@ -22,7 +22,8 @@
 		</div>
 		<div class="adv-warning">
 			<i class="material">warning_amber</i>
-			<span> Use data from your minecraft account of this server </span>
+			<span> Use data from your minecraft account of this server </span> <br>
+			<span> <a href="/staffLogin">Staff Login</a> </span>
 		</div>
 	</div>
 	<div class="toasts"></div>

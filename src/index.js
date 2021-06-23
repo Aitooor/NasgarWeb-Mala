@@ -5,18 +5,11 @@ const inProduction = process.env.NODE_ENV === "production";
 const createError = require("http-errors");
 const express = require('express');
 const { join } = require("path");
-const morgan = require('morgan');
-const session = require("express-session");
-const cookieParser = require("cookie-parser");
 const paypal = require("paypal-rest-sdk");
-const storage = require("node-persist");
 
 // My libs
-const userDataByReq = require("./helpers/userDataByReq");
-const normalizeSession = require("./helpers/normalizeSession");
-
-//* Routes
-const Routes = require("./routes");
+const userDataByReq = require("./lib/userDataByReq");
+const normalizeSession = require("./lib/normalizeSession");
 
 // Environment variables - Dev
 if(!inProduction) require("dotenv").config({ path: ".env" });
@@ -24,20 +17,22 @@ if(!inProduction) require("dotenv").config({ path: ".env" });
 // Setup
 const app = express();
 
-// Config ejs engine
+// Config view engine
 app.set('views', join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // Config
-app.use(session({
+app.use(require("express-session")({
 	secret: process.env.SESSION_KEY,
 	saveUninitialized: true,
 	resave: true
 }));
-app.use(morgan("dev"));
+
+if(!inProduction) app.use(require('morgan')("dev"));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(require("cookie-parser")());
 app.use(express.static(join(__dirname, "public")));
 
 app.use(normalizeSession);
@@ -48,16 +43,15 @@ app.use((req, res, next) => {
 	if(req.protocol === "http") res.redirect(`https://${req.hostname}${req.path}`);
 })
 
+// Init paypal
+
 paypal.configure({
 	mode: inProduction ? "live" : "sandbox",
 	client_id: process.env.PAYPAL_ID,
 	client_secret: process.env.PAYPAL_SECRET
 });
 
-storage.init({
-	dir: "./storage"
-}).then(() => {
-	Routes(app, storage);
-});
+// Init DB
+require("./lib/database")(app);
 
 module.exports = app;
