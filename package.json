@@ -6,9 +6,9 @@
     "scripts": {
         "start": "node bin/www --production",
         "dev": "nodemon bin/www",
-        "prepublish": "git add . && git commit -am \"Auto commited\"",
+        "commit": "git add . && git commit -am \"Auto commited\"",
         "hub": "git push hub master",
-        "publish": "git push heroku master",
+        "deploy": "git push heroku master --force",
         "compile_less_common": "lessc ./src/public/less/common/super.less ./src/public/css/common.css -x --source-map",
         "compile_less_components": "lessc ./src/public/less/components/select.less ./src/public/css/components/select.css -x --source-map",
         "compile_less_partials": "cd src/public && lessc ./less/partials/partials.less ./css/partials/partials.css -x --source-map --source-map-url=/css/partials/partials.css.map",
