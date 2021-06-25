@@ -42,6 +42,7 @@ app.use((req, res, next) => {
 	if(req.method !== "GET" || !inProduction) return next();
 	console.log(new URL(req.url).protocol);
 	if(new URL(req.url).protocol === "http") res.redirect(`https://${req.hostname}${req.path}`);
+	else next();
 })
 
 // Init paypal
