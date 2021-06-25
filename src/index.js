@@ -28,7 +28,7 @@ app.use(require("express-session")({
 	resave: true
 }));
 
-if(!inProduction) app.use(require('morgan')("dev"));
+// if(!inProduction) app.use(require('morgan')("dev"));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -40,6 +40,7 @@ app.use(userDataByReq.middleware);
 
 app.use((req, res, next) => {
 	if(req.method !== "GET" || !inProduction) return next();
+	console.log(req.protocol);
 	if(req.protocol === "http") res.redirect(`https://${req.hostname}${req.path}`);
 })
 
