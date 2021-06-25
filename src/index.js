@@ -38,16 +38,17 @@ app.use(normalizeSession);
 app.use(userDataByReq.middleware);
 
 app.use((req, res, next) => {
-	if(!inProduction) return next();
-	const urlParsed = new URL(req.url);
-	console.log(urlParsed.protocol, urlParsed.hostname, urlParsed.path);
-	if(req.method.toUpperCase() !== "GET") 
-		next();
-	else if(urlParsed.protocol === "https:") 
-		next();
-	else if(urlParsed.protocol === "http:") 
-		res.redirect(`https://${urlParsed.hostname}${urlParsed.path}`);
-	else next();
+	// if(!inProduction) return next();
+	// const urlParsed = new URL(req.url);
+	// console.log(urlParsed.protocol, urlParsed.hostname, urlParsed.path);
+	// if(req.method.toUpperCase() !== "GET") 
+	// 	next();
+	// else if(urlParsed.protocol === "https:") 
+	// 	next();
+	// else if(urlParsed.protocol === "http:") 
+	// 	res.redirect(`https://${urlParsed.hostname}${urlParsed.path}`);
+	// else next();
+	next();
 })
 
 // Init paypal
