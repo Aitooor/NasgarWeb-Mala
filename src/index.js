@@ -40,8 +40,8 @@ app.use(userDataByReq.middleware);
 
 app.use((req, res, next) => {
 	if(req.method !== "GET" || !inProduction) return next();
-	console.log(req.protocol);
-	if(req.protocol === "http") res.redirect(`https://${req.hostname}${req.path}`);
+	console.log(new URL(req.url).protocol);
+	if(new URL(req.url).protocol === "http") res.redirect(`https://${req.hostname}${req.path}`);
 })
 
 // Init paypal
