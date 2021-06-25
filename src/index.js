@@ -40,8 +40,9 @@ app.use(userDataByReq.middleware);
 
 app.use((req, res, next) => {
 	if(req.method !== "GET" || !inProduction) return next();
-	console.log(new URL(req.url).protocol);
-	if(new URL(req.url).protocol === "http") res.redirect(`https://${req.hostname}${req.path}`);
+	const urlParsed = new URL(req.url);
+	console.log(urlParsed.protocol, urlParsed.hostname, urlParsed.path);
+	if(urlParsed.protocol === "http:") res.redirect(`https://${urlParsed.hostname}${urlParsed.path}`);
 	else next();
 })
 
