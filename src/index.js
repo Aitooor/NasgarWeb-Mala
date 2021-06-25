@@ -2,7 +2,6 @@
 const inProduction = process.env.NODE_ENV === "production";
 
 // Modules
-const createError = require("http-errors");
 const express = require('express');
 const { join } = require("path");
 const paypal = require("paypal-rest-sdk");
@@ -39,10 +38,15 @@ app.use(normalizeSession);
 app.use(userDataByReq.middleware);
 
 app.use((req, res, next) => {
-	if(req.method !== "GET" || !inProduction) return next();
+	if(!inProduction) return next();
 	const urlParsed = new URL(req.url);
 	console.log(urlParsed.protocol, urlParsed.hostname, urlParsed.path);
-	if(urlParsed.protocol === "http:") res.redirect(`https://${urlParsed.hostname}${urlParsed.path}`);
+	if(req.method.toUpperCase() !== "GET") 
+		next();
+	else if(urlParsed.protocol === "https:") 
+		next();
+	else if(urlParsed.protocol === "http:") 
+		res.redirect(`https://${urlParsed.hostname}${urlParsed.path}`);
 	else next();
 })
 
@@ -55,6 +59,8 @@ paypal.configure({
 });
 
 // Init DB
-require("./lib/database")(app);
+(async () => {
+	await require("./lib/database")(app);
+})();
 
 module.exports = app;

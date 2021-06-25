@@ -12,7 +12,7 @@ let my_cache = {
  * 
  * @param {import("express").Express} app 
  */
-module.exports = function(app) {
+module.exports = async function(app) {
     const config = {
         host: process.env.DB_HOST,
         user: process.env.DB_USER,
@@ -45,10 +45,8 @@ module.exports = function(app) {
 
         return pool;
     };
-
-    (async() => {
-        const pool = createPool();
-        my_cache.products = await pool.query("SELECT * FROM web.products");
-        Routes(app, createPool);
-    })();
+    
+    const pool = createPool();
+    my_cache.products = await pool.query("SELECT * FROM web.products");
+    Routes(app, createPool);
 }
