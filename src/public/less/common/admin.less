@@ -1,0 +1,164 @@
+@import "./super.less";
+@import "./colors.less";
+
+.app-container {
+	height: 100vh;
+	background-color: #EEE;
+
+	display: grid;
+	grid-template-columns: 1fr;
+
+	> aside {
+		position: relative;
+		padding: 5px 5px 0px 0px;
+		width: 0px;
+		
+		background-color: #FFF;
+		border-right: solid 2px #000;
+		
+		display: none;
+		flex-direction: column;
+		z-index: 1;
+
+		animation: 1s ease forwards;
+
+		overflow: hidden;
+
+		section {
+			width: 100%;
+
+			> .header {
+				cursor: pointer;
+				position: relative;
+				padding: 2px 10px 2px 2px;
+				
+				display: flex;
+				align-items: center;
+				
+
+				&::before {
+					.material-icons();
+					content: "expand_more";
+
+					font-size: 20px;
+
+					transform: rotateZ(-90deg);
+
+					z-index: 1;
+				}
+
+				& > span {
+					padding: 0px 2px;
+					margin-left: 10px;
+
+					background-color: #FFF;
+					font-size: 1.1rem;
+
+					z-index: 1;
+				}
+
+				&::after {
+					content: "";
+					position: absolute;
+					top: 50%;
+					left: 17px;
+					right: 0px;
+
+					border-bottom: solid 2px #999;
+
+					z-index: 0;
+				}
+			}
+
+			> .body {
+				display: flex;
+				margin-left: 2rem;
+				flex-direction: column;
+
+				> a {
+					margin-bottom: 5px;
+				}
+			}
+		}
+
+		> .footer {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			right: 0;
+
+			padding: 3px 5px;
+
+			background-color: @primary;
+
+			display: flex;
+			justify-content: space-around;
+
+			> i {
+				width: 100%;
+				text-align: center;
+				line-height: 1.5;
+			}
+		}
+	}
+
+	> main {
+		> nav {
+			background-color: @primary;
+			color: #FFF;
+
+			display: grid;
+			grid-template-columns: 30px 1fr 24px;
+
+			> .icon {
+				cursor: pointer;
+				padding-left: 2px;
+				> i {
+					line-height: 1.5;
+					user-select: none;
+				}
+			}
+			> .title {
+				padding-left: 5px;
+				
+				font-size: 1.2rem;
+
+				display: flex;
+				align-items: center;
+			}
+			> .more {
+				display: none;
+			}
+		}
+	}
+}
+
+@keyframes aside-in {
+	0% {
+		width: 0px;
+	}
+
+	100% {
+		width: 250px;
+	}
+}
+
+@keyframes aside-out {
+	0% {
+		width: 250px;
+	}
+
+	100% {
+		width: 0px;
+	}
+}
+
+
+.app {
+	padding: 5px 10px;
+
+	.center {
+		text-align: center;
+		justify-content: center;
+	}
+}

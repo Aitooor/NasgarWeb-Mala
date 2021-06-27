@@ -85,4 +85,8 @@ document
 		});
 	});
 
+if("serviceWorker" in navigator) {
+	navigator.serviceWorker.register("/sw.js");
+}
+
 globalThis.copyText = copyText;

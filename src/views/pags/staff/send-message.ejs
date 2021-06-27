@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<%- include("../../partials/header.ejs") %> 
-	<title> Staff Controls - Nasgar Network </title>
+	<title> Staff message - Nasgar Network </title>
 
 
 
@@ -14,13 +14,10 @@
 	
 	<div class="app">
 		<div class="card">
-			<div class="header">
-				Go to __
-			</div>
-			<div class="body">
-				<button data-commons-onclick="link, /Tests"> Tests </button>
-				<button data-commons-onclick="link, /staff/send-message"> Send Chat Message </button>
-			</div>
+			<form action="/staff/send-message" method="post">
+				<input type="text" name="user" id="user" placeholder="Username" required>
+				<button type="submit">Send</button>
+			</form>
 		</div>
 	</div>
 </body>

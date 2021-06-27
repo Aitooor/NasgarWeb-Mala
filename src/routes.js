@@ -2,22 +2,12 @@
  * 
  * @param {import("express").Express} app 
  * @param {() => import("mysql").Pool} db 
+ * @param {import("rcon")[]} rcons
  */
 
-module.exports = function(app, db) {
+module.exports = function(app, db, rcons) {
     app.get("/", (req, res) => {
-        const showAlert = req.session.showAlert;
-        req.session.showAlert = false;
-
-        if (showAlert)
-            return res.render("pags/index", {
-                alert: {
-                    text: req.session.alert,
-                    show: showAlert
-                }
-            });
-        else
-            return res.render("pags/index");
+        return res.render("pags/index");
     });
 
     app.get("/PaypalTest", (req, res) => {
@@ -76,10 +66,10 @@ module.exports = function(app, db) {
         });
     });
 
-    require("./routes/staff/index")(app, db);
+    require("./routes/staff/index")(app, db, rcons);
 
     //* Error - 404
-    app.use((req, res, next) => {
+    app.use((req, res) => {
         res.locals = {
             error: {
                 status: 404

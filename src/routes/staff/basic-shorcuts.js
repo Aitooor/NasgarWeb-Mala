@@ -6,7 +6,7 @@ const { StaffMiddleware } = require("../../middlewares/staff");
  */
 module.exports = function(app) {
 	app.get("/staff/controls", StaffMiddleware, (req, res) => {
-		res.redirect("/staff/basic-dev/shorcuts");
+		res.render("pags/admin/index");
 	});
 
 	app.get("/staff/basic-dev/shorcuts", StaffMiddleware, (req, res) => {

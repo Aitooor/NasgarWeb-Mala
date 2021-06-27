@@ -24,7 +24,8 @@
         "express-session": "^1.17.2",
         "http-errors": "^1.8.0",
         "mysql": "^2.18.1",
-        "paypal-rest-sdk": "^1.8.1"
+        "paypal-rest-sdk": "^1.8.1",
+        "rcon": "git+https://github.com/tehbeard/node-rcon.git"
     },
     "devDependencies": {
         "morgan": "^1.10.0",

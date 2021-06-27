@@ -14,7 +14,7 @@ let my_cache = {
  */
 module.exports = async function(app) {
     const config = {
-        host: process.env.DB_HOST,
+        host: process.env.SV_HOST,
         user: process.env.DB_USER,
         password: process.env.DB_PASS
     };
@@ -48,5 +48,12 @@ module.exports = async function(app) {
     
     const pool = createPool();
     my_cache.products = await pool.query("SELECT * FROM web.products");
-    Routes(app, createPool);
+
+    return {
+        createPool,
+        reloadProducts: async () => {
+            const pool = createPool();
+            my_cache.products = await pool.query("SELECT * FROM web.products");
+        }
+    };
 }

@@ -37,20 +37,6 @@ app.use(express.static(join(__dirname, "public")));
 app.use(normalizeSession);
 app.use(userDataByReq.middleware);
 
-app.use((req, res, next) => {
-	// if(!inProduction) return next();
-	// const urlParsed = new URL(req.url);
-	// console.log(urlParsed.protocol, urlParsed.hostname, urlParsed.path);
-	// if(req.method.toUpperCase() !== "GET") 
-	// 	next();
-	// else if(urlParsed.protocol === "https:") 
-	// 	next();
-	// else if(urlParsed.protocol === "http:") 
-	// 	res.redirect(`https://${urlParsed.hostname}${urlParsed.path}`);
-	// else next();
-	next();
-})
-
 // Init paypal
 
 paypal.configure({
@@ -61,7 +47,9 @@ paypal.configure({
 
 // Init DB
 (async () => {
-	await require("./lib/database")(app);
+	const db = await require("./lib/database")(app);
+	const rcons = await require("./lib/rcon")(process.env.RCON_PORT1, process.env.RCON_PORT2);
+	require("./routes")(app, db.createPool, rcons);
 })();
 
 module.exports = app;

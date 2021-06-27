@@ -23,9 +23,11 @@ function middleware(req, res, next) {
 	}
 
 	res.locals.alert = {
-		show: false,
-		text: ""
+		show: req.session.showAlert,
+		text: req.session.alert
 	};
+
+	req.session.showAlert = false;
 
 	next();
 }
