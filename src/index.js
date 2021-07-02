@@ -48,7 +48,7 @@ paypal.configure({
 // Init DB
 (async () => {
 	const db = await require("./lib/database")(app);
-	const rcons = await require("./lib/rcon")(process.env.RCON_PORT1, process.env.RCON_PORT2);
+	const rcons = inProduction ? null : await require("./lib/rcon")(process.env.RCON_PORT1, process.env.RCON_PORT2);
 	require("./routes")(app, db.createPool, rcons);
 })();
 

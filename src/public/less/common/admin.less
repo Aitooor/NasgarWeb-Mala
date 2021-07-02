@@ -185,7 +185,6 @@
 			font-weight: 600;
 		}
 		> .body {
-			padding: 1rem;
 			margin-left: 10px;
 
 			width: 400px;
@@ -199,15 +198,57 @@
 
 			overflow-y: scroll;
 
-			> span::after {
-				content: "No have data yet";
+			> span {
+				padding-top: 13px;
+				height: min-content;
+
+				display: flex;
+				align-items: center;
+
+				&::before {
+					content: "";
+
+					margin-right: 5px;
+
+					width: 24px;
+					height: 24px;
+
+					background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20style%3D%22margin%3A%20auto%3B%20background%3A%20none%3B%20display%3A%20block%3B%20shape-rendering%3A%20auto%3B%22%20width%3D%2224px%22%20height%3D%2224px%22%20viewBox%3D%220%200%20100%20100%22%20preserveAspectRatio%3D%22xMidYMid%22%3E%0D%0A%3Cg%20transform%3D%22rotate%280%2050%2050%29%22%3E%0D%0A%20%20%3Crect%20x%3D%2244.5%22%20y%3D%220%22%20rx%3D%225.5%22%20ry%3D%227.44%22%20width%3D%2211%22%20height%3D%2224%22%20fill%3D%22%233880be%22%3E%0D%0A%20%20%20%20%3Canimate%20attributeName%3D%22opacity%22%20values%3D%221%3B0%22%20keyTimes%3D%220%3B1%22%20dur%3D%221s%22%20begin%3D%22-0.9s%22%20repeatCount%3D%22indefinite%22%3E%3C%2Fanimate%3E%0D%0A%20%20%3C%2Frect%3E%0D%0A%3C%2Fg%3E%3Cg%20transform%3D%22rotate%2836%2050%2050%29%22%3E%0D%0A%20%20%3Crect%20x%3D%2244.5%22%20y%3D%220%22%20rx%3D%225.5%22%20ry%3D%227.44%22%20width%3D%2211%22%20height%3D%2224%22%20fill%3D%22%233880be%22%3E%0D%0A%20%20%20%20%3Canimate%20attributeName%3D%22opacity%22%20values%3D%221%3B0%22%20keyTimes%3D%220%3B1%22%20dur%3D%221s%22%20begin%3D%22-0.8s%22%20repeatCount%3D%22indefinite%22%3E%3C%2Fanimate%3E%0D%0A%20%20%3C%2Frect%3E%0D%0A%3C%2Fg%3E%3Cg%20transform%3D%22rotate%2872%2050%2050%29%22%3E%0D%0A%20%20%3Crect%20x%3D%2244.5%22%20y%3D%220%22%20rx%3D%225.5%22%20ry%3D%227.44%22%20width%3D%2211%22%20height%3D%2224%22%20fill%3D%22%233880be%22%3E%0D%0A%20%20%20%20%3Canimate%20attributeName%3D%22opacity%22%20values%3D%221%3B0%22%20keyTimes%3D%220%3B1%22%20dur%3D%221s%22%20begin%3D%22-0.7s%22%20repeatCount%3D%22indefinite%22%3E%3C%2Fanimate%3E%0D%0A%20%20%3C%2Frect%3E%0D%0A%3C%2Fg%3E%3Cg%20transform%3D%22rotate%28108%2050%2050%29%22%3E%0D%0A%20%20%3Crect%20x%3D%2244.5%22%20y%3D%220%22%20rx%3D%225.5%22%20ry%3D%227.44%22%20width%3D%2211%22%20height%3D%2224%22%20fill%3D%22%233880be%22%3E%0D%0A%20%20%20%20%3Canimate%20attributeName%3D%22opacity%22%20values%3D%221%3B0%22%20keyTimes%3D%220%3B1%22%20dur%3D%221s%22%20begin%3D%22-0.6s%22%20repeatCount%3D%22indefinite%22%3E%3C%2Fanimate%3E%0D%0A%20%20%3C%2Frect%3E%0D%0A%3C%2Fg%3E%3Cg%20transform%3D%22rotate%28144%2050%2050%29%22%3E%0D%0A%20%20%3Crect%20x%3D%2244.5%22%20y%3D%220%22%20rx%3D%225.5%22%20ry%3D%227.44%22%20width%3D%2211%22%20height%3D%2224%22%20fill%3D%22%233880be%22%3E%0D%0A%20%20%20%20%3Canimate%20attributeName%3D%22opacity%22%20values%3D%221%3B0%22%20keyTimes%3D%220%3B1%22%20dur%3D%221s%22%20begin%3D%22-0.5s%22%20repeatCount%3D%22indefinite%22%3E%3C%2Fanimate%3E%0D%0A%20%20%3C%2Frect%3E%0D%0A%3C%2Fg%3E%3Cg%20transform%3D%22rotate%28180%2050%2050%29%22%3E%0D%0A%20%20%3Crect%20x%3D%2244.5%22%20y%3D%220%22%20rx%3D%225.5%22%20ry%3D%227.44%22%20width%3D%2211%22%20height%3D%2224%22%20fill%3D%22%233880be%22%3E%0D%0A%20%20%20%20%3Canimate%20attributeName%3D%22opacity%22%20values%3D%221%3B0%22%20keyTimes%3D%220%3B1%22%20dur%3D%221s%22%20begin%3D%22-0.4s%22%20repeatCount%3D%22indefinite%22%3E%3C%2Fanimate%3E%0D%0A%20%20%3C%2Frect%3E%0D%0A%3C%2Fg%3E%3Cg%20transform%3D%22rotate%28216%2050%2050%29%22%3E%0D%0A%20%20%3Crect%20x%3D%2244.5%22%20y%3D%220%22%20rx%3D%225.5%22%20ry%3D%227.44%22%20width%3D%2211%22%20height%3D%2224%22%20fill%3D%22%233880be%22%3E%0D%0A%20%20%20%20%3Canimate%20attributeName%3D%22opacity%22%20values%3D%221%3B0%22%20keyTimes%3D%220%3B1%22%20dur%3D%221s%22%20begin%3D%22-0.3s%22%20repeatCount%3D%22indefinite%22%3E%3C%2Fanimate%3E%0D%0A%20%20%3C%2Frect%3E%0D%0A%3C%2Fg%3E%3Cg%20transform%3D%22rotate%28252%2050%2050%29%22%3E%0D%0A%20%20%3Crect%20x%3D%2244.5%22%20y%3D%220%22%20rx%3D%225.5%22%20ry%3D%227.44%22%20width%3D%2211%22%20height%3D%2224%22%20fill%3D%22%233880be%22%3E%0D%0A%20%20%20%20%3Canimate%20attributeName%3D%22opacity%22%20values%3D%221%3B0%22%20keyTimes%3D%220%3B1%22%20dur%3D%221s%22%20begin%3D%22-0.2s%22%20repeatCount%3D%22indefinite%22%3E%3C%2Fanimate%3E%0D%0A%20%20%3C%2Frect%3E%0D%0A%3C%2Fg%3E%3Cg%20transform%3D%22rotate%28288%2050%2050%29%22%3E%0D%0A%20%20%3Crect%20x%3D%2244.5%22%20y%3D%220%22%20rx%3D%225.5%22%20ry%3D%227.44%22%20width%3D%2211%22%20height%3D%2224%22%20fill%3D%22%233880be%22%3E%0D%0A%20%20%20%20%3Canimate%20attributeName%3D%22opacity%22%20values%3D%221%3B0%22%20keyTimes%3D%220%3B1%22%20dur%3D%221s%22%20begin%3D%22-0.1s%22%20repeatCount%3D%22indefinite%22%3E%3C%2Fanimate%3E%0D%0A%20%20%3C%2Frect%3E%0D%0A%3C%2Fg%3E%3Cg%20transform%3D%22rotate%28324%2050%2050%29%22%3E%0D%0A%20%20%3Crect%20x%3D%2244.5%22%20y%3D%220%22%20rx%3D%225.5%22%20ry%3D%227.44%22%20width%3D%2211%22%20height%3D%2224%22%20fill%3D%22%233880be%22%3E%0D%0A%20%20%20%20%3Canimate%20attributeName%3D%22opacity%22%20values%3D%221%3B0%22%20keyTimes%3D%220%3B1%22%20dur%3D%221s%22%20begin%3D%220s%22%20repeatCount%3D%22indefinite%22%3E%3C%2Fanimate%3E%0D%0A%20%20%3C%2Frect%3E%0D%0A%3C%2Fg%3E%0D%0A%3C%21--%20%5Bldio%5D%20generated%20by%20https%3A%2F%2Floading.io%2F%20--%3E%3C%2Fsvg%3E");
+				}
+
+				&::after {
+					content: "No have data yet";
+				}
+			}
+
+			&.not-loaded-error {
+				> span {
+					&::before {
+						.material-icons();
+						content: "error";
+	
+						color: @danger;
+
+						background-image: none;
+					}
+
+					&::after {
+						content: "Error loading data";
+	
+						color: @danger;
+					}
+				}
 			}
 
 			&.complete {
 				padding: 0;
 
-				> span::after {
-					content: "";
+				> span {
+					display: none;
+				}
+
+				> ul {
+					display: block;
 				}
 			}
 
@@ -216,6 +257,8 @@
 				padding: 0;
 
 				width: 100%;
+
+				display: none;
 
 				list-style: none;
 
