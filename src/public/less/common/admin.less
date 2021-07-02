@@ -10,7 +10,6 @@
 
 	> aside {
 		position: relative;
-		padding: 5px 5px 0px 0px;
 		width: 0px;
 		
 		background-color: #FFF;
@@ -24,7 +23,21 @@
 
 		overflow: hidden;
 
+		> .logo {
+			width: 100%;
+
+			background: @primary;
+
+			display: flex;
+			justify-content: center;
+
+			> img {
+				width: 50px;
+			}
+		}
+
 		section {
+			padding: 5px 5px 0px 0px;
 			width: 100%;
 
 			> .header {
@@ -62,7 +75,7 @@
 					position: absolute;
 					top: 50%;
 					left: 17px;
-					right: 0px;
+					right: 5px;
 
 					border-bottom: solid 2px #999;
 

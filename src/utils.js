@@ -14,10 +14,21 @@
 function timeago(time) {
 	const now = new Date();
 	let num = 0;
+
+	num = now.getFullYear() - time.getFullYear();
+	if(num > 0) {
+		return `${time.getDate()}/${time.getMonth()}/${time.getFullYear()}`;
+	}
+
+	num = now.getMonth() - time.getMonth();
+	if(num > 0) {
+		return `${time.getDate()}/${time.getMonth()}/${time.getFullYear()}`;
+	}
 	
-	num = now.getDay() - time.getDay();
-	if(num < 7 && num > 0) {
-		return `${num} days ago`;
+	num = now.getDate() - time.getDate();
+	if(num > 0) {
+		if(num < 7) return `${num} days ago`;
+		return `${time.getDate()}/${time.getMonth()}/${time.getFullYear()}`;
 	}
 	
 	num = now.getHours() - time.getHours();

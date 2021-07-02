@@ -48,5 +48,5 @@ module.exports = function(app, db, rcons) {
 	});
 
 	require("./tests")(app, db);
-	require("./basic-shorcuts")(app);
+	require("./basic-shorcuts")(app, db);
 }
