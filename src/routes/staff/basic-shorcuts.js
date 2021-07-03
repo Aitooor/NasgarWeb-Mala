@@ -16,6 +16,10 @@ module.exports = function(app, db) {
 
 		const data = [];
 		dataCrude.reverse().forEach(v => {
+			const now = new Date();
+			const times = parseInt(v.end != "-1" ? v.start : v.end);
+			const time = new Date(times);
+			if((now.getMonth() - time.getMonth() > 0) || (now.getFullYear() - time.getFullYear() > 0)) return;
 			if(!(v.punishmentType === "BAN" || v.punishmentType === "TEMP_BAN" || v.punishmentType === "IP_BAN")) return;	
 			data.push({
 				username: v.name,

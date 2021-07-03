@@ -9,8 +9,9 @@
 	grid-template-columns: 1fr;
 
 	> aside {
-		position: relative;
+		position: fixed;
 		width: 0px;
+		height: 100vh;
 		
 		background-color: #FFF;
 		border-right: solid 2px #000;
@@ -19,7 +20,7 @@
 		flex-direction: column;
 		z-index: 1;
 
-		animation: 1s ease forwards;
+		transition: width ease 1s;
 
 		overflow: hidden;
 
@@ -116,12 +117,30 @@
 	}
 
 	> main {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+
+		padding-top: 30px;
+		margin-left: 0px;
+
+		transition: margin-left ease 1s;
 		> nav {
+			position: fixed;
+			top: 0;
+			left: 0px;
+			right: 0;
+
+			height: 35px;
+
 			background-color: @primary;
 			color: #FFF;
 
 			display: grid;
 			grid-template-columns: 30px 1fr 24px;
+
+			transition: left ease 1s;
 
 			> .icon {
 				cursor: pointer;
@@ -139,37 +158,25 @@
 
 				display: flex;
 				align-items: center;
+
+				opacity: 1;
+
+				transition: opacity ease .3s;
 			}
 			> .more {
 				display: none;
+				
+				transition: opacity ease .3s;
 			}
 		}
-	}
-}
-
-@keyframes aside-in {
-	0% {
-		width: 0px;
-	}
-
-	100% {
-		width: 250px;
-	}
-}
-
-@keyframes aside-out {
-	0% {
-		width: 250px;
-	}
-
-	100% {
-		width: 0px;
 	}
 }
 
 
 .app {
 	padding: 5px 10px;
+
+	overflow: auto;
 
 	> h1:first-of-type.center {
 		font-size: 2.4rem;
@@ -249,6 +256,25 @@
 						content: "Error loading data";
 	
 						color: @danger;
+					}
+				}
+			}
+
+			&.not-data-error {
+				> span {
+					&::before {
+						.material-icons();
+						content: "warning";
+	
+						color: #000;
+
+						background-image: none;
+					}
+
+					&::after {
+						content: "Not have data";
+	
+						color: #000;
 					}
 				}
 			}
@@ -391,10 +417,13 @@
 }
 
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 1000px) {
 	.app {
 		.recents {
 			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			row-gap: 5px;
 		}
 	}
 }
