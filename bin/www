@@ -4,23 +4,15 @@
  * Module dependencies.
  */
 
-var app = require('../src/index');
-var http = require('http');
+var server = require('../src/index');
 
 /**
  * Get port from environment and store in Express.
  */
 
 var port = normalizePort(process.env.PORT || '1403');
-var host = process.argv[2] ==  "dev" ?  "localhost" : undefined
-app.set('port', port);
-app.set('host', host);
+var host = process.argv[2] ==  "dev" ?  "localhost" : undefined;
 
-/**
- * Create HTTP server.
- */
-
-var server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.

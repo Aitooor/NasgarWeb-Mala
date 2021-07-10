@@ -1,12 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<%- include("../partials/header.ejs") %> 
 	<title> Error 404 </title>
 </head>
 <body>
-	404 File not found :(
+	<%- include("../partials/nav.ejs") %>
+	<div class="header-separator"></div>
+
+	<div style="text-align: center;">
+		<div style="font-size: 5rem;font-weight: 100;">
+			404
+		</div>
+		<div style="margin-top: 1rem;font-size: 1.1rem;font-weight: 300;">
+			File not found :(
+		</div>
+	</div>
 </body>
 </html>

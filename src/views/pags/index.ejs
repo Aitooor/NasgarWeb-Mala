@@ -9,6 +9,7 @@
 	<link rel="stylesheet/less" href="/less/pags/index.less">
 	
 	<%- include("../partials/less.ejs") -%>
+	<%- include("../partials/socketio.ejs") -%>
 
 	<script src="/js/pg/index.js" type="module" defer></script>
 </head>
@@ -34,14 +35,34 @@
 				Haec mirabilia videri intellego, sed cum certe superiora firma ac vera sint, his autem ea consentanea et consequentia, ne de horum quidem est veritate dubitandum. Qua exposita scire cupio quae causa sit, cur Zeno ab hac antiqua constitutione desciverit, quidnam horum ab eo non sit probatum; Quis animo aequo videt eum, quem inpure ac flagitiose putet vivere? Esse tantam vim virtutis tantamque, ut ita dicam, auctoritatem honestatis, ut reliqua non illa quidem nulla, sed ita parva sint, ut nulla esse videantur. Me quidem ad altiorem memoriam Oedipodis huc venientis et illo mollissimo carmine quaenam essent ipsa haec loca requirentis species quaedam commovit, inaniter scilicet, sed commovit tamen. Et quae per vim oblatum stuprum volontaria morte lueret inventa est et qui interficeret filiam, ne stupraretur. Praeclare Laelius, et recte sofñw, illudque vere: O Publi, o gurges, Galloni! es homo miser, inquit. Quis, quaeso, illum negat et bonum virum et comem et humanum fuisse? Hic dolor populi Romani duce et auctore Bruto causa civitati libertatis fuit, ob eiusque mulieris memoriam primo anno et vir et pater eius consul est factus. Perturbationes autem nulla naturae vi commoventur, omniaque ea sunt opiniones ac iudicia levitatis. 
 			</main>
 			<aside>
+				<div class="card-members">
+					<div class="header">
+						<div>Nasgar Network</div>
+						<div class="status"></div>
+					</div>
+
+					<div class="body">
+						<div class="online-members">
+							<span>
+								<span class="players">0/0</span> <div class="blob-live disabled"></div>
+							</span>
+						</div>
+					</div>
+				</div>
 				<div class="discord-members">
 					<iframe src="https://discord.com/widget?id=455476931463217174&theme=dark" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
 				</div>
 				<div class="card-40servidoresmc">
-					<div class="header"><a href='https://www.40servidoresmc.es/' target='_blank'>40servidoresmc</a></div>
+					<div class="header">
+						<a href='https://www.40servidoresmc.es/' target='_blank'>
+							40servidoresmc 
+							<i class="material">open_in_new</i>
+						</a>
+					</div>
 					<div class="body">
-						<a href='https://www.40servidoresmc.es/nasgar-network' target='_blank'><img style='max-width:160px;' src='https://www.40servidoresmc.es/img/botonvota.png' alt='Servidores de Minecraft 40servidoresM., Vota por Nasgar Network'></a>
-						
+						<a href='https://www.40servidoresmc.es/nasgar-network' target='_blank'>
+							<img style='max-width:160px;' src='https://www.40servidoresmc.es/img/botonvota.png' alt='Servidores de Minecraft 40servidoresM., Vota por Nasgar Network'>
+						</a>
 					</div>
 				</div>
 			</aside>

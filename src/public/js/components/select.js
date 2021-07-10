@@ -1,61 +1,15 @@
 ///<reference path="../../../@types/less.d.ts" />
 
-document.querySelectorAll(".select").forEach(elm => {
-	/** @type {HTMLDivElement} */
-	const select = elm;
-	/** @type {HTMLDivElement} */
-	const trigger = elm.querySelector(".trigger");
-	const visibleName = trigger.querySelector("span");
-	/** @type {HTMLDivElement} */
-	const optionsE = elm.querySelector(".options");
-	/** @type {HTMLOptionElement[]} */
-	const options = optionsE.querySelectorAll("option");
-	/** @type {HTMLOptionElement} */
-	let selected = optionsE.querySelector("[selected]") || options[0];
+/** @type {CustomSelectElement[]} */
+const allSelects = [];
 
-	const isOpened = () => select.classList.contains("active");
-
-	selected.setAttribute("selected", "true");
-	visibleName.innerText = selected.innerText;
-	trigger.onclick = () => {
-		select.classList.toggle("active");
-	};
-
-	options.forEach(option => {
-		option.onclick = () => {
-			select.classList.remove("active");
-			if(option === selected) return;
-
-			selected.removeAttribute("selected");
-			option.setAttribute("selected", "true");
-			selected = option;
-			visibleName.innerText = selected.innerText;
-		}
+window.addEventListener("click", (e) => {
+	allSelects.map((v) => {
+		if(e.target != v) v.opened = false;
 	});
+})
 
-	window.addEventListener("click", e => {
-		const target = searchUpSelect(e.target, 10);
-		if(target !== select) {
-			if(!isOpened()) return;
-			select.classList.remove("active");
-		}
-	})
-});
-
-/**
- * 
- * @param {HTMLElement} elm
- * @param {number} [max] 
- * @returns {HTMLElement}
- */
-function searchUpSelect(elm, max = 20) {
-	if(!elm) return null;
-	if(elm?.classList?.contains?.("select")) return elm;
-	if(max > 0) return searchUpSelect(elm?.parentNode, max - 1);
-	return null;
-}
-
-customElements.define("custom-select", class CustomSelectElement extends HTMLElement {
+export class CustomSelectElement extends HTMLElement {
 	#isOpen = false;
 	/** @type {HTMLStyleElement} */
 	static #style = null;
@@ -107,6 +61,8 @@ customElements.define("custom-select", class CustomSelectElement extends HTMLEle
 		});
 
 		this.#structure = structure;
+
+		allSelects.push(this);
 	}
 
 	// HTML Life Cycle
@@ -197,12 +153,16 @@ customElements.define("custom-select", class CustomSelectElement extends HTMLEle
 		if(val) {
 			this.setAttribute("aria-active", "true");
 			this.setAttribute("active", "");
+			allSelects.map((v) => {
+				if(v != this) v.opened = false;
+			})
 		} else {
 			this.setAttribute("aria-active", "false");
 			this.removeAttribute("active");
 		}
 
 		this.#isOpen = val;
+		return val;
 	}
 
 
@@ -210,11 +170,24 @@ customElements.define("custom-select", class CustomSelectElement extends HTMLEle
 	static get observedAttributes() {
 		return ["active", "aria-active", "disabled", "aria-disabled"]
 	}
-});
+}
 
-
-export default class Select {
-	constructor() {
+/**
+ * @class
+ * @example
+ * new Select(["Option1", "Option2", "Option3", "Option4", "Option5"], 2)
+ */
+export class Select {
+	/**
+	 * 
+	 * @param  {string[]} options
+	 * @param  {number} [selected] 
+	 */
+	constructor(options, selected = 0) {
 		
 	}
 }
+
+customElements.define("custom-select", CustomSelectElement);
+
+export default Select;

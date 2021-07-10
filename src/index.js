@@ -5,6 +5,7 @@ const inProduction = process.env.NODE_ENV === "production";
 const express = require('express');
 const { join } = require("path");
 const paypal = require("paypal-rest-sdk");
+const { createServer } = require('http');
 
 // My libs
 const userDataByReq = require("./lib/userDataByReq");
@@ -15,6 +16,7 @@ if(!inProduction) require("dotenv").config({ path: ".env" });
 
 // Setup
 const app = express();
+const server = createServer(app);
 
 // Config view engine
 app.set('views', join(__dirname, 'views'));
@@ -49,7 +51,8 @@ paypal.configure({
 (async () => {
 	const db = await require("./lib/database")(app);
 	const rcons = inProduction ? null : await require("./lib/rcon")(process.env.RCON_PORT1, process.env.RCON_PORT2);
-	require("./routes")(app, db.createPool, rcons);
+	const io = await require("./lib/socketio")(server);
+	require("./routes")(app, db.createPool, rcons, io);
 })();
 
-module.exports = app;
+module.exports = server;

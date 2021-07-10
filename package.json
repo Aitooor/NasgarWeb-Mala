@@ -18,6 +18,9 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@types/socket.io": "^3.0.2",
+        "@types/socket.io-client": "^3.0.0",
+        "axios": "^0.21.1",
         "cookie-parser": "^1.4.5",
         "ejs": "^3.1.6",
         "express": "^4.17.1",
@@ -25,7 +28,8 @@
         "http-errors": "^1.8.0",
         "mysql": "^2.18.1",
         "paypal-rest-sdk": "^1.8.1",
-        "rcon": "git+https://github.com/tehbeard/node-rcon.git"
+        "rcon": "git+https://github.com/tehbeard/node-rcon.git",
+        "socket.io": "^4.1.2"
     },
     "devDependencies": {
         "morgan": "^1.10.0",
