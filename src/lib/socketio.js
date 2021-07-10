@@ -2,9 +2,9 @@ const { Server: SocketServer, Socket, Server } = require("socket.io");
 const { autoUpdate, getData } = require("./server/serverData");
 
 /** @type {import("./socketio")} */
-module.exports = async function(app) {
+module.exports = async function(app, db) {
 	const io = new SocketServer(app);
-	const auto = autoUpdate(1000);
+	const auto = autoUpdate(10000, db);
 	auto.onUpdate = (data) => {
 		io.in("reading_server_data").emit(data);
 	}
@@ -20,7 +20,7 @@ module.exports = async function(app) {
 			for(let room of rooms) {
 				if(room === "server_data") socket.emit("reading", {
 					method: "server_data",
-					data: await getData()
+					data: await getData(db)
 				})
 				socket.join("reading_" + room);
 			}

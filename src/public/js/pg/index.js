@@ -40,9 +40,16 @@ socket.on("connect", () => {
 
 	socket.on("reading", data => {
 		console.log(data);
-		membersCardElements.status.classList.add("online");
-		membersCardElements.liveBlob.classList.remove("disabled");
-		membersCardElements.onlinePlayers.innerText = `${data.data.players.online}/${data.data.players.max}`;
+		if(data.data.online) {
+			if(data.data.maintenance) membersCardElements.status.classList.add("mantent");
+			else 					  membersCardElements.status.classList.add("online");
+			membersCardElements.liveBlob.classList.remove("disabled");
+			membersCardElements.onlinePlayers.innerText = `${data.data.players.online}/${data.data.players.max}`;
+		} else {
+			membersCardElements.status.classList.add("online");
+			membersCardElements.liveBlob.classList.remove("disabled");
+			membersCardElements.onlinePlayers.innerText = `0/${data.data.players.max}`;
+		}
 	})
 })
 
