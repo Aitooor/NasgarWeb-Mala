@@ -160,27 +160,6 @@ div.card-members {
 			display: flex;
 			flex-wrap: nowrap;
 		}
-
-		.blob-live:not([class$="disabled"]) {
-			position: relative;
-
-			&::after {
-				content: "LIVE";
-				position: absolute;
-				top: -5px;
-				right: -2.2rem;
-	
-				padding: 0px 5px;
-	
-				color: #FFF;
-				background-color: @danger;
-				border-radius: 50px;
-	
-				font-size: .75rem;
-
-				animation: blob-live 3s ease infinite;
-			}
-		}
 	}
 }
 

@@ -3,7 +3,7 @@ const express = require("express");
 function alertNotStaff(req, res) {
 	req.session.alert = "You are not part of the staff, please enter a correct password for your level in <b class\"code\"><a href=\"/staffLogin\">/staffLogin</a></b>";
 	req.session.showAlert = true;
-	res.redirect("/staffLogin");
+	res.redirect("/staff/login");
 }
 
 /**

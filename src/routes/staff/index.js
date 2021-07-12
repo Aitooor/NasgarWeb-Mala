@@ -7,24 +7,6 @@
 //  * @param {import("rcon")[]} rcons
 //  */
 // module.exports = function(app, db, rcons) {
-// 	app.get("/staffLogin", (req, res) => {
-// 		if(!req.session.isStaff) return res.render("pags/staff/login");
-// 		res.redirect("/");
-// 	});
-	
-// 	app.post("/staffLogin", (req, res) => {
-// 		if(req.body.password === process.env.TESTER_PASSWORD) {
-// 			req.session.isStaff = true;
-// 			req.session.accountLevelInt = 2;
-// 			req.session.alert = "Now, you are part of the staff";
-// 			req.session.showAlert = true;
-// 			if(req.session.staffLogin_landing) {
-// 				res.redirect(req.session.staffLogin_landing);
-// 			} else {
-// 				res.redirect("/");
-// 			}
-// 		} else alertNotStaff(req, res);
-// 	});
 
 // 	app.get("/staff/send-message", StaffMiddleware, (req, res) => {
 // 		res.render("pags/staff/send-message");
@@ -52,6 +34,4 @@
 // }
 
 
-module.exports = require("../../lib/Routes/exports")("/", () => {
-	
-})
+module.exports = require("../../lib/Routes/imports")("/", [require("./account")]);

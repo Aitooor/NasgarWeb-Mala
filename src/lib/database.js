@@ -42,18 +42,19 @@ module.exports = async function(app) {
         });
 
         pool.query = promisify(pool.query);
+        pool.end = promisify(pool.end);
 
         return pool;
     };
-    
-    const pool = createPool();
-    my_cache.products = await pool.query("SELECT * FROM web.products");
+
+    createPool().end();
 
     return {
         createPool,
         reloadProducts: async () => {
             const pool = createPool();
             my_cache.products = await pool.query("SELECT * FROM web.products");
-        }
+        },
+        get products() {return my_cache.products}
     };
 }

@@ -1,5 +1,12 @@
-// TODO: Connect minecraft server to, again, this server of shit
 const inProduction = process.env.NODE_ENV === "production";
+
+// Get my ip
+if(true) {
+	require('dns').lookup(require('os').hostname(), function (err, add, fam) {
+		console.log('> My IP: ' + add);
+	})
+}
+
 
 // Modules
 const express = require('express');
@@ -10,6 +17,9 @@ const { createServer } = require('http');
 // My libs
 const userDataByReq = require("./lib/userDataByReq");
 const normalizeSession = require("./lib/normalizeSession");
+const database = require("./lib/database");
+const rcon = require("./lib/rcon");
+const socketio = require("./lib/socketio");
 
 // Environment variables - Dev
 if(!inProduction) require("dotenv").config({ path: ".env" });
@@ -49,9 +59,9 @@ paypal.configure({
 
 // Init DB
 (async () => {
-	const db = await require("./lib/database")(app);
-	const rcons = inProduction ? null : await require("./lib/rcon")(process.env.RCON_PORT1, process.env.RCON_PORT2);
-	const io = await require("./lib/socketio")(server, db.createPool);
+	const db = await database(app);
+	const rcons = inProduction ? null : await rcon(process.env.RCON_PORT1, process.env.RCON_PORT2);
+	const io = await socketio(server, db.createPool);
 	require("./routes")(app, db.createPool, rcons, io);
 })();
 

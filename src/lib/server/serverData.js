@@ -1,5 +1,24 @@
 const axios = require("axios").default;
 
+let maintenance = true;
+/**
+ * 
+ * @param {() => import("mysql").Pool} db
+ * @returns {Boolean}
+ */
+async function reloadMaintenance(db) {
+	return true;
+	try {
+		const pool = db();
+		const query = (await pool.query("Select * from bungee.maintenance_settings"))[0];
+		await pool.end();
+		maintenance = Boolean(query.value);
+		return maintenance;
+	} catch (err) {
+		console.error(err);
+	}
+}
+
 /** @typedef {{
  *  online: boolean,
  *  players: {
@@ -8,18 +27,18 @@ const axios = require("axios").default;
  *  }
  * }} serverData */
 /**
- * @param {() => import("mysql").Pool} db
  * @returns {Promise<serverData>}
  */
-async function getData(db) {
-
-	const pool = db();
-	const query = (await pool.query("Select * from bungee.maintenance_settings"))[0];
-
+async function getData() {
 	const p = await axios.get("https://api.mcsrvstat.us/2/nasgar.online", {
-		responseType: "json"
+		responseType: "json",
+		withCredentials: false,
+		headers: {
+			"Cache-Control": "no-cache"
+		}
 	});
-	if(p.status >= 200 && p.status <= 299) return {...p.data, maintenance: query.value ? true : false}
+
+	if(p.status >= 200 && p.status <= 299) return {...p.data, maintenance}
 	else return {
 		online: false,
 		maintenance: false,
@@ -49,9 +68,11 @@ function autoUpdate(time = 1000, db) {
 				clearInterval(r.interval);
 			}
 		}
-	}
+	};
+
 	r.interval = setInterval(async () => {
-		onUpdate(await getData(db));
+		await reloadMaintenance(db);
+		r.onUpdate(await getData());
 	}, Math.max(time, 100));
 
 	return r;
@@ -60,5 +81,6 @@ function autoUpdate(time = 1000, db) {
 
 module.exports = {
 	getData,
+	reloadMaintenance,
 	autoUpdate
 }

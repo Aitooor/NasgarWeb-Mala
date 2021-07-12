@@ -8,7 +8,9 @@ const RCON = require("rcon");
     const rcon = new RCON();
     try {
         await rcon.connect(process.env.SV_HOST, PORT, process.env.RCON_PASS);
-		console.log("MC is connected on", PORT);
+        
+		console.log("MC is connected on", PORT, "->", rcon.authenticated);
+        rcon.send(`tellraw @a ["",{"text":">>","color":"dark_gray"},{"text":" Quiralte234","color":"green"},{"text":". Thanks you for buy ","color":"gray"},{"text":"Normal Key x5","color":"light_purple"},{"text":".","color":"gray"}]`);
         return rcon;
     } catch (e) {
         console.error(e);
