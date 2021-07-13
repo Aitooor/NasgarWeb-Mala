@@ -39,6 +39,7 @@
 
 
 const rts = [
+    require("./api/index"),
     require("./routes/client/index"),
     require("./routes/account/index"),
     require("./routes/staff/index"),

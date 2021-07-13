@@ -26,13 +26,15 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
 			const command = commands[i];
 			let params = all_params[i];
 			params = params.replace(/\{\{ PlayerName \}\}/g, "Quiralte234");
-			params = params.replace("{{ ProductName }}", "Normal Key x5");
-			const complete_command = `${command} ${params}`;
-			console.log(complete_command);
-			await rcons[0].send(complete_command);
+			params = params.replace(/\{\{ ProductName \}\}/g, "Normal Key x5");
+			
+			await rcons[0].send(`${command} ${params}`);
 		}
 
-		res.render("pags/index");
+		res.render("pags/shop/product", {
+            product: uuid,
+            others: []
+        });
 	});
 
     router.get("/ResetSession", (req, res) => {

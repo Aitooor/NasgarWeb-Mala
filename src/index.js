@@ -1,12 +1,5 @@
 const inProduction = process.env.NODE_ENV === "production";
 
-// Get my ip
-if(true) {
-	require('dns').lookup(require('os').hostname(), function (err, add, fam) {
-		console.log('> My IP: ' + add);
-	})
-}
-
 
 // Modules
 const express = require('express');
