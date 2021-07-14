@@ -53,7 +53,7 @@ paypal.configure({
 // Init DB
 (async () => {
 	const db = await database(app);
-	const rcons = inProduction ? null : await rcon(process.env.RCON_PORT1, process.env.RCON_PORT2);
+	const rcons = true ? null : await rcon(process.env.RCON_PORT1, process.env.RCON_PORT2);
 	const io = await socketio(server, db.createPool);
 	require("./routes")(app, db.createPool, rcons, io);
 })();

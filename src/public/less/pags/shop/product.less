@@ -73,6 +73,10 @@ body {
 
 			&.is-fullscreen {
 				z-index: 10001;
+
+				.flickity-viewport {
+					padding-top: calc(50vh - 125px);
+				}
 			}
 			 
 			.image-cell {
@@ -411,8 +415,21 @@ body {
 				padding-top: 85px;
 				margin-bottom: 0;
 
+				&.is-fullscreen {
+					padding-top: 0;
+	
+					.flickity-viewport {
+						padding-top: calc(50vh - 45vh);
+
+						.image-cell {
+							height: 90vh;
+						}
+					}
+				}
+
 				.image-cell {
 					background-color: transparent;
+					
 				}
 			}
 

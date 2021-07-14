@@ -21,22 +21,34 @@
 
 	.banner-ip {
 		cursor: pointer;
+		box-sizing: border-box;
 
 		position: absolute;
-		top: 30%;
+		top: 26.55%;
 		left: 2rem;
 
 		width: 250px;
+		height: 250px;
+
+		background-image: url("/img/bannerIP-3.png");
+		background-size: cover;
+		background-repeat: no-repeat;
 	}
 
 	.banner-discord {
 		cursor: pointer;
+		box-sizing: border-box;
 
 		position: absolute;
-		top: 30%;
+		top: 41.15%;
 		right: 2rem;
 
 		width: 200px;
+		height: 200px;
+
+		background-image: url("/img/bannerDiscord-3.png");
+		background-size: cover;
+		background-repeat: no-repeat;
 	}
 
 	.svg-back {
@@ -55,18 +67,27 @@
 		}
 	}
 
-	@media screen and (max-width: 500px) {
+	@media screen and (max-width: 600px) {
 		height: 500px;
 
 		.banner-ip {
+			top: 30%;
 			left: calc(50% - 125px);
+			
+			height: 102.5px;
+
+			background-image: url("/img/bannerIP-2.png");
 		}
 
 		.banner-discord {
 			top: auto;
-			bottom: 2rem;
+			bottom: 5rem;
 			right: auto;
 			left: calc(50% - 100px);
+			
+			height: 81.2px;
+
+			background-image: url("/img/bannerDiscord-2.png");
 		}
 	}
 }

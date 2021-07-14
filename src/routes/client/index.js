@@ -22,14 +22,16 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
 		const commands = exec_cmd.split(" [&&] ");
 		const all_params = exec_params.split(" [&&] ");
 
-		for (let i = 0; i < commands.length; i++) {
-			const command = commands[i];
-			let params = all_params[i];
-			params = params.replace(/\{\{ PlayerName \}\}/g, "Quiralte234");
-			params = params.replace(/\{\{ ProductName \}\}/g, "Normal Key x5");
-			
-			await rcons[0].send(`${command} ${params}`);
-		}
+		if(process.env.NODE_ENV !== "production" && false) {
+            for (let i = 0; i < commands.length; i++) {
+                const command = commands[i];
+                let params = all_params[i];
+                params = params.replace(/\{\{ PlayerName \}\}/g, "Quiralte234");
+                params = params.replace(/\{\{ ProductName \}\}/g, "Normal Key x5");
+                
+                await rcons[0].send(`${command} ${params}`);
+            }
+        }
 
 		res.render("pags/shop/product", {
             product: uuid,
