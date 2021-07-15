@@ -39,6 +39,28 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
         });
 	});
 
+    router.get("/shop/cart", (req, res) => {
+        res.render("pags/shop/cart", {
+            products: [
+                { uuid: "222ab-cdef4-36457", quantity: 2, gift: false},
+                { uuid: "222ab-cdef4-36457", quantity: 2, gift: false},
+                { uuid: "222ab-cdef4-36457", quantity: 2, gift: false},
+                { uuid: "222ab-cdef4-36457", quantity: 2, gift: false},
+                { uuid: "222ab-cdef4-36457", quantity: 2, gift: false},
+                { uuid: "222ab-cdef4-36457", quantity: 2, gift: false},
+                { uuid: "222ab-cdef4-36457", quantity: 2, gift: false},
+                { uuid: "222ab-cdef4-36457", quantity: 2, gift: false},
+                { uuid: "222ab-cdef4-36457", quantity: 2, gift: false},
+                { uuid: "222ab-cdef4-36457", quantity: 2, gift: false},
+                { uuid: "222ab-cdef4-36457", quantity: 3, gift: "iTito420"},
+            ]
+        });
+    });
+
+    router.post("/shop/cart/add/:uuid", (req, res) => {
+        res.sendStatus(200);
+    })
+
     router.get("/ResetSession", (req, res) => {
         req.session.destroy((err) => {
             if (err) return res.render("errors/500");

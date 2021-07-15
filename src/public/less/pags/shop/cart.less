@@ -1,0 +1,308 @@
+@import "../../common/super.less";
+@import "../../common/colors.less";
+
+body {
+	background: #eee;
+}
+
+.app {
+	> .products {
+		margin: 0px;
+		padding: 0px;
+		list-style: none;
+		overflow-y: auto;
+		
+		> .product {
+			margin-top: 5px;
+			background: #FFF;
+			
+			display: grid;
+			grid-template-columns: 75px 1fr;
+			grid-template-rows: 75px 1fr;
+			grid-column-gap: 0px;
+			grid-row-gap: 0px;
+			
+			> .icon {
+				grid-area: 1 / 1 / 2 / 2;
+				
+				width: 75px;
+				height: 75px;
+				
+				
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				
+				img {
+					width: 70%;
+					
+					background: #DDD;
+					background-clip: border-box;
+					border: solid 5px transparent;
+					border-radius: 5px;
+				}
+			}
+			
+			> .info {
+				grid-area: 1 / 2 / 2 / 3;
+				position: relative;
+				
+				display: flex;
+				flex-direction: column;
+				
+				> .name {
+					padding-top: 5px;
+					margin-bottom: 10px;
+					font-size: 1.35rem;
+				}
+				
+				> .bottom {
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					
+					> .quantity {
+						display: flex;
+						
+						> button {
+							padding: 5px;
+							background: #FFF;
+							border: solid 2px #D0D0D0;
+							border-radius: 0px;
+							
+							line-height: 1.5;
+						}
+						
+						.remove {
+							border-top-left-radius: 5px;
+							border-bottom-left-radius: 5px;
+						}
+						
+						
+						input {
+							width: 6ch;
+							padding: 2px 5px;
+							
+							background: #DEDEDE;
+							border: solid 2px #D0D0D0;
+							border-left: none;
+							border-right: none;
+							border-radius: 0;
+							
+							&::placeholder {
+								font-size: .7rem;
+								vertical-align: top;
+								
+								text-transform: uppercase;
+							}
+
+							&::-webkit-inner-spin-button {
+									display: none;
+							}
+							
+							&:focus {
+								outline: none;
+							}
+						}
+						
+						.add {
+							border-top-right-radius: 5px;
+							border-bottom-right-radius: 5px;
+						}
+					}
+					
+					> .total {
+						margin-right: 7px;
+						font-size: 1.2rem;
+						
+						&::before {
+							content: "$";
+						}
+					}
+				}
+				
+				> .remove {
+					position: absolute;
+					top: 3px;
+					right: 3px;
+					
+					color: @danger;
+
+					user-select: none;
+				}
+			}
+			
+			> .actions {
+				grid-area: 2 / 1 / 3 / 3;
+				
+				height: 30px;
+				
+				border-top: solid 2px #CCC;
+				
+				display: flex;
+				justify-content: space-around;
+				align-items: center;
+				
+				> .gift {
+					color: desaturate(#9C9, 25%);
+					
+					display: flex;
+					
+					i {font-size: 2rem; user-select: none;}
+					input { display:none; }
+					
+					&.gifted {
+						color: #9C9;
+						
+						input {
+							padding: 2px 5px;
+							width: 20ch;
+							
+							background: #F2F2F2;
+							border: solid 2px #CCC;
+							border-radius: 5px;
+							
+							display: inline-block;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+footer {
+	position: fixed;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	
+	padding: 10px 15px 15px 15px;
+	
+	background: #FFF;
+	box-shadow: 0px 0px 20px 10px #0005;
+	
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	
+	> .cupon {
+		display: flex;
+		align-items: center;
+		
+		i {
+			line-height: 1.5;
+			font-size: 2rem;
+			display: none;
+		}
+		input {
+			height: 1.5rem;
+			margin-left: 3px;
+			padding: 0 7px;
+			
+			border: solid 2px #59F;
+			border-radius: 0;
+			border-top-left-radius: 5px;
+			border-bottom-left-radius: 5px;
+		}
+		button {
+			height: 1.79rem;
+			background: #59F;
+			border: solid 2px #59F;
+			border-radius: 0;
+			border-top-right-radius: 5px;
+			border-bottom-right-radius: 5px;
+		}
+	}
+	
+	> .info {
+		width: 100%;
+		margin-top: .5rem;
+		margin-bottom: .5rem;
+		padding-top: .5rem;
+		
+		border-top: solid 2px #CCC;
+		
+		display: flex;
+		justify-content: space-between;
+		
+		> .text {
+			font-size: 1.5rem;
+		}
+		
+		> .total {
+			font-size: 1.4rem;
+			
+			&::before {
+				content: "$";
+			}
+			&::after {
+				content: "USD";
+				font-size: .7rem;
+				vertical-align: top;
+			}
+		}
+	}
+	
+	> button {
+		width: 90%;
+		padding: .9rem;
+		
+		color: #FFF;
+		background: #5C9;
+		border: solid 2px #5C9;
+		border-radius: 5px;
+		
+		&:active {
+			background: #5B9;
+		}
+	}
+}
+
+@media screen and (min-width: 800px) {
+	.app {
+		width: 95vw;
+		max-width: 1200px;
+		margin: 0 auto;
+		display: flex;
+
+		> .products {
+			width: calc(100%);
+			display: flex;
+			flex-direction: column;
+			overflow-y: hidden;
+
+			.gift > i {
+				cursor: pointer;
+			}
+
+			> .product {
+				margin-top: 0;
+				margin-bottom: 5px;
+
+				box-shadow: 0px 3px 2px #0005;
+
+				&:last-child {
+					margin-bottom: 0px;
+				}
+			}
+		}
+
+		footer {
+			position: unset;
+			width: 270px;
+			height: 125px;
+			margin-left: 10px;
+
+			box-shadow: 0px 3px 2px #0005;
+
+			> .cupon {
+				i { display: inline-block; }
+			}
+		}
+	}
+
+	button {
+		cursor: pointer;
+	}
+}

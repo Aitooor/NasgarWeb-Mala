@@ -3,7 +3,7 @@
 <head>
 	<%- include("../../partials/header.ejs") %> 
 
-	<title> Document </title>
+	<title> Cargando... </title>
 	
 	<link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css">
 	<link rel="stylesheet" href="https://unpkg.com/flickity-fullscreen@1/fullscreen.css">
@@ -14,7 +14,7 @@
 	<script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js" defer></script>
 	<script src="https://unpkg.com/flickity-fullscreen@1/fullscreen.js" defer></script>
 
-	<script src="/js/pg/shop/product.js" defer></script>
+	<script type="module" src="/js/pg/shop/product.js" defer></script>
 
 	<script>
 		window.productUUID = "<%- locals?.product %>";
@@ -29,22 +29,7 @@
 			<div class="fav-icon">
 				<i class="material">favorite_border</i>
 			</div>
-			<div class="images product-images" 
-				<% // data-flickity='{ "lazyLoad": 1, "fullscreen": true, "cellAlign": "center" }' %> 	
-			>
-				<!-- <div class="image-cell">
-					<img 
-						data-flickity-lazyLoad-src="/img/defaultKey.png" 
-						data-flickity-lazyload-srcset="
-							/img/defaultKey.png 720w,
-							/img/defaultKey.png 360w"
-						sizes="(min-width: 1024px) 720px, 360px">
-					<span></span>
-				</div>
-				<div class="image-cell">
-					<img data-flickity-lazyLoad="no image">
-					<span></span>
-				</div> -->
+			<div class="images product-images">
 			</div>
 			<div class="body">
 				<div class="info">
@@ -52,8 +37,8 @@
 					<div class="price product-price"></div>
 				</div>
 				<div class="actions">
-					<button class="buy">Buy</button>
-					<button class="cart">
+					<button class="buy buy-btn">Buy</button>
+					<button class="cart cart-btn">
 						<i class="material">add_shopping_cart</i>
 					</button>
 				</div>
@@ -76,5 +61,7 @@
 			</div>
 		</div>
 	</div>
+
+	<div class="toasts"></div>
 </body>
 </html>

@@ -36,7 +36,7 @@ module.exports = require("../lib/Routes/exports")("/api", (router, waRedirect, d
 			.send({
 				uuid: req.params.uuid,
 				name: "Normal Key x5",
-				price: "1.50",
+				price: 1.50,
 				description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quo plebiscito decreta a senatu est consuli quaestio Cn. Duarum enim vitarum nobis erunt instituta capienda. Duo Reges: constructio interrete. Qualem igitur hominem natura inchoavit? Huius, Lyco, oratione locuples, rebus ipsis ielunior. \nPrimum in nostrane potestate est, quid meminerimus? An vero, inquit, quisquam potest probare, quod perceptfum, quod. Itaque vides, quo modo loquantur, nova verba fingunt, deserunt usitata.  Quae quo sunt excelsiores, eo dant clariora indicia naturae. At certe gravius. Quid dubitas igitur mutare principia naturae? ",
 				images: ["/img/defaultKey.png", "no Image"]
 			});
