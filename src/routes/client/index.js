@@ -59,6 +59,10 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
 
     router.post("/shop/cart/add/:uuid", (req, res) => {
         res.sendStatus(200);
+    });
+
+    router.get("/shop/pay", (req, res) => {
+        res.render("pags/shop/pay")
     })
 
     router.get("/ResetSession", (req, res) => {

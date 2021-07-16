@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include("../../partials/header.ejs") %> 
+	<title> Document </title>
+	<link rel="stylesheet/less" href="/less/pags/shop/pay.less" />
+	
+	<%- include("../../partials/less.ejs") %> 
+	
+	<script src="/js/pg/shop/pay.js" defer type="module"></script>
+</head>
+<body>
+	<form action="/shop/pay" onsubmit="return formValidator()" method="post" class="app">
+		<div class="msg">
+			Hola
+		</div>
+		<div class="info">	
+			<div class="nick">
+				<span class="title">Minecraft Nick</span>
+				<input name="nick" class="input" placeholder="Nick" value="Quiralte234">
+			</div>
+			<div class="total">
+				<span class="title">Total</span>
+				<span class="cash">3.00</span>
+			</div>
+			<div class="payment_method">
+				<span class="title">Metodo de pago</span>
+				<ul class="methods">
+					<li class="method">
+						<label>
+							<input type="radio" name="payment" checked="checked">
+							<span class="name">Paypal</span>
+						</label>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="captcha">
+				<div id="recaptcha"></div>
+			</div>
+		</div>
+		<div class="process">
+			<button type="submit">Procesar pago</button>
+		</div>
+	</form>
+
+	
+	<script src="https://www.google.com/recaptcha/api.js?onload=onLoadCaptcha&render=explicit" async defer></script>
+</body>
+</html>
