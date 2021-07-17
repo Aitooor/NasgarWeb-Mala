@@ -4,9 +4,7 @@
 	<%- include("../../partials/header.ejs") %> 
 	<title> Tienda - Nasgar Network </title>
 
-	<link rel="stylesheet/less" href="/less/pags/shop/index.less">
-
-	<%- include("../../partials/less.ejs") %> 
+	<%- include("../../partials/less.ejs", { paths: ["pags/shop/index"] }) %> 
 
 	<script src="/js/pg/shop/index.js" type="module"></script>
 </head>
@@ -15,30 +13,6 @@
 	<div class="header-separator"></div>
 	 
 	<div class="centered">
-		<div class="categories">
-			<div class="category">
-				<div class="name">Type</div>
-				<div class="value">
-					<custom-select>
-						<option value="all">All</option>
-						<option value="keys">Keys</option>
-						<option value="rank">Rank</option>
-					</custom-select>
-				</div>
-			</div>
-
-			<div class="category">
-				<div class="name">Order by</div>
-				<div class="value">
-					<custom-select>
-						<option value="AZ">A > Z</option>
-						<option value="ZA">Z > A</option>
-						<option value="mM">$ > $$$</option>
-						<option value="Mm">$$$ > $</option>
-					</custom-select>
-				</div>
-			</div>
-		</div>
 		<div class="mainbox">
 			<main>
 				<div class="info-text">

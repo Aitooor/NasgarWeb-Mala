@@ -4,21 +4,56 @@
 	<%- include("../partials/header.ejs") %>
 	<title> Sign up - Nasgar Network </title>
 
-	<link rel="stylesheet/less" href="/less/pags/signup.less" />
-
-	<%- include("../partials/less.ejs") %> 
+	<%- include("../partials/less.ejs", { paths: ["pags/signup"] }) %> 
 </head>
 <body>
-	<%- include("../partials/nav.ejs", { userData, alert }) %> 
-
-	<div class="header-separator"></div>
-	<div class="card">
-		<span>Enter in minecraft server to <b>Sign Up</b>.</span>
-		<ul>
-			<li>IP: nasgar.online <i class="material" data-commons-onclick="copy, <%= server.ip %>">content_copy</i></li>
-		</ul>
+	<div class="logo">
+		<a href="/">
+			<img src="/img/logo-128x.png" alt="Nasgar Logo">
+		</a>
+	</div>
+	
+	<div class="login-card centered">
+		<div class="form">
+			<form action="/signup" method="POST">
+				<input 
+					type="username" 
+					name="username" 
+					id="username" 
+					placeholder="Usuario" 
+					autocomplete="username" 
+					spellcheck="false" 
+					value="Apika Luca" />
+				<input 
+					type="username" 
+					name="nick" 
+					id="nick" 
+					placeholder="MC Nick" 
+					autocomplete="nickname" 
+					spellcheck="false" 
+					value="Quiralte234" />
+				<input 
+					type="password" 
+					name="password" 
+					id="password" 
+					placeholder="Contraseña"
+					autocomplete="new-password" 
+					spellcheck="false" />
+				<button type="submit" class="btn-primary"> Registrar </button>
+			</form>
+		</div>
 	</div>
 
-	<div class="toasts"></div>
+	<div class="links">
+		<div class="login">
+			<span class="ask">Ya tienes una cuenta?</span>
+			<a href="/login">Inicia Sesion</a>
+		</div>
+		<div class="help">
+			<span class="ask">Tienes problemas?</span>
+			<span class="text">Pide ayuda en nuestro</span>
+			<a href="/discord" target="_blank">Discord</a>
+		</div>
+	</div>
 </body>
 </html>

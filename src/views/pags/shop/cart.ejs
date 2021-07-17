@@ -16,7 +16,7 @@
 	</script>
 </head>
 <body>
-	<%- include("../../partials/nav.ejs", { userData }) %> 
+	<%- include("../../partials/nav.ejs", { userData, nav }) %> 
 	<div class="header-separator"></div>
 
 	<div class="app">
@@ -57,7 +57,7 @@
 				<span class="text">Total</span>
 				<span class="total total-count">3</span>
 			</div>
-			<button>Continuar compra</button>
+			<button data-commons-onclick="link, /shop/pay">Continuar compra</button>
 		</footer>
 	</div>
 </body>

@@ -8,24 +8,45 @@
 	<%- include("../partials/less.ejs") %> 
 </head>
 <body>
-	<%- include("../partials/nav.ejs", { userData, alert }) %> 
-
-	<div class="header-separator"></div>
-
+	<div class="logo">
+		<a href="/">
+			<img src="/img/logo-128x.png" alt="Nasgar Logo">
+		</a>
+	</div>
+	
 	<div class="login-card centered">
 		<div class="form">
-			<form action="/login" method="POST">
-				<input type="username" name="username" id="username" placeholder="Username">
-				<input type="password" name="password" id="password" placeholder="Password">
-				<button type="submit" class="btn-primary"> Log In </button>
+			<form action="/signup" method="POST">
+				<input 
+					type="username" 
+					name="username" 
+					id="username" 
+					placeholder="Usuario" 
+					autocomplete="username" 
+					spellcheck="false" 
+					value="Apika Luca" />
+				<input 
+					type="password" 
+					name="password" 
+					id="password" 
+					placeholder="Contraseña"
+					autocomplete="current-password" 
+					spellcheck="false" />
+				<button type="submit" class="btn-primary"> Ingresar </button>
 			</form>
 		</div>
-		<div class="adv-warning">
-			<i class="material">warning_amber</i>
-			<span> Use data from your minecraft account of this server </span> <br>
-			<span> <a href="/staff/login">Staff Login</a> </span>
+	</div>
+
+	<div class="links">
+		<div class="signup">
+			<span class="ask">No tienes cuenta?</span>
+			<a href="/signup">Cree una</a>
+		</div>
+		<div class="help">
+			<span class="ask">Tienes problemas?</span>
+			<span class="text">Pide ayuda en nuestro</span>
+			<a href="/discord" target="_blank">Discord</a>
 		</div>
 	</div>
-	<div class="toasts"></div>
 </body>
 </html>

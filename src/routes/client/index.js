@@ -4,6 +4,10 @@ const exec_params = `{{ PlayerName }} stone 1 [&&] {{ PlayerName }} ["",{"text":
 // tellraw @a ["",{"text":">>","color":"dark_gray"},{"text":" Quiralte234","color":"green"},{"text":". Thanks you for buy ","color":"gray"},{"text":"Normal Key x5","color":"light_purple"},{"text":".","color":"gray"}]
 
 module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, db, rcons) => {
+    router.get("/discord", (req, res) => {
+        res.redirect("https://discord.com/invite/PJk9uyhv6S");
+    });
+    
     router.get("/", async(req, res) => {
 
         res.render("pags/index");
