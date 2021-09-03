@@ -23,4 +23,4 @@
 <!-- ------- JS ------ -->
 <script src="/js/common/common.js" defer type="module"></script>
 
-<script>(location.hostname !== "localhost" && location.protocol === "http:" && (location = "https://" + location.hostname + location.pathname));</script>
+<script>((location.hostname !== "localhost" && !location.hostname.match(/[0-9.]+/)) && location.protocol === "http:" && (location = "https://" + location.hostname + location.pathname));</script>

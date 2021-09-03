@@ -15,11 +15,8 @@ a {
 }
 
 input {
-	padding: 3px 7px;
-
 	border: solid 1.5px #000;
-	border-radius: 3px;
-	box-shadow: inset 0px 1px 3px #0005;
+	border-radius: 2px;
 
 	&:hover {
 		border: solid 1.5px @primary;
@@ -29,6 +26,11 @@ input {
 		outline: none;
 		border: solid 2px @primary;
 	}
+}
+
+
+select:focus {
+  outline: none;
 }
 
 // Scrollbar

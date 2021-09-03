@@ -39,10 +39,10 @@
 
 
 const rts = [
-    require("./api/index"),
-    require("./routes/client/index"),
-    require("./routes/account/index"),
-    require("./routes/staff/index"),
+    require("./routes/api"),
+    require("./routes/client"),
+    require("./routes/account"),
+    require("./routes/staff"),
     require("./routes/errors")
 ];
 

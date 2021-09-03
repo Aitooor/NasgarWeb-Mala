@@ -1,8 +1,8 @@
 module.exports = require("../lib/Routes/exports")("/", (router, waRedirect, db, rcons) => {
-	// * Error - 404
+    // * Error - 404
     router.use((req, res) => {
         res.locals = {
-			...res.locals,
+	    ...res.locals,
             error: {
                 status: 404
             }

@@ -14,8 +14,8 @@ const database = require("./lib/database");
 const rcon = require("./lib/rcon");
 const socketio = require("./lib/socketio");
 
-// Environment variables - Dev
-if(!inProduction) require("dotenv").config({ path: ".env" });
+// Configuration
+const config = require("../config");
 
 // Setup
 const app = express();
@@ -27,7 +27,7 @@ app.set('view engine', 'ejs');
 
 // Config
 app.use(require("express-session")({
-	secret: process.env.SESSION_KEY,
+	secret: config.SESSION_KEY,
 	saveUninitialized: true,
 	resave: true
 }));
@@ -42,18 +42,19 @@ app.use(express.static(join(__dirname, "public")));
 app.use(normalizeSession);
 app.use(userDataByReq.middleware);
 
-// Init paypal
-
+// TODO: change `process.env` to `config`
+// Init paypal -- Dev
+/*
 paypal.configure({
 	mode: inProduction ? "live" : "sandbox",
 	client_id: process.env.PAYPAL_ID,
 	client_secret: process.env.PAYPAL_SECRET
-});
+}); //*/
 
 // Init DB
 (async () => {
 	const db = await database(app);
-	const rcons = true ? null : await rcon(process.env.RCON_PORT1, process.env.RCON_PORT2);
+	const rcons = false ? null : await rcon(...config.RCON.PORTS);
 	const io = await socketio(server, db.createPool);
 	require("./routes")(app, db.createPool, rcons, io);
 })();

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include("../../partials/header.ejs") %>
+	<title> Staff Timings - Nasgar Network </title>
+
+  <script src="/js/pg/staff/timings.js" type="module" defer></script>
+	
+	<%- include("../../partials/less.ejs", { paths: ["pags/staff/timings"] }) %>
+</head>
+<body>
+	<%- include("../../partials/nav.ejs", { userData, alert }) %>
+
+  <div class="header-separator" ></div>
+	
+	<div class="app" >
+		<div class="body" >
+			<div class="filters" >
+				<div class="filter user" >
+					<span>Name</span>
+					<input placeholder="Username" >
+				</div>
+				
+				<div class="filter rank" >
+					<span>Rank</span>
+					<select multiple>
+						<option value="all" selected > All </option>
+						<option value="owner"	> Owner </option>
+						<option value="admin"	> Admin </option>
+						<option value="mod" 	> Mod </option>
+						<option value="support"	> Support </option>
+						<option value="builder"	> Builder </option>
+						<option value="dev"		> Dev </option>
+					</select>
+				</div>
+			</div>
+			
+			<div class="table" >
+				<div class="columns" >
+					<span>Rank</span>
+					<span>Username</span>
+				</div>
+				<div class="rows" id="players" >
+          Reload
+        </div>
+			</div>
+		</div>
+		
+		<div class="actual" >
+			<div class="header" >
+				<span class="name" id="actualName" >.Name.</span>
+				<div class="details" >
+					<span id="actualLast" >Last play: .Date.</span>
+					<span> • </span>
+					<span id="actualTotal" >Total time: .Time.</span>
+				</div>
+			</div>
+			
+			<div class="body" >
+				<span class="tableTitle1" >Time played every day</span>
+				<div class="table1" >
+					<div class="columns" >
+						<span>Day</span>
+						<span>Time</span>
+					</div>
+					
+					<div class="rows" id="actualTimes" ></div>
+				</div>
+				
+				<span class="tableTitle2" >Commands executed</span>
+				<div class="table2" >
+					<div class="columns" >
+						<span>Command</span>
+						<span>Date - Time</span>
+					</div>
+					
+					<div class="rows" id="actualCmds" ></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,6 +1,6 @@
 const mysql = require("mysql");
-const Routes = require("../routes");
 const { promisify } = require("util");
+const CONFIG = require("../../config");
 
 /** @typedef {{uuid: string, name: string, price: number, description: string, exec_cmd: string, exec_params: string}} product */
 /** @type {{products: product[]}} */
@@ -14,9 +14,9 @@ let my_cache = {
  */
 module.exports = async function(app) {
     const config = {
-        host: process.env.SV_HOST,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASS
+        host: CONFIG.SV_HOST,
+        user: CONFIG.DB.USER,
+        password: CONFIG.DB.PASS
     };
 
     let isFT = true;
@@ -47,7 +47,7 @@ module.exports = async function(app) {
         return pool;
     };
 
-    createPool().end();
+    await createPool().end();
 
     return {
         createPool,

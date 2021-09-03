@@ -13,7 +13,9 @@ fetch("/api/get/product/" + productUUID)
 			"cellAlign": "center" 
 		});
 
-		for(let image of res.images) {
+        const images = res.images.length === 0 ? ["No image"] : res.images;
+
+		for(let image of images) {
 			const dom = document.createElement("div");
 			dom.className = "image-cell";
 			const img = new Image();
@@ -25,7 +27,7 @@ fetch("/api/get/product/" + productUUID)
 			images_flickity.append(dom);
 		}
 
-		document.title = `${res.name} - Nargar Network`;
+		document.title = `${res.name} - Nasgar Network`;
 
 		document.querySelector(".buy-btn").addEventListener("click", () => {
 			fetch("/shop/cart/add/" + productUUID, { method: "post" })
@@ -49,12 +51,13 @@ fetch("/api/get/product/" + productUUID)
 	})
 	.catch((err) => {
 		console.error(err);
-		alert("Error loading product data!");
+		alert("Error loading product data! Contact us.");
 	});
 
 /**
  * 
- * @param {number} money 
+ * @param {number} money
+ * @return {string} Formated money
  */
 function monetize(money) {
 	if(typeof money !== "number") return "0.00";

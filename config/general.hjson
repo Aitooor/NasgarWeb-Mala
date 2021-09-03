@@ -1,0 +1,25 @@
+{
+// Express sessions secret key
+  SESSION_KEY: "cCEoEKCs-FFQfbnkv-z1rnpbFO-ODSUTR6C"
+
+// Key for password encript [ WARNING WITH THIS ]
+  PASS_KEY: "Password_Key"
+
+// Temporal password for staff-timings
+  TIMING_PASS: "Nasgar%"
+
+// Server host ip
+  SV_HOST: "142.4.215.212"
+
+// Database data
+  DB: {
+    USER: "root"
+    PASS: "Nasgar19992%"
+  }
+
+// RCON data
+  RCON: {
+    PASS: "Aitor19992%"
+    PORTS: [100]
+  }
+}

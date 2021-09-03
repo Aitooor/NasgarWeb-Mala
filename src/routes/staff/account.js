@@ -1,4 +1,5 @@
 const { StaffMiddleware, alertNotStaff } = require("../../middlewares/staff");
+const CONFIG = require("../../../config");
 
 module.exports = require("../../lib/Routes/exports")("/staff", (router, waRedirect, db, rcons) => {
 	router.get("/login", (req, res) => {
@@ -26,5 +27,45 @@ module.exports = require("../../lib/Routes/exports")("/staff", (router, waRedire
 		req.session.alert = "Now, you are not part of the staff";
 		req.session.showAlert = true;
 		res.redirect("/");
+	});
+	
+	router.get("/staff-timings", (req, res) => {
+		if(req.session.admin) {
+			res.render("pags/staff/timings");
+		} else {
+			res.type("html").send(`
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Admin verification</title>
+	</head>
+	<body>
+		<form style="display:none;" action="/staff/staff-timings" method="POST">
+			<input name="password">
+			<button type="submit"></button>
+		</form>
+		<script>
+			function _try() {
+				const pass = prompt("Password: ");
+				if(pass.length > 0) {
+					document.querySelector("input").value=pass;
+					document.querySelector("button").click();
+				} else {
+					_try();
+				}
+			}
+			
+			_try();
+		</script>
+	</body>
+</html>
+			`);
+		}
+	});
+	
+	router.post("/staff-timings", (req, res) => {
+		if(CONFIG.TIMING_PASS === req.body.password)
+			req.session.admin = true;
+		res.redirect("/staff/staff-timings");
 	});
 })

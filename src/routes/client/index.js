@@ -5,7 +5,7 @@ const exec_params = `{{ PlayerName }} stone 1 [&&] {{ PlayerName }} ["",{"text":
 
 module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, db, rcons) => {
     router.get("/discord", (req, res) => {
-        res.redirect("https://discord.com/invite/PJk9uyhv6S");
+        res.redirect("https://ds.nasgar.online");
     });
     
     router.get("/", async(req, res) => {
@@ -30,7 +30,7 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
             for (let i = 0; i < commands.length; i++) {
                 const command = commands[i];
                 let params = all_params[i];
-                params = params.replace(/\{\{ PlayerName \}\}/g, "Quiralte234");
+                params = params.replace(/\{\{ PlayerName \}\}/g, "francaba");
                 params = params.replace(/\{\{ ProductName \}\}/g, "Normal Key x5");
                 
                 await rcons[0].send(`${command} ${params}`);

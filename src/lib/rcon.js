@@ -1,4 +1,5 @@
 const RCON = require("rcon");
+const CONFIG = require("../../config");
 
 /**
  * 
@@ -7,9 +8,9 @@ const RCON = require("rcon");
  async function rcon(PORT) {
     const rcon = new RCON();
     try {
-        await rcon.connect(process.env.SV_HOST, PORT, process.env.RCON_PASS);
+        await rcon.connect(CONFIG.SV_HOST, PORT, CONFIG.RCON.PASS);
         
-		console.log("MC is connected on", PORT, "->", rcon.authenticated);
+		console.log("MC is connected on", PORT, "->", rcon.authenticated && rcon.online);
         
         return rcon;
     } catch (e) {
