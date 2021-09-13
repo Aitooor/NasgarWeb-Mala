@@ -3,7 +3,6 @@ import "./nav.js";
 
 globalThis.Toasts = Toasts;
 
-
 async function copyText(txt, {silent = false} = {}) {
 	let copied = false;
 	
@@ -63,7 +62,7 @@ async function copyText(txt, {silent = false} = {}) {
  */
 function antiSpacesSplit(str, separator, limit) {
 	return str.split(separator, limit).map(s => {
-		return s.replace("^\s+", "").replace("\s+$");
+		return s.replace("^\s+|\s+$", "");
 	});
 }
 

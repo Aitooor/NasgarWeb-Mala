@@ -1,4 +1,17 @@
 {
+// Enviroment (prod, dev)
+  ENV: "dev"
+
+// Port to use and them conditional
+  PORT: [
+    { port: "env"
+      condition: "exist" },
+    { port: 80
+      condition: "prod" },
+    { port: 1403
+      condition: "dev" }
+  ]
+
 // Express sessions secret key
   SESSION_KEY: "cCEoEKCs-FFQfbnkv-z1rnpbFO-ODSUTR6C"
 
@@ -21,5 +34,13 @@
   RCON: {
     PASS: "Aitor19992%"
     PORTS: [100]
+  }
+
+// PAYPAL data
+  PAYPAL: {
+    SANDBOX: {
+      ID: "ATTRkmYKKQb0LbE3HIoUweukH1AwXyB7yPACBFi7iXxx36dfZMmor80pWMkHAVz1Sd57pm5c4KOnXABV"
+      SECRET: "EMk7bV3f-usjRNm6fQfSuQsWk9cb3TUVZ_DkJgLmUuWnYYzNeS-njahy8otqps59D8yDXTLYF5QglPGZ"
+    }
   }
 }

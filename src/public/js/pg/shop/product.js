@@ -29,24 +29,53 @@ fetch("/api/get/product/" + productUUID)
 
 		document.title = `${res.name} - Nasgar Network`;
 
+    const addToCart = () => {
+      const CART = "shop_cart";
+      if(localStorage[CART] && 
+         localStorage[CART] != "" ) 
+      {
+        const _cart = localStorage[CART];
+        const old_cart = _cart.split(",").reduce((obj,_)=>{
+          const pr = _.split(":");
+          obj[pr[0]] = { 
+            q: parseInt(pr[1]), 
+            g: pr[2] == "false" || pr[2] == "undefined" || pr[2] == undefined ? false : pr[2]
+          };
+          return obj;
+        }, {});
+  
+        if(old_cart[productUUID])
+          old_cart[productUUID].q++;
+        else
+          old_cart[productUUID] = {
+            q: 1,
+            g: false
+          };
+
+        const new_cart = Object.keys(old_cart).map(_=>{
+          return _+":"+old_cart[_].q+":"+old_cart[_].g;
+        });
+
+        localStorage[CART] = new_cart.join(",");
+      } else {
+        localStorage[CART] = `${productUUID}:1`;
+      }
+    }
+
 		document.querySelector(".buy-btn").addEventListener("click", () => {
-			fetch("/shop/cart/add/" + productUUID, { method: "post" })
-				.then(() => {
-					window.open("/shop/cart", "_self");
-				})
+		  addToCart()
+      window.open("/shop/cart", "_self");
 		});
 
 		document.querySelector(".cart-btn").addEventListener("click", () => {
-			fetch("/shop/cart/add/" + productUUID, { method: "post" })
-				.then(() => {
-					new Toast({
-						title: "Añadido al carrito",
-						body: `<b>${res.name}</b> fue añadido al carrito exitosamente.`,
-						actions: [
-							{ html: "Cerrar", action: "close" }
-						]
-					}).show();
-				})
+		    addToCart();
+				new Toast({
+					title: "Añadido al carrito",
+					body: `<b>${res.name}</b> fue añadido al carrito exitosamente.`,
+					actions: [
+						{ html: "Cerrar", action: "close" }
+					]
+        }).show();
 		})
 	})
 	.catch((err) => {

@@ -20,7 +20,7 @@ async function getProduct(db, uuid) {
 		const query = await pool.query("SELECT * FROM web.products WHERE uuid = ?", uuid);
 		pool.end();
 
-        console.log(`[SHOP] Get "${uuid}":`, JSON.parse(JSON.stringify(query[0])));
+    if(!query[0]) return null;
 
 		return parseProduct(query[0]) ?? null;
 	} catch(e) {
@@ -31,7 +31,25 @@ async function getProduct(db, uuid) {
 	}
 }
 
+async function getCupon(db, cupon) {
+  cupon = cupon.toUpperCase();
+
+  if(cupon === "TEST-CUPON") {
+    return {
+      cupon,
+      valid: true,
+      modify: .25
+    };
+  } else {
+    return {
+      cupon,
+      valid: false
+    };
+  }
+}
+
 module.exports = { 
 	getAllProducts, 
-	getProduct 
+	getProduct,
+  getCupon
 };

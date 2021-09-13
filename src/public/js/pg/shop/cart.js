@@ -1,36 +1,206 @@
+const CART = "shop_cart";
+
 const cart = [];
 const products_cache = {};
 
+let cupon = false;
+
+const products_ul = document.querySelector(".products");
+
 /** @type {HTMLSpanElement} */
 const total_span = document.querySelector(".total-count");
+const subtotal_span = document.querySelector(".subtotal-count");
 
-(async () => {
+document
+  .querySelector(".btn-pay")
+  .addEventListener("click", () => {
+    window.open("/shop/pay?total=" + getTotal(), "_self");
+  });
+
+/***********
+ *  Cupon  *
+ ***********/
+
+const _main_cupon = () => {
+  try {
+  const _cupon = {
+    cupon:  document.querySelector(".cupon-div"),
+    input:  document.querySelector(".cupon-input"),
+    button: document.querySelector(".cupon-btn"),
+    txt:    document.querySelector(".cupon-txt"),
+    clear:  document.querySelector(".cupon-clear-btn")
+  };
+
+  localStorage["shop_cupon"] = "";
+  reloadTotal();
+
+  const test_cupon = () => {
+    fetch("/api/get-cupon", {
+      method: "POST",
+      headers: { "Content-Type": "application/json;charset=UTF-8" },
+      body: JSON.stringify({ 
+        cupon: _cupon.input.value
+      })
+    })
+      .then(async (res) => {
+        if(res.status === 400) return alert("!");
+        res = await res.json();
+
+        if(res.valid) {
+          _cupon.txt.innerText = res.cupon;
+          _cupon.cupon.classList.add("selected");
+
+          localStorage["shop_cupon"] = res.cupon;
+          cupon = res;
+          reloadTotal();
+
+          alert(`${res.cupon} is valid and it's have a ${res.modify * 100}% of discount`);
+        } else {
+          localStorage["shop_cupon"] = "";
+          cupon = false;
+          reloadTotal()
+
+          alert(`${res.cupon} is not valid`);
+        }
+      })
+      .catch(()=>{});
+  };
+
+  _cupon.button.onclick = test_cupon;
+
+  _cupon.input.onkeydown = e => {
+    if(e.which === 13 || e.which === 10)
+      test_cupon();
+  };
+
+  _cupon.input.oninput = (e) => {
+    _cupon.input.value = _cupon.input.value.toUpperCase();
+  };
+
+  _cupon.clear.onclick = () => {
+    _cupon.cupon.classList.remove("selected");
+    cupon = false;
+    reloadTotal();
+  };
+  }catch(e){alert(e)}
+};
+
+/************************/
+
+(async () => {try{
+  if(typeof localStorage[CART] !== "string")
+    return reloadTotal();
+  if(localStorage[CART].match(/^\s*$/) !== null) 
+    return reloadTotal();
+
+  const products = localStorage[CART]
+    .split(",")
+    .map((_) => {
+      const p = _.split(":");
+      return {
+        uuid: p[0],
+        quantity: parseInt(p[1]),
+        gift: p[2] !== "false" && p[2] !== undefined ? 
+                p[2] : 
+                false
+      };
+    }) || [];
+
 	for (let i = 0; i < products.length; i++) {
 		const product = products[i];
 		let res;
 		if(product.uuid in products_cache) {
 			res = products_cache[product.uuid];
 		} else {
-			const r = await (await fetch("/api/get/product/" + product.uuid)).json();
-			res = products_cache[product.uuid] = r;
+			const r = await fetch("/api/get/product/" + product.uuid);
+      if(!r.ok) {
+        alert("Error fetching data for " + product.uuid + ". Response with code " + r.status + ".");
+        continue;
+      }
+
+			res = products_cache[product.uuid] = await r.json();
 		}
 
 		const dom = updateProductDom(product, res, i);
 
 		cart.push({
-			...product,
+      ...product,
+      name: res.name,
 			price: res.price,
-			dom
+			dom,
+      product
 		});
 
 		reloadTotal();
 	}
+
+  _main_cupon();
+}catch(e){alert(e)}
 })();
+
+
+function createProductDom({ product, response, i } = {}) {
+  return GDom({
+    elm: "li",
+    attr: { "class": `product product-${i}` },
+    childs: [
+      { attr: { "class": "icon product-icon" } }, 
+      { attr: { "class": "info" },
+        childs: [
+          { attr: { "class": "name product-name" } }, 
+          { attr: { "class": "bottom" },
+            childs: [
+              { attr: { "class": "quantity" },
+                childs: [
+                  { elm: "button",
+                    attr: { "class": "remove remove-quantity" },
+                    childs: [ "-" ] },
+                  { elm: "input",
+                    attr: { 
+                      "class": "quantity-input",
+                      type: "number",
+                      value: product.quantity,
+                      placeholder: "Quantity"
+                    } },
+                  { elm: "button",
+                    attr: { "class": "add add-quantity" },
+                    childs: [ "+" ] }
+                ] },
+              { attr: { "class": "total product-total" } }
+            ] }, 
+          { attr: { "class": "remove" },
+            childs: [{
+              elm: "i",
+              attr: { "class": "material" },
+              childs: [ "delete_outline" ]
+            }] }
+        ] }, 
+      { attr: { "class": "actions" },
+        childs: [{ 
+          attr: { "class": `gift${product.gift ? " gifted" : "" }` },
+          childs: [
+            { elm: "i",
+              attr: { "class": "material" },
+              childs: [ "card_giftcard" ] }, 
+            { elm: "input",
+              attr: { 
+                "class": "gift-input",
+                type: "text", 
+                value: product.gift || "",
+                placeholder: "Username"
+              } }
+          ]
+        }]
+      }
+    ]
+  });
+};
 
 function updateProductDom(product, response, i) {
 	/** @type {HTMLDivElement} */
-	const me = document.querySelector(`.product-${i}.product-${product.uuid}`);
-	me.querySelector(".product-icon").append(img(response.images[0]));
+	const me = createProductDom({ product, response, i });
+  products_ul.append(me);
+	me.querySelector(".product-icon").append(img(response?.images?.[0]));
 	me.querySelector(".product-name").innerHTML = response.name;
 	const total_span = me.querySelector(".product-total");
 
@@ -61,7 +231,44 @@ function updateProductDom(product, response, i) {
 
 	function addQuantity(n = 1) {setQuantity(limit(getQuantity() + n, 1, 999_999));}
 	function removeQuantity(n = 1) {setQuantity(limit(getQuantity() - n, 1, 999_999));}
-	return {};
+
+  const gift_div = me.querySelector(".actions > .gift");
+  const gift_inp = gift_div.querySelector(".gift-input");
+  const gift_btn = gift_div.querySelector("i.material");
+  let gift_open = product.gift ? true : false;
+
+  const _product = () => cart[i];
+
+  gift_btn.onclick = () => {
+    gift_open = !gift_open;
+    gift_div.classList.toggle("gifted");
+    if(!gift_open)
+      _product().gift = false;
+
+    reloadTotal();
+  };
+
+  gift_inp.onkeydown = e => {
+    if(e.which === 13 || e.which === 10)
+      gift_inp_handler();
+  };
+  gift_inp.onchange = gift_inp_handler;
+
+  function gift_inp_handler() {
+    if(gift_inp.value.length === 0){
+      alert(`Write the player's name or close the gift. [Gift of ${_product().name}]`);
+      _product().gift = false;
+      gift_inp.focus();
+      reloadTotal();
+      return;
+    }
+    
+    gift_inp.value = gift_inp.value.replace(/[:;]/g, "_");
+    _product().gift = gift_inp.value;
+    reloadTotal();
+  }
+
+	return me;
 }
 
 function limit(value, min, max) {
@@ -70,16 +277,29 @@ function limit(value, min, max) {
 
 function reloadTotal() {
 	total_span.innerText = monetize(getTotal());
+  if(cupon) {
+    subtotal_span.classList.add("show");
+    subtotal_span.innerText = monetize(getSubTotal());
+  } else 
+    subtotal_span.classList.remove("show");
+  localStorage[CART] = cart.map(_ => _.uuid+":"+_.quantity+":"+_.gift).join(",");
 }
 
 /**
  * 
  * @returns {number}
  */
-function getTotal() {
+function getSubTotal() {
 	return cart.reduce((p, v) => {
 		return v.quantity * v.price + p;
-	}, 0)
+	}, 0);
+}
+
+/**
+ * @returns {number}
+ */
+function getTotal() {
+  return getSubTotal() * (cupon? 1 - cupon.modify : 1);
 }
 
 /**
@@ -107,4 +327,27 @@ function monetize(money) {
 						sep[1] + "0" : 
 						sep[1];
 	return sep[0] + "." + cents;
+}
+
+// Transform a json to HTMLElement with attributes and childs
+function GDom(structure) {
+  if(typeof structure === "string")
+    return structure;
+
+  const _elm = structure?.elm || "div";
+  const elm = document.createElement(_elm);
+  const _attr = structure?.attr || {};
+  for(let attr in _attr)
+    elm.setAttribute(attr, _attr[attr]);
+  
+  const _evt = structure?.evt || {};
+  for(let evt in _evt)
+    elm.addEventListener(evt, _evt[evt]);
+
+  const _childs = structure?.childs || [];
+  const childs = _childs.map(GDom);
+  
+  elm.append(...childs);
+
+  return elm;
 }

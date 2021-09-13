@@ -8,6 +8,14 @@ let mobile = false;
  */
 let onResize = (isMobile) => {};
 
+const total_cash = document.querySelector(".total-cash");
+const url_href = new URL(location.href);
+
+if(!url_href.searchParams.get("total")) 
+  window.open("/shop/cart", "_self");
+
+total_cash.innerText = monetize(parseFloat(url_href.searchParams.get("total")));
+
 function onLoadCaptcha() {
 	captcha = grecaptcha.render(recaptcha, {
 		'sitekey': "6LdyEpsbAAAAAOpq2VJOl8yQ_A0YRh8CSIfwcBCr"
@@ -88,6 +96,11 @@ globalThis.formValidator = (e) => {
 		formError("Completa el captcha");
 		return false;
 	} else {
+    const inp = form.querySelector("input[name=\"shop_cart\"]");
+
+    inp.value = localStorage["shop_cart"] + ";" + 
+                localStorage["shop_cupon"];
+
 		return true;
 	}
 }
@@ -101,3 +114,5 @@ function formError(msg) {
 		formMsg.classList.remove("show");
 	}, 4000);
 }
+
+function monetize(money) {                                   if(typeof money !== "number") return "0.00";               const moneyStr = money.toLocaleString("en");               const sep = moneyStr.split(".");                           const cents = sep.length === 1 ?                                   "00" :                                                     sep[1].length === 1 ?                                        sep[1] + "0" :                                             sep[1];                                          return sep[0] + "." + cents;                             }

@@ -1,63 +1,45 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head lang="es">
 	<%- include("../../partials/header.ejs") %> 
 	<title> Carrito - Nasgar Network </title>
 	
-	<link rel="stylesheet/less" href="/less/pags/shop/cart.less" />
-	
-	<%- include("../../partials/less.ejs") %> 
+  <%- include("../../partials/less.ejs", { paths: ["pags/shop/cart"] }) %> 
 	
 	<script src="https://unpkg.com/js-search@1.3.7/dist/umd/js-search.min.js" defer></script>
-	<script src="/js/pg/shop/cart.js" defer></script>
-
-	<script>
-		window.products = JSON.parse(`<%- JSON.stringify(products) %>`);
-	</script>
+	
+  <%- include("../../partials/script.ejs", { paths: ["pg/shop/cart"] }) %>
 </head>
 <body>
-	<%- include("../../partials/nav.ejs", { userData, nav }) %> 
+	<%- include("../../partials/nav.ejs", { userData, alert }) %> 
 	<div class="header-separator"></div>
 
 	<div class="app">
-		<ul class="products">
-			<% products.forEach((product, i) => { %>
-				<li class="product loading product-<%= i %> product-<%- product.uuid %> ">
-					<div class="icon product-icon"></div>
-					<div class="info">
-						<div class="name product-name"></div>
-						<div class="bottom">
-							<div class="quantity">
-								<button class="remove remove-quantity">-</button>
-								<input class="quantity-input" type="number" value="<%- product.quantity %>" placeholder="Quantity">
-								<button class="add add-quantity">+</button>
-							</div>
-							<div class="total product-total"></div>
-						</div>
-						<div class="remove">
-							<i class="material">delete_outline</i>
-						</div>
-					</div>
-					<div class="actions">
-						<div class="gift<%- (product.gift ? " gifted" : "") %>">
-							<i class="material">card_giftcard</i>
-							<input type="text" value="<%- (product.gift || "") %>" placeholder="Username">
-						</div>
-					</div>
-				</li>
-			<% }); %>
-		</ul>
+		<ul class="products"></ul>
 		<footer>
-			<div class="cupon">
-				<i class="material">confirmation_number</i>
-				<input placeholder="Cupon">
-				<button class="redeem-btn">Canjear</button>
+			<div class="cupon cupon-div">
+        <div class="selected">
+          <div class="left">
+			  	  <i class="material">confirmation_number</i>
+            <span class="cupon-txt"></span>
+          </div>
+          <button class="cupon-clear-btn">
+            <i class="material">close</i>
+          </button>
+        </div>
+        <div class="selecting">
+				  <input class="cupon-input" type="text" placeholder="Cupon">
+				  <button class="cupon-btn redeem-btn">Canjear</button>
+        </div>
 			</div>
 			<div class="info">
 				<span class="text">Total</span>
-				<span class="total total-count">3</span>
+        <div class="money">
+          <span class="subtotal subtotal-count">-.--</span>
+				  <span class="total total-count">-.--</span>
+        </div>
 			</div>
-			<button data-commons-onclick="link, /shop/pay">Continuar compra</button>
+			<button class="btn-pay" >Continuar compra</button>
 		</footer>
 	</div>
 </body>

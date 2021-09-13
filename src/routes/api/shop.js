@@ -32,19 +32,27 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
 	});
 
 	router.get("/get/product/:uuid", async (req, res) => {
-        let _res = null;
-        let status = 400;
-        const uuid = req.params.uuid;
+    let _res = { error: "ERRNOUUID: Bad uuid" };
+    let status = 400;
+    const uuid = req.params.uuid;
         
-        try {
+    try {
+      console.log(`[API] Getting product: ${uuid}`);
+      const json = await shop.getProduct(db, uuid);
+          
+      _res = json;
+      status = 200;
+    } catch {};
 
-            console.log(`[API] Getting product: ${uuid}`);
-            const json = await shop.getProduct(db, uuid);
-            
-            _res = json;
-            status = 200;
-        } catch {};
+    res.type("json").status(status).send(_res);
+	});
 
-        res.type("json").status(status).send(_res);
-	})
+  router.post("/get-cupon", async (req, res) => {
+    let { cupon } = req.body;
+
+    if(typeof cupon !== "string") 
+      return res.status(400).send({ cupon, valid: false });
+
+    res.status(200).send(await shop.getCupon(db, cupon));
+  });
 })

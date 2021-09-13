@@ -30,11 +30,16 @@
 	}
 	
 	> .rows {
+    height: 15rem;
+
 		background: #FFF;
 		border: solid 2px #BBC;
 		border-top: none;
 		border-bottom-left-radius: 5px;
 		border-bottom-right-radius: 5px;
+    
+    overflow-x: hidden;
+    overflow-y: scroll;
 		
 		> .row {
 			padding: 0px 0.5rem;
@@ -115,6 +120,12 @@ body {
 			.table {
 				#table();
 				margin-top: 10px;
+
+        .rows > .row {
+          cursor: pointer;
+          user-select: none;
+          -webkit-user-select: none;
+        }
 			}
 		}
 		
@@ -169,7 +180,7 @@ body {
 					> .columns {
 						> span {
 							&:last-child {
-								max-width: 150px;
+								max-width: 200px;
 							}
 						}
 					}
@@ -177,7 +188,7 @@ body {
 					> .rows {
 						> .row > .field {
 							&:last-child {
-								max-width: 150px;
+								max-width: 200px;
 							}
 						}
 					}

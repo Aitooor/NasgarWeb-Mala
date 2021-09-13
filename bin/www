@@ -1,17 +1,46 @@
 #!/usr/bin/env node
 
 /**
+ * Making the enviroment to global
+ */
+
+const CONFIG = require("../config");
+const isProduction = process.env.NODE_ENV === "production" || CONFIG.ENV === "prod";
+
+if(isProduction)
+  process.env.NODE_ENV = "production";
+
+/**
+ * Selecting port and make it global
+ */
+
+var port = normalizePort(
+  CONFIG.PORT.find(({ port, condition }) => {
+    port = port === "env" ? process.env.PORT : port;
+
+    if(condition === "exist")
+      return typeof port != "undefined";
+    if(condition === "prod")
+      return isProduction;
+    if(condition === "dev")
+      return !isProduction;
+  }).port
+);
+
+process.env.PORT = port;
+process.env.WEB_HREF = isProduction ? "https://web.nasgar.online" : "http://localhost:"+port
+
+/**
  * Module dependencies.
  */
 
 var server = require('../src/index');
 
 /**
- * Get port from environment and store in Express.
+ * Get host from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '1403');
-var host = process.argv[2] ==  "dev" ?  "localhost" : undefined;
+var host = !isProduction ?  "localhost" : undefined;
 
 
 /**
@@ -79,5 +108,5 @@ function onListening() {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  console.log(`Listening on ${bind}`);
+  console.log(`Listening on ${bind}. ${process.env.WEB_HREF}`);
 }

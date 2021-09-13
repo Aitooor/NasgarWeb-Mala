@@ -187,33 +187,91 @@ footer {
 	align-items: center;
 	
 	> .cupon {
-		display: flex;
-		align-items: center;
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &.selected {
+      > .selected  { display: flex; }
+      > .selecting { display: none; }
+    }
+
+    > .selected {
+      width: 100%;
+
+      display: none;
+      justify-content: space-between;
+      align-items: center;
+
+      > * {
+        box-sizing: border-box;
+      }
+
+      > .left {
+        display: inline-flex;
+        align-items: center;
+        gap: .5rem;
+
+        > i {
+          color: @primary;
+        }
+
+        > span {
+          color: #777;
+        }
+      }
+
+      > button {
+        padding: .1rem .2rem;
+
+        color: #777;
+        background: #CCC;
+        border: solid 2px transparent;
+        border-radius: 5px;
+
+        line-height: 1;
+        
+        > i {
+          font-size: 24px;
+          box-sizing: padding-box;
+        }
+      }
+    }
+
+    > .selecting {
+      padding: 1px;
+
+  		display: flex;
+      justify-content: center;
+	  	align-items: center;
 		
-		i {
-			line-height: 1.5;
-			font-size: 2rem;
-			display: none;
-		}
-		input {
-			height: 1.5rem;
-			margin-left: 3px;
-			padding: 0 7px;
+		  > * {
+        box-sizing: border-box;
+      }
+
+	  	input {
+		  	height: 1.5rem;
+			  margin-left: 3px;
+  			padding: 0 7px;
 			
-			border: solid 2px #59F;
-			border-radius: 0;
-			border-top-left-radius: 5px;
-			border-bottom-left-radius: 5px;
-		}
-		button {
-			height: 1.79rem;
-			background: #59F;
-			border: solid 2px #59F;
-			border-radius: 0;
-			border-top-right-radius: 5px;
-			border-bottom-right-radius: 5px;
-		}
-	}
+	  		border: solid 2px #59F;
+		  	border-radius: 0;
+			  border-top-left-radius: 5px;
+  			border-bottom-left-radius: 5px;
+	  	}
+
+  		button {
+	  		height: 1.5rem;
+		  	background: #59F;
+			  border: solid 2px #59F;
+  			border-radius: 0;
+	  		border-top-right-radius: 5px;
+		  	border-bottom-right-radius: 5px;
+  		}
+	  }
+  }
 	
 	> .info {
 		width: 100%;
@@ -230,18 +288,29 @@ footer {
 			font-size: 1.5rem;
 		}
 		
-		> .total {
-			font-size: 1.4rem;
+		> .money {
+      > .subtotal {
+        color: #F77;
+        font-size: 1rem;
+        text-decoration: line-through;
+
+        display: none;
+
+        &::before { content: "$"; }
+        &.show { display: inline-block; }
+      }
+
+      > .total {
+		  	font-size: 1.4rem;
 			
-			&::before {
-				content: "$";
-			}
-			&::after {
-				content: "USD";
-				font-size: .7rem;
-				vertical-align: top;
-			}
-		}
+	  		&::before { content: "$"; }
+		  	&::after {
+	  			content: "USD";
+  				font-size: .7rem;
+				  vertical-align: top;
+			  }
+		  }
+    }
 	}
 	
 	> button {

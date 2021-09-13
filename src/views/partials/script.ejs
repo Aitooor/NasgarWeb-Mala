@@ -1,0 +1,4 @@
+
+<% for(let path of paths) { %>
+  <script src="/js/<%= path %>.js?r=<%= Math.floor(Math.random() * 16_000_000) %>" type="module" defer></script>
+<% } %>

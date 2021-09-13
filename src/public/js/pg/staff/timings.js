@@ -11,10 +11,16 @@ const player_actual = {
   cmds:  $("actualCmds")
 };
 
+const WEEK_DAYS = [ "Mon", "Tue", "Wed", "Thu", "Fri", "Sun", "Sat" ];
+
+const MONTHS = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dic" ];
+
 let staff_uuids = {};
 let staff_names = {};
 let staff_n     = {};
 let cached_players = {};
+
+// UUID of selected player
 let actual;
 
 async function SetActualPlayer(player) {
@@ -24,10 +30,10 @@ async function SetActualPlayer(player) {
   actual = player.uuid;
 
   player_actual.name.innerText = player.name;
-  player_actual.last.innerText = "Last play: "+(parseDate(player.times[player.times.length - 1]?.day)||"-");
-  player_actual.total.innerText = count(player.times);
+  player_actual.last.innerText = "Last play: "+(parseDate(player.times[0]?.day)||"-");
+  player_actual.total.innerText = "Total time: "+count(player.times);
   player_actual.times.innerHTML = "";
-  player_actual.times.append(...player.times.reverse().map(time=>GDom({
+  player_actual.times.append(...player.times.map(time=>GDom({
     attr: { "class": "row" },
     childs: [{
         attr: { "class": "field" },
@@ -38,11 +44,11 @@ async function SetActualPlayer(player) {
     }]
   })));
   player_actual.cmds.innerHTML = "";
-  player_actual.cmds.append(...player.cmds.reverse().map(cmd=>GDom({
+  player_actual.cmds.append(...player.cmds.map(cmd=>GDom({
     attr: { "class": "row" },
     childs: [{
         attr: { "class": "field" },
-        childs: [cmd.cmd]
+        childs: [cmd.message]
       },{
         attr: { "class": "field"},
         childs: [parseDate(cmd.time)]
@@ -59,7 +65,14 @@ function defProp(obj, name, gg)  {
 
 function parseTime(secs) {
   if(!secs) return "0h";
-  return (secs / 60) + "m";
+
+  const floor = (n)=>normDateNum(Math.floor(n));
+
+  const hours = secs / 60 / 60;
+  const mins  = (hours - floor(hours)) * 60;
+  const _secs = (mins  - floor(mins )) * 60;
+
+  return `${floor(hours)}h ${floor(mins)}m ${floor(_secs)}s`;
 }
 
 function parseDate(milis) {
@@ -67,19 +80,25 @@ function parseDate(milis) {
   
   const date = new Date(milis);
   const d = date.getHours() >= 12;
-  return `${date.getDay()}.${date.getMonth()}.${date.getYear()} ${date.getHours() - (d?12:0)}:${date.getMinutes()} ${d?"p.m.":"a.m."}`;
+  return `${normDateNum(date.getDate())}-${normDateNum(date.getMonth()+1)}-${normDateNum(date.getFullYear())} (${WEEK_DAYS[date.getDay()]} | ${MONTHS[date.getMonth()]})`;
 }
+
+function normDateNum(n) {
+  n = `${n}`;
+  return n.length === 2?n:
+          n.length > 2?
+            n.slice(n.length-2):
+            "0"+n;
+}
+
 function count(times) {
-  return "";
+  const onlyTimes = times.map(e=>e.time);
+  return parseTime(onlyTimes.reduce((a,b)=>(+a)+(+b), 0));
 }
 
-async function GetPlayer(name) {
-  let uuid = staff_uuids[name];
-  if(uuid == null) await CacheUUIDs();
-  uuid = staff_uuids[name];
-
+async function GetPlayer(uuid) {
   let player = cached_players[uuid];
-
+  
   player.times = null;
   player.cmds  = null;
   
@@ -89,8 +108,8 @@ async function GetPlayer(name) {
   };
 
   player._cmds = async function() {
-    if(!player.cmds) player.cmds = await GetPlayerCmds(uuid);
-    player.cmds = [];
+    if(!player.cmds) player.cmds = await GetPlayerCmds(player.n);
+    
     return player.cmds;
   }
 
@@ -103,18 +122,31 @@ async function CacheUUIDs() {
     cache: "no-cache"
   });
 
-  if(!res.ok) return (alert("Error fetching player data (uuid)"), true), null;
+  if(!res.ok) 
+    return (alert("Error fetching player data (uuid)"), true), null;
+
+  const res2 = await fetch("/api/get/co-users", {
+    credentials: "same-origin",
+    cache: "no-cache"
+  });
+
+  if(!res2.ok)
+    return (alert("Error fetching co users"), true), null;
   
-  const json = await res.json();
+  const players = await res.json();
+  const users   = await res2.json();
   
-  for(let player of json) {
-    staff_uuids[player.name] = player.uuid;
+  for(let player of players) {
+    if(!staff_uuids[player.name])
+      staff_uuids[player.name] = [];
+    staff_uuids[player.name].push(player.uuid);
     staff_names[player.uuid] = player.name;
-    staff_n    [player.uuid] = player.n;
+    staff_n    [player.uuid] = users[player.uuid]?.n || [null, null];
 
     cached_players[player.uuid] = {
       uuid: player.uuid,
       name: player.name,
+      n: staff_n[player.uuid],
       ranks: player.ranks
     };
   }
@@ -132,8 +164,8 @@ async function GetPlayerTime(uuid) {
   return await res.json();
 }
 
-async function GetPlayerCmds(uuid) {
-  const res = await fetch("/api/get/co-cmds/"+uuid, {
+async function GetPlayerCmds(n) {
+  const res = await fetch("/api/get/co-cmds?"+(n[0]!=null?"n1="+n[0]:"")+(n[1]!=null?n[0]!=null?"&n2="+n[1]:"n2="+n[1]:""), {
     credentials: "same-origin",
     cache: "no-cache"
   });
@@ -147,7 +179,7 @@ async function GetPlayerCmds(uuid) {
 async function AddPlayerToList(player) {
   player_list.append(GDom({
     attr: { "class": "row" },
-    evt: { "click": _OnPlayerClicked(player.name) },
+    evt: { "click": _OnPlayerClicked(player.uuid) },
     childs: [{
         attr: { "class": "field" },
         childs: [player.ranks.join(", ")]
@@ -164,9 +196,10 @@ function SetListPlayers(players) {
 }
 
 // Execute when a player at players list is clicked
-function _OnPlayerClicked(name) {
+function _OnPlayerClicked(uuid) {
   return async () => {
-    SetActualPlayer(await GetPlayer(name)).catch(alert);
+    player_actual.name.innerText = "Loading...";
+    SetActualPlayer(await GetPlayer(uuid)).catch(alert);
   }
 }
 
@@ -196,10 +229,10 @@ function GDom(structure) {
 
 async function update() {
   cached_players = {};
-  const r = [];
+  let r = [];
   await CacheUUIDs();
-  for(let name in staff_uuids) {
-    const ply = await GetPlayer(name);
+  for(let uuid in staff_names) {
+    const ply = await GetPlayer(uuid).catch(alert);
     
     r.push(ply);
   }
@@ -212,8 +245,8 @@ async function updateActual() {
   cached_players[actual].times = null;
   cached_players[actual].rank  = null;
   cached_players[actual].cmds  = null;
-  await SetActualPlayer(await GetPlayer(staff_names[actual]));
+  await SetActualPlayer(await GetPlayer(actual));
 }
 // TODO: all paths of api
 
-update();
+update().catch(alert);

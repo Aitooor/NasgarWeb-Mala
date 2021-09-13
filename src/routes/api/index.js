@@ -1,2 +1,2 @@
 
-module.exports=require("../../lib/Routes/imports")("/api", [require("./shop"), require("./players")]);
+module.exports=require("../../lib/Routes/imports")("/api", [require("./shop"), require("./players"), require("./paypal")]);

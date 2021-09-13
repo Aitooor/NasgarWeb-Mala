@@ -12,8 +12,68 @@ module.exports=require("../../lib/Routes/exports")("/", (router, waRedirect, db,
     else res.status(403).type("json").send({ error: "Only admin accounts." });
   }
 
-  router.get("/get/co-cmds/:uuid", adminMidd, async (req, res) => {
-    res.send([]);
+  router.get("/get/co-users", adminMidd, async (req, res) => {
+    let more = "";
+    if(req.query.uuids)
+      more = " WHERE uuid IN ("+ req.query.uuids.split(",").map(_=>'"'+_+'"').join(", ") + ")";
+    const pool = await db();
+    const query1 = Array.from(await pool.query("SELECT * FROM survival.co_user"+more)).filter(e=>e.uuid);
+    const query2 = Array.from(await pool.query("SELECT * FROM survival.co2_user"+more)).filter(e=>e.uuid);
+    await pool.end();
+    
+    const users = {};
+    
+    query1.forEach(({ uuid, user, rowid }) => {
+      users[uuid] = {
+        uuid,
+        name: user,
+        n: [rowid, null]
+      };
+    });
+
+    query2.forEach(({ uuid, user, rowid }) => {
+      if(users[uuid]) return users[uuid].n[1] = rowid;
+
+      users[uuid] = {
+        uuid,
+        name: user,
+        n: [null, rowid]
+      };
+    });
+
+    res
+      .status(200)
+      .type("json")
+      .send(users);
+  });
+
+  router.get("/get/co-cmds", adminMidd, async (req, res) => {
+    if(!req.query.n1 && !req.query.n2) 
+      return res
+        .status(400)
+        .type("json")
+        .send({ error: "No specify target" });
+
+    let cmds = [];
+
+    const pool = await db();
+    if(req.query.n1)
+      cmds = cmds.concat(Array.from(
+        await pool.query(`SELECT user, time, message FROM survival.co_command WHERE user = ${req.query.n1} ORDER BY time DESC LIMIT 100`)
+      ));
+    if(req.query.n2)                                             cmds = cmds.concat(Array.from(
+        await pool.query(`SELECT user, time, message FROM survival.co2_command WHERE user = ${req.query.n2} ORDER BY time DESC LIMIT 100`)
+      ));
+    await pool.end();
+
+    cmds = cmds.sort((a,b)=>b.time-a.time);
+
+    console.log(cmds);
+
+    res
+      .status(200)
+      .type("json")
+      .send(cmds);
   });
 
   router.get("/get/times/:uuid", adminMidd, async (req, res) => {
@@ -21,8 +81,12 @@ module.exports=require("../../lib/Routes/exports")("/", (router, waRedirect, db,
     
     const pool = await db();
     const query = Array.from(await pool.query(`SELECT time, day FROM bungee.StaffTimings WHERE uuid = "${uuid}"`));
+    await pool.end();
     
-    res.status(200).send(query);
+    res
+      .status(200)
+      .type("json")
+      .send(query.sort((a,b)=>b.day-a.day));
   });
 
   router.get("/get/players-data/:modify", adminMidd, async (req, res) => {
@@ -69,7 +133,9 @@ module.exports=require("../../lib/Routes/exports")("/", (router, waRedirect, db,
       return obj;
     }, {});
 
-    const names_query = Array.from(await pool.query(`SELECT DISTINCT player_uuid, player_name FROM survival.Essentials_userdata WHERE player_uuid IN (${player_uuids.map(_=>'"'+_+'"').join(", ")}) AND userdata LIKE "%lastteleport:%"`));
+    const _player_uuids = player_uuids.map(_=>'"'+_+'"');
+
+    const names_query = Array.from(await pool.query(`SELECT DISTINCT player_uuid, player_name FROM survival.Essentials_userdata WHERE player_uuid IN (${_player_uuids.join(", ")})`));
     
     await pool.end();
 
@@ -86,6 +152,45 @@ module.exports=require("../../lib/Routes/exports")("/", (router, waRedirect, db,
     }
 
 
-    res.status(200).type("json").send(players);
+    res
+      .status(200)
+      .type("json")
+      .send(players.sort((a,b) => {
+        // Get your mayor rank
+        const ARank = a.ranks.sort(RankSort)[0];
+        const BRank = b.ranks.sort(RankSort)[0];
+
+        const RankDiff = RankSort(ARank, BRank);
+
+        if(RankDiff !== 0) return RankDiff;
+
+        const AName = a.name?.toLowerCase?.();
+        const BName = b.name?.toLowerCase?.();
+
+        if(!AName || !BName) return 0;
+        
+        return StringSort(AName, BName);
+      }));
   });
+  
+  function StringSort(str_a, str_b) {
+    const maxLength = Math.max(str_a.length, str_b.length);
+    for(let i=0; i < maxLength; i++) {
+      if(str_a[i] == str_b[i]) continue;
+      if(str_a[i] == undefined) return 1;
+      if(str_b[i] == undefined) return -1;
+
+      return str_a.charCodeAt(i) - 
+             str_b.charCodeAt(i);
+    }
+
+    return 0;
+  }
+
+  function RankSort(rank_a, rank_b) {
+    rank_a = "group."+rank_a;
+    rank_b = "group."+rank_b;
+    return staff_groups.indexOf(rank_a) - 
+           staff_groups.indexOf(rank_b);
+  }
 });

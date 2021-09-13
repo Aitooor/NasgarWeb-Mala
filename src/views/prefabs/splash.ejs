@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <%- include("../partials/header.ejs") %>
+  <title> <%= title %> </title>
+	
+  <%- include("../partials/less.ejs", { paths: ["prefabs/splash"] })  %>
+</head>
+<body>
+	<div class="card" >
+    <div class="top" > 
+      <span class="text" > <%- texts?.text %> </span>
+    </div>
+    <div class="bottom" > 
+	    <span class="help" > 
+        <%- (texts.help || "") %>
+      </span>
+	    <span class="redirect" >
+	      Redireccionando hacia 
+        <a href="<%= (locals.link?.href || '/') %>" ><%- (locals.link?.text || "la pantalla principal") %></a>... 
+				<span class="time time-counter" >-</span>s
+			</span>
+		</div>
+  </div>
+
+  <script lang="javascript">
+    ;(()=>{
+      const t_d = document.querySelector(".time-counter");
+      let secs = parseInt(""+<%- (locals.seconds || "10") %>);
+
+      t_d.innerText = secs;
+
+      const time = setInterval(() => {
+        t_d.innerText = --secs;
+
+        if(secs === 0) {
+          clearInterval(time);
+          window.open("<%- (locals.link?.href || '/') %>", "_self");
+        }
+      }, 1000);
+    })();
+  </script>
+
+  <%- (locals.extra || "") %>
+</body>
+</html>

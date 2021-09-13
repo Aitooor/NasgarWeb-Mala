@@ -1,5 +1,7 @@
 document.querySelector(".banner-discord").onclick = () => {window.open("https://discord.gg/PJk9uyhv6S", "_blank")};
 
+localStorage.clear();
+
 /** @type {HTMLDivElement} */
 const membersCard = document.querySelector(".card-members");
 /** @type {{

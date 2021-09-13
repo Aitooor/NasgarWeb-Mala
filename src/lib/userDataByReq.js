@@ -1,38 +1,38 @@
 const express = require("express");
 
-/** 
+/**
  * @param {express.Request<RouteParameters<string>, any, any, qs.ParsedQs, Record<string, any>>} req
  * @param {express.Response<any, Record<string, any>, number>} res
  * @param {express.NextFunction} next
  */
 function middleware(req, res, next) {
-	/** @type {import("..").UserData} */
-	const userData = {
-		account: {
-			level: {
-				string: req.session.accountLevelString,
-				int: req.session.accountLevelInt
-			}
-		}
-	};
+  /** @type {import("..").UserData} */
+  const userData = {
+    account: {
+      level: {
+        string: req.session.accountLevelString,
+        int: req.session.accountLevelInt,
+      },
+    },
+  };
 
-	req.userData = userData;
-	res.locals.userData = userData;
-	res.locals.server = {
-		ip: "nasgar.online"
-	}
+  req.userData = userData;
+  res.locals.userData = userData;
+  res.locals.server = {
+    ip: "nasgar.online",
+  };
 
-	res.locals.alert = {
-		show: req.session.showAlert,
-		text: req.session.alert
-	};
+  res.locals.alert = {
+    show: req.session.showAlert,
+    text: req.session.alert,
+  };
 
-	req.session.showAlert = false;
+  req.session.showAlert = false;
 
-	next();
+  next();
 }
-
 
 module.exports = {
-	middleware
-}
+  middleware,
+};
+
