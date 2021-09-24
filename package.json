@@ -1,43 +1,56 @@
 {
-    "name": "nasgar-web",
-    "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
-    "scripts": {
-        "start": "node bin/www",
-	"start_forever": "( SET NODE_ENV=production || NODE_ENV=production ) && forever start -a -c \"node --no-warnings\" --uid \"web\" bin/www",
-        "dev": "nodemon bin/www",
-        "commit": "git add . && git commit -am \"Auto commited\"",
-        "hub": "git push hub master && git push hubNasgar master",
-        "deploy": "git push heroku master --force",
-        "compile_less_common": "lessc ./src/public/less/common/super.less ./src/public/css/common.css -x --source-map",
-        "compile_less_components": "lessc ./src/public/less/components/select.less ./src/public/css/components/select.css -x --source-map",
-        "compile_less_partials": "cd src/public && lessc ./less/partials/partials.less ./css/partials/partials.css -x --source-map --source-map-url=/css/partials/partials.css.map",
-        "compile_less": "npm run compile_less_common && npm run compile_less_components && npm run compile_less_partials"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "@types/socket.io": "^3.0.2",
-        "@types/socket.io-client": "^3.0.0",
-        "axios": "^0.21.1",
-        "cookie-parser": "^1.4.5",
-        "crypto": "^1.0.1",
-        "ejs": "^3.1.6",
-        "express": "^4.17.1",
-        "express-session": "^1.17.2",
-        "hjson": "^3.2.2",
-        "http-errors": "^1.8.0",
-        "mysql": "^2.18.1",
-        "paypal-rest-sdk": "^1.8.1",
-        "rcon": "git+https://github.com/tehbeard/node-rcon.git",
-        "socket.io": "^4.1.2",
-        "uuid": "^8.3.2"
-    },
-    "devDependencies": {
-        "morgan": "^1.10.0",
-        "dotenv": "^10.0.0",
-        "nodemon": "^2.0.7"
-    }
+  "name": "nasgar-web",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bin/www",
+  "bin": {
+    "nasgar-web": "bin/www"
+  },
+  "type": "commonjs",
+  "module": "nasgar-web",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "scripts": {
+    "start": "node bin/www",
+    "start_forever": "( SET NODE_ENV=production || NODE_ENV=production ) && forever start -a -c \"node --no-warnings\" --uid \"web\" bin/www",
+    "dev": "nodemon bin/www",
+    "commit": "git add . && git commit -am \"Auto commited\"",
+    "hub": "git push hub master && git push hubNasgar master",
+    "deploy": "git push heroku master --force",
+    "compile_less_common": "lessc ./src/public/less/common/super.less ./src/public/css/common.css -x --source-map",
+    "compile_less_components": "lessc ./src/public/less/components/select.less ./src/public/css/components/select.css -x --source-map",
+    "compile_less_partials": "cd src/public && lessc ./less/partials/partials.less ./css/partials/partials.css -x --source-map --source-map-url=/css/partials/partials.css.map",
+    "compile_less": "npm run compile_less_common && npm run compile_less_components && npm run compile_less_partials"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "cookie-parser": "^1.4.5",
+    "crypto": "^1.0.1",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "express-session": "^1.17.2",
+    "hjson": "^3.2.2",
+    "http-errors": "^1.8.0",
+    "mysql": "^2.18.1",
+    "paypal-rest-sdk": "^1.8.1",
+    "rcon": "git+https://github.com/tehbeard/node-rcon.git",
+    "socket.io": "^4.1.2",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.2",
+    "@types/express": "^4.17.13",
+    "@types/express-session": "^1.17.4",
+    "@types/mysql": "^2.15.19",
+    "@types/paypal-rest-sdk": "^1.7.6",
+    "@types/socket.io": "^3.0.2",
+    "@types/socket.io-client": "^3.0.0",
+    "dotenv": "^10.0.0",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.7"
+  }
 }

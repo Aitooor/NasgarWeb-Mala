@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include("../../partials/header.ejs") %>
+	<title> Shop Panel - Nasgar Network </title>
+
+	<meta rel="canonical" href="https://web.nasgar.online/">
+	
+	<%- include("../../partials/script.ejs", { paths: ["pg/staff/shopPanel"] }) %>
+	<%- include("../../partials/less.ejs", { paths: ["pags/staff/shopPanel"] }) %>
+</head>
+<body>
+	<%- include("../../partials/nav.ejs", { userData, alert }) %>
+
+	<div class="header-separator" ></div>
+	
+	<div class="app" >
+		<div class="header" >
+			<span class="title" > 
+				<span class="text" > Shop Items </span> 
+				<span class="modifiers" >All</span> 
+			</span>
+			<div class="actions" >
+				<button class="action refresh" >
+					<i class="material" >refresh</i>
+				</button>
+				<button class="action filter" >
+					<i class="material" >filter_list</i>
+				</button>
+				<button class="action add" >
+					<i class="material" >add_circle_outline</i>
+				</button>
+			</div>
+		</div>
+		<div class="items" >	
+		</div>
+	</div>
+	
+	<div class="modal-zone item-editor" >
+		<div class="modal" >
+			<div class="header" >
+				Product name
+			</div>
+
+			<div class="body" >
+				<div class="placeholder hidden" id="uuid">UUID: -</div>
+				<div class="field">
+					<span>Image selector (<span id="total-images">N</span> images):</span>
+					<button class="input" id="image-selector">Select images</button>
+				</div>
+				<div class="field required" >
+					<span class="title" >Category</span>
+					<select class="input" id="category" >
+						<option value="private" selected >No select / Private</option>
+						<option value="key">Keys</option>
+						<option value="rank">Ranks</option>
+					</select>
+				</div>
+				<div class="field required" >
+					<span class="title" >Name</span>
+					<input id="name" class="input" placeholder="Name of product"  >
+				</div>
+				<div class="field required">
+					<span class="title">Price</span>
+					<input id="price" class="input" type="number" placeholder="Price">
+				</div>
+				<div class="field required" >
+					<span class="title" >Description</span>
+					<textarea id="description" class="input" placeholder="Description" ></textarea>
+				</div>
+				<div class="field list" >
+					<div class="title" >
+						<span class="title" >Commands</span>
+						<div class="actions" >
+							<button id="command-add-btn">
+								<i class="material" >add_circle_outline</i>
+							</button>
+						</div>
+					</div>
+					<div class="list" id="commands-list"></div>
+				</div>
+			</div>
+			
+			<div class="modal-actions" >
+				<button class="delete">Delete</button>
+				<button class="cancel">Cancel</button>
+				<button class="save">Save</button>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal-zone image-selector" >
+		<div class="modal" >
+			<div class="header outline" >
+				Image selector
+			</div>
+			<div class="body image-select" >
+				<div class="upload-zone" >
+					<span class="total" >5 images</span>
+					<button class="upload" >Upload images</button>
+				</div>
+				<div class="images" >
+					<div class="image selected" ><img src="./img/logo.png" ></div>
+					<div class="image" ><img src="./img/logo.png" ></div>
+					<div class="image" ><img src="./img/logo.png" ></div>
+					<div class="image selected" ><img src="./img/logo.png" ></div>
+					<div class="image" ><img src="./img/logo.png" ></div>
+				</div>
+			</div>
+			<div class="modal-actions" >
+				<button class="cancel" >Cancel</button>
+				<button class="save" >Save</button>
+			</div>
+		</div>
+	</div>
+
+	<template id="item" >
+		<div class="item">
+			<div class="top" >
+				<span class="name" >Normal Key x5</span>
+			</div>
+			<div class="bottom" >
+				<span class="category" >Keys</span>
+				<span class="price" >1.50</span>
+			</div>
+		</div>
+	</template>
+
+	<template id="list-item" >
+		<div class="item" >
+			<input class="input" placeholder="Value"  >
+			<button class="delete" >
+				<i class="material">delete</i> 
+			</button>
+		</div>
+	</template>
+</body>
+</html>

@@ -1,7 +1,28 @@
 const { StaffMiddleware, alertNotStaff } = require("../../middlewares/staff");
 const CONFIG = require("../../../config");
+const express = require("express");
+
+/**
+ * @param {string} path
+ * @returns {(req: express.Request, res: express.Response, next: express.NextFunction) => void}
+ */
+function AdminMiddleware(path) {
+	return (req, res, next) => {
+		if(req.session.admin) 
+			next();
+		else {
+			res.type("html").send(`<!DOCTYPE html> <html> <head> <title>Admin verification</title></head> <body> <form style="display:none;" action="/staff/admin/login" method="POST"> <input name="path" value="${path}"> <input name="password"> <button type="submit"></button> </form> <script> function _try() { const pass = prompt("Password: "); if(pass.length > 0) { document.querySelector("input[name=\\"password\\"]").value=pass; document.querySelector("button").click(); } else { _try(); } }; _try(); </script> </body> </html>`);
+		}
+	}
+}
 
 module.exports = require("../../lib/Routes/exports")("/staff", (router, waRedirect, db, rcons) => {
+	router.post("/admin/login", (req, res) => {
+		if(CONFIG.TIMING_PASS === req.body.password)
+			req.session.admin = true;
+		res.redirect(req.body.path);
+	});
+
 	router.get("/login", (req, res) => {
 		if(!req.session.isStaff) return res.render("pags/staff/login");
 		res.redirect("/");
@@ -28,44 +49,12 @@ module.exports = require("../../lib/Routes/exports")("/staff", (router, waRedire
 		req.session.showAlert = true;
 		res.redirect("/");
 	});
-	
-	router.get("/staff-timings", (req, res) => {
-		if(req.session.admin) {
-			res.render("pags/staff/timings");
-		} else {
-			res.type("html").send(`
-<!DOCTYPE html>
-<html>
-	<head>
-		<title>Admin verification</title>
-	</head>
-	<body>
-		<form style="display:none;" action="/staff/staff-timings" method="POST">
-			<input name="password">
-			<button type="submit"></button>
-		</form>
-		<script>
-			function _try() {
-				const pass = prompt("Password: ");
-				if(pass.length > 0) {
-					document.querySelector("input").value=pass;
-					document.querySelector("button").click();
-				} else {
-					_try();
-				}
-			}
-			
-			_try();
-		</script>
-	</body>
-</html>
-			`);
-		}
+
+	router.get("/shop/panel", AdminMiddleware("/staff/shop/panel"), (_req, res) => {
+		res.render("pags/staff/shopPanel");
 	});
 	
-	router.post("/staff-timings", (req, res) => {
-		if(CONFIG.TIMING_PASS === req.body.password)
-			req.session.admin = true;
-		res.redirect("/staff/staff-timings");
+	router.get("/staff-timings", AdminMiddleware("/staff/staff-timings"), (_req, res) => {
+		res.render("pags/staff/timings");
 	});
 })

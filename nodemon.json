@@ -1,0 +1,12 @@
+{
+  "ignore": [
+    ".vscode/*",
+    "*.test.js",
+    "__tests__/*",
+    "node_modules/*",
+    "src/public/*"
+  ],
+  "ext": "js,json",
+  "quiet": true,
+  "noUpdateNotifier": false
+}

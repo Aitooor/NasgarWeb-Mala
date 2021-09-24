@@ -1,4 +1,5 @@
 
+/** @returns {HTMLElement} */
 const $ = id=>document.getElementById(id);
 
 const player_list = $("players");
@@ -125,16 +126,19 @@ async function CacheUUIDs() {
   if(!res.ok) 
     return (alert("Error fetching player data (uuid)"), true), null;
 
-  const res2 = await fetch("/api/get/co-users", {
+  const players = await res.json();
+  
+  const uuids = players.map(player => player.uuid);
+
+  const res2 = await fetch("/api/get/co-users?uuids=" + uuids.join(","), {
     credentials: "same-origin",
     cache: "no-cache"
   });
 
   if(!res2.ok)
-    return (alert("Error fetching co users"), true), null;
+    return (alert("Error fetching co users, "+ res2.status), true), null;
   
-  const players = await res.json();
-  const users   = await res2.json();
+  const users = await res2.json();
   
   for(let player of players) {
     if(!staff_uuids[player.name])
@@ -171,7 +175,7 @@ async function GetPlayerCmds(n) {
   });
 
   if(!res.ok)
-    return (alert(res.status === 400 ? uuid+" Bad uuid getting times" : "Error fetching commands of "+uuid), true), null;
+    return (alert(res.status === 400 ? n+" Bad uuid getting times" : "Error fetching commands of "+n), true), null;
 
   return await res.json();
 }
@@ -237,7 +241,7 @@ async function update() {
     r.push(ply);
   }
 
-  await SetListPlayers(r);
+  SetListPlayers(r);
 // TODO: Filters
 }
 
@@ -247,6 +251,5 @@ async function updateActual() {
   cached_players[actual].cmds  = null;
   await SetActualPlayer(await GetPlayer(actual));
 }
-// TODO: all paths of api
 
 update().catch(alert);

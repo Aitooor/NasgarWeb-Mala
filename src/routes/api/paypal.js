@@ -15,6 +15,9 @@ module.exports = require("../../lib/Routes/exports")("/paypal", (router, waRedir
     const cupon_valid = cupon.valid;
     const cupon_modify = cupon_valid ? cupon.modify : 0;
 
+    req.session.shopCart = body.shop_cart;
+    req.session.nick = nick;
+
     const items_cart = body.shop_cart
       .split(";")[0]
       .split(",")
@@ -39,8 +42,6 @@ module.exports = require("../../lib/Routes/exports")("/paypal", (router, waRedir
         gift: item.gift
       });
     };
-
-    console.log(body.shop_cart, cart);
 
     const cart_total = cart.reduce((old, { quantity, price }) => quantity * price + old, 0);
     

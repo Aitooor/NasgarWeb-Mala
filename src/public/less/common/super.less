@@ -29,8 +29,13 @@ input {
 }
 
 
-select:focus {
+select:focus,
+textarea:focus {
   outline: none;
+}
+
+textarea::-webkit-scrollbar {
+	width: 10px;
 }
 
 // Scrollbar

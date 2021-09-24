@@ -1,4 +1,6 @@
 
+Object.defineProperty(exports, "__esModule", { value: true });
+
 // Modules
 const express = require('express');
 const { join } = require("path");
@@ -10,7 +12,6 @@ const userDataByReq = require("./lib/userDataByReq");
 const normalizeSession = require("./lib/normalizeSession");
 const database = require("./lib/database");
 const rcon = require("./lib/rcon");
-const socketio = require("./lib/socketio");
 
 // Configuration
 const CONFIG = require("../config");
@@ -26,7 +27,7 @@ app.set('views', join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // Config
-app.use(require("express-sessions")({
+app.use(require("express-session")({
 	secret: CONFIG.SESSION_KEY,
 	saveUninitialized: true,
 	resave: true
@@ -49,12 +50,19 @@ paypal.configure({
 	client_id: CONFIG.PAYPAL.SANDBOX.ID,
 	client_secret: CONFIG.PAYPAL.SANDBOX.SECRET
 });
+
+console.log("\n");
+console.log("+—————————————————+");
+console.log("| Starting Server |");
+console.log("+—————————————————+");
+console.log("");
+
 console.log("Paypal is connected");
 
 // Init All
 (async () => {
 	const db = await database(app);
-	const rcons = true ? null : await rcon(...CONFIG.RCON.PORTS);
+	const rcons = false ? null : await rcon(...CONFIG.RCON.PORTS);
 	//const io = await socketio(server, db.createPool);
 	require("./routes")(app, db.createPool, rcons);
 })();

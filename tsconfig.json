@@ -1,0 +1,21 @@
+{
+  "include": [
+    "**/*.js",
+    "**/*.ts",
+    "**/*.d.ts"
+  ],
+  "compilerOptions": {
+    "outDir": "./dist",
+    "allowJs": true,
+    "target": "ES6",
+    "module": "CommonJS",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "moduleResolution": "Node",
+    "allowSyntheticDefaultImports": true,
+    "checkJs": true,
+    "strict": false,
+    "removeComments": false,
+    "experimentalDecorators": true
+  }
+}

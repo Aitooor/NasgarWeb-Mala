@@ -12,7 +12,7 @@ type AccountLevelString = "nologged" | "common" | "tester" | "staff" | "admin";
 type AccountLevelInt = -1 | 0 | 1 | 2 | 3;
 
 
-class UserData {
+declare class UserData {
 	private constructor(req: express.Request, res: express.Response);
 
 	account: {
@@ -33,5 +33,7 @@ declare module 'express-session' {
 
 		accountLevelString: AccountLevelString;
 		accountLevelInt: AccountLevelInt;
+
+		[key: string]: any;
 	}
 }

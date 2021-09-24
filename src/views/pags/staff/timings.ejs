@@ -3,10 +3,9 @@
 <head>
 	<%- include("../../partials/header.ejs") %>
 	<title> Staff Timings - Nasgar Network </title>
-
-  <script src="/js/pg/staff/timings.js?r=<%= Math.floor(Math.random() * 16_000_000) %>" type="module" defer></script>
 	
 	<%- include("../../partials/less.ejs", { paths: ["pags/staff/timings"] }) %>
+	<%- include("../../partials/script.ejs", { paths: ["pg/staff/timings"] }) %>
 </head>
 <body>
 	<%- include("../../partials/nav.ejs", { userData, alert }) %>

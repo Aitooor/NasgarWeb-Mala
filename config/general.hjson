@@ -2,13 +2,13 @@
 // Enviroment (prod, dev)
   ENV: "dev"
 
-// Port to use and them conditional
+// Port to use and their conditional
   PORT: [
     { port: "env"
       condition: "exist" },
     { port: 80
       condition: "prod" },
-    { port: 1403
+    { port: 1402
       condition: "dev" }
   ]
 
@@ -32,8 +32,8 @@
 
 // RCON data
   RCON: {
-    PASS: "Aitor19992%"
-    PORTS: [100]
+    PASS: "Aitor19992%",
+    PORTS: [ 100 ]
   }
 
 // PAYPAL data
@@ -44,3 +44,5 @@
     }
   }
 }
+
+// vim: set ft=hjson

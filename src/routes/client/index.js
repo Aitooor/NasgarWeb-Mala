@@ -5,7 +5,23 @@ const exec_params = `{{ PlayerName }} stone 1 [&&] {{ PlayerName }} ["",{"text":
 
 const shop = require("../../lib/shop");
 
+/**
+ * @param {import('rcon')} rcon
+ * @param {string} command
+ * @param {string} args
+ * @param {{ [key: string]: string }} env
+ * @return {Promise<string>}
+ */
+async function execute_command(rcon, command, args, env) {
+  for(let _var in env) {
+    args = args.replace(new RegExp(`\\{\\{${_var}\\}\\}`, "g"), env[_var]);
+  }
+
+  return await rcon.send(command + " " + args);
+}
+
 module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, db, rcons) => {
+  
   router.get("/discord", (req, res) => {
     res.redirect("https://ds.nasgar.online");
   });
@@ -20,7 +36,7 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
     });
   });
 
-  router.get("/pay/return", (req, res) => {
+  router.get("/pay/return", async (req, res) => {
     const qk = Array.from(Object.keys(req.query));
 
     if(!(
@@ -30,6 +46,37 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
     )) {
       res.status(400).redirect("/");
       return;
+    }
+
+    const products_cart = req.session.shopCart
+      .split(";")[0]
+      .split(",")
+      .map(_ => {
+        const p = _.split(":");
+        return {
+          uuid: p[0],
+          quantity: parseInt(p[1]),
+          gift: p[2] === "false" || p[2] === undefined ? false : p[2]
+        }
+      }); 
+    const products = products_cart.map(async product => 
+      await shop.getProduct(db, product.uuid)
+    );
+
+    const pool = db();
+
+    for(let _product of products) {
+      const product = await _product;
+
+      const cmds = product.exec_cmd.split(" [&&] ");
+      const args = product.exec_params.split(" [&&] ");
+
+      for(let i = 0; i < cmds.length; i++) {
+        await execute_command(rcons[0], cmds[i], args[i], {
+          PlayerName: req.session.nick,
+          ItemName: product.name
+        });
+      }
     }
 
     res.status(200).render("prefabs/splash", {

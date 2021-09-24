@@ -1,19 +1,23 @@
+
 const CART = "shop_cart";
 
+/** @type {any[]} */
 const cart = [];
 const products_cache = {};
 
+/** @type {boolean | object} */
 let cupon = false;
 
 const products_ul = document.querySelector(".products");
 
 /** @type {HTMLSpanElement} */
 const total_span = document.querySelector(".total-count");
+/** @type {HTMLSpanElement} */
 const subtotal_span = document.querySelector(".subtotal-count");
 
 document
   .querySelector(".btn-pay")
-  .addEventListener("click", () => {
+  ?.addEventListener("click", () => {
     window.open("/shop/pay?total=" + getTotal(), "_self");
   });
 
@@ -23,6 +27,13 @@ document
 
 const _main_cupon = () => {
   try {
+  /** @type {{ 
+      cupon: HTMLDivElement, 
+      input: HTMLInputElement,
+      button: HTMLButtonElement,
+      txt: HTMLSpanElement,
+      clear: HTMLButtonElement
+    }} */
   const _cupon = {
     cupon:  document.querySelector(".cupon-div"),
     input:  document.querySelector(".cupon-input"),
@@ -42,9 +53,10 @@ const _main_cupon = () => {
         cupon: _cupon.input.value
       })
     })
-      .then(async (res) => {
-        if(res.status === 400) return alert("!");
-        res = await res.json();
+      .then(async (_res) => {
+        if(_res.status === 400) return alert("!");
+        /** @type {Cupon} */
+        let res = await _res.json();
 
         if(res.valid) {
           _cupon.txt.innerText = res.cupon;
@@ -73,7 +85,7 @@ const _main_cupon = () => {
       test_cupon();
   };
 
-  _cupon.input.oninput = (e) => {
+  _cupon.input.oninput = () => {
     _cupon.input.value = _cupon.input.value.toUpperCase();
   };
 
@@ -138,8 +150,14 @@ const _main_cupon = () => {
 }catch(e){alert(e)}
 })();
 
+/** @typedef {{ valid: boolean, cupon: string, modify?: number}} Cupon */
+/** @typedef {{ uuid: string, quantity: number, gift: boolean | string }} Product */
+/** @typedef {{ uuid: string, name: string, price: number, images: string[]}} ProductResponse */
 
-function createProductDom({ product, response, i } = {}) {
+/**
+ * @param {{ product?: Product | null, i?: number | undefined}} param
+*/
+function createProductDom({ product = null, i = 0 } = {}) {
   return GDom({
     elm: "li",
     attr: { "class": `product product-${i}` },
@@ -196,9 +214,14 @@ function createProductDom({ product, response, i } = {}) {
   });
 };
 
+/**
+ * @param {Product} product
+ * @param {ProductResponse} response
+ * @param {number} i
+ */
 function updateProductDom(product, response, i) {
 	/** @type {HTMLDivElement} */
-	const me = createProductDom({ product, response, i });
+	const me = createProductDom({ product, i });
   products_ul.append(me);
 	me.querySelector(".product-icon").append(img(response?.images?.[0]));
 	me.querySelector(".product-name").innerHTML = response.name;
@@ -233,7 +256,9 @@ function updateProductDom(product, response, i) {
 	function removeQuantity(n = 1) {setQuantity(limit(getQuantity() - n, 1, 999_999));}
 
   const gift_div = me.querySelector(".actions > .gift");
+  /** @type {HTMLInputElement} */
   const gift_inp = gift_div.querySelector(".gift-input");
+  /** @type {HTMLButtonElement} */
   const gift_btn = gift_div.querySelector("i.material");
   let gift_open = product.gift ? true : false;
 
@@ -263,6 +288,7 @@ function updateProductDom(product, response, i) {
       return;
     }
     
+    gift_inp.blur();
     gift_inp.value = gift_inp.value.replace(/[:;]/g, "_");
     _product().gift = gift_inp.value;
     reloadTotal();
@@ -299,7 +325,7 @@ function getSubTotal() {
  * @returns {number}
  */
 function getTotal() {
-  return getSubTotal() * (cupon? 1 - cupon.modify : 1);
+  return getSubTotal() * (cupon != false ? 1 - cupon.modify : 1);
 }
 
 /**
@@ -329,7 +355,14 @@ function monetize(money) {
 	return sep[0] + "." + cents;
 }
 
+/**
+ * @typedef {{ elm?: string, attr: { [attr: string]: string}, evt: { [evt: string]: (...args: any[]) => void }, childs: GDom_Node[] }} GDom_Node
+ */
 // Transform a json to HTMLElement with attributes and childs
+/**
+ * @param {GDom_Node | string} structure
+ * @return {HTMLElement | string}
+ */
 function GDom(structure) {
   if(typeof structure === "string")
     return structure;

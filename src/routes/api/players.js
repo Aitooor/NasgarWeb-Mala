@@ -13,13 +13,17 @@ module.exports=require("../../lib/Routes/exports")("/", (router, waRedirect, db,
   }
 
   router.get("/get/co-users", adminMidd, async (req, res) => {
+    if(typeof req.query.uuids !== "string")
+      return res.sendStatus(400);
+
     let more = "";
     if(req.query.uuids)
       more = " WHERE uuid IN ("+ req.query.uuids.split(",").map(_=>'"'+_+'"').join(", ") + ")";
-    const pool = await db();
+    
+    const pool = db();
     const query1 = Array.from(await pool.query("SELECT * FROM survival.co_user"+more)).filter(e=>e.uuid);
     const query2 = Array.from(await pool.query("SELECT * FROM survival.co2_user"+more)).filter(e=>e.uuid);
-    await pool.end();
+    pool.end();
     
     const users = {};
     
@@ -56,7 +60,7 @@ module.exports=require("../../lib/Routes/exports")("/", (router, waRedirect, db,
 
     let cmds = [];
 
-    const pool = await db();
+    const pool = db();
     if(req.query.n1)
       cmds = cmds.concat(Array.from(
         await pool.query(`SELECT user, time, message FROM survival.co_command WHERE user = ${req.query.n1} ORDER BY time DESC LIMIT 100`)
@@ -64,11 +68,9 @@ module.exports=require("../../lib/Routes/exports")("/", (router, waRedirect, db,
     if(req.query.n2)                                             cmds = cmds.concat(Array.from(
         await pool.query(`SELECT user, time, message FROM survival.co2_command WHERE user = ${req.query.n2} ORDER BY time DESC LIMIT 100`)
       ));
-    await pool.end();
+    pool.end();
 
     cmds = cmds.sort((a,b)=>b.time-a.time);
-
-    console.log(cmds);
 
     res
       .status(200)
@@ -79,9 +81,9 @@ module.exports=require("../../lib/Routes/exports")("/", (router, waRedirect, db,
   router.get("/get/times/:uuid", adminMidd, async (req, res) => {
     const uuid = req.params.uuid;
     
-    const pool = await db();
+    const pool = db();
     const query = Array.from(await pool.query(`SELECT time, day FROM bungee.StaffTimings WHERE uuid = "${uuid}"`));
-    await pool.end();
+    pool.end();
     
     res
       .status(200)
@@ -113,7 +115,7 @@ module.exports=require("../../lib/Routes/exports")("/", (router, waRedirect, db,
 
     groups = groups.map(group=>`"${group}"`);
 
-    const pool = await db();
+    const pool = db();
     const groups_query = Array.from(await pool.query(`SELECT DISTINCT uuid, permission FROM survival.luckperms_user_permissions WHERE permission IN (${groups.join(", ")}) ORDER BY FIELD(permission, ${groups.join(", ")})`));
     
     const players = [];
@@ -137,7 +139,7 @@ module.exports=require("../../lib/Routes/exports")("/", (router, waRedirect, db,
 
     const names_query = Array.from(await pool.query(`SELECT DISTINCT player_uuid, player_name FROM survival.Essentials_userdata WHERE player_uuid IN (${_player_uuids.join(", ")})`));
     
-    await pool.end();
+    pool.end();
 
     const player_names = names_query.reduce((obj, qr) => {
       obj[qr.player_uuid] = qr.player_name;
@@ -173,6 +175,10 @@ module.exports=require("../../lib/Routes/exports")("/", (router, waRedirect, db,
       }));
   });
   
+  /**
+   * @param {string} str_a
+   * @param {string} str_b
+  */
   function StringSort(str_a, str_b) {
     const maxLength = Math.max(str_a.length, str_b.length);
     for(let i=0; i < maxLength; i++) {
@@ -186,7 +192,11 @@ module.exports=require("../../lib/Routes/exports")("/", (router, waRedirect, db,
 
     return 0;
   }
-
+  
+  /**
+   * @param {string} rank_a
+   * @param {string} rank_b
+  */
   function RankSort(rank_a, rank_b) {
     rank_a = "group."+rank_a;
     rank_b = "group."+rank_b;
