@@ -1,9 +1,17 @@
 
-import { monetize, wait, capitalize } from '../../common/shop.js';
+import { monetize, wait, capitalize, applyFilter } from '../../common/shop.js';
 
 /**
  * @typedef {{ uuid?: string, name: string, description: string, price: number, exec_cmd: string, exec_params: string, images: string[], category: string, created: number }} ItemData
  */
+
+const filters = {
+  created: 1,
+  price: 0,
+  name: 0,
+  category: ".*",
+  sale: 0
+}
 
 const header_actions_div = document.querySelector(".app .header .actions"); 
 
@@ -64,6 +72,9 @@ header_action.add.onclick = async () => {
 /** @type {{ [uuid: string]: ItemData }} */
 let cache_items = {};
 
+/** @type {string[]} */
+let cache_ordened_uuid = [];
+
 async function refreshItems() {
   items_list.classList.add("loading");
   
@@ -71,7 +82,7 @@ async function refreshItems() {
   
   await FetchItems();
 
-  for(let uuid in cache_items) 
+  for(let uuid of cache_ordened_uuid) 
     items_list.append(CreateItem(cache_items[uuid]));
   
   items_list.classList.remove("loading");
@@ -679,11 +690,18 @@ async function FetchItems() {
 
   /** @type {ItemData[]} */
   const json = await res.json();
+
+  cache_ordened_uuid = [];
   
   cache_items = json.reduce((obj, item) => {
     obj[item.uuid] = item;
+    cache_ordened_uuid.push(item.uuid);
     return obj;
   }, {});
+
+  cache_ordened_uuid.sort((a, b) => {
+    return cache_items[a].created - cache_items[b].created;
+  });
 
   return cache_items;
 }
