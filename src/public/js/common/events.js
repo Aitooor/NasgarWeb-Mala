@@ -1,54 +1,50 @@
-var EventEmitter = /** @class */ (function () {
-    function EventEmitter(opts) {
+export class EventEmitter {
+    constructor(opts) {
         this._events = {};
         this._eventNames = [];
         this._eventNames = opts;
     }
-    EventEmitter.prototype.emit = function (name, args) {
-        var ev = this._events[name];
+    emit(name, args) {
+        const ev = this._events[name];
         if (ev == null)
             return;
-        for (var _i = 0, ev_1 = ev; _i < ev_1.length; _i++) {
-            var fn = ev_1[_i];
-            fn.apply(void 0, args);
-        }
+        for (const fn of ev)
+            fn(...args);
         return;
-    };
-    EventEmitter.prototype.on = function (name, listener) {
+    }
+    on(name, listener) {
         if (!this._eventNames.includes(name))
             return;
-        var ev = this._events[name];
+        const ev = this._events[name];
         if (ev == null) {
             this._events[name] = [];
             this.on(name, listener);
         }
         this.off(name, listener);
         ev.push(listener);
-    };
-    EventEmitter.prototype.addListener = function (name, listener) {
+    }
+    addListener(name, listener) {
         this.on(name, listener);
-    };
-    EventEmitter.prototype.off = function (name, listener) {
-        var ev = this._events[name];
+    }
+    off(name, listener) {
+        const ev = this._events[name];
         if (ev == null)
             return;
-        this._events[name] = ev.filter(function (fn) {
+        this._events[name] = ev.filter(fn => {
             return fn !== listener;
         });
-    };
-    EventEmitter.prototype.removeListener = function (name, listener) {
+    }
+    removeListener(name, listener) {
         this.off(name, listener);
-    };
-    EventEmitter.prototype.removeAllListeners = function () {
+    }
+    removeAllListeners() {
         this._events = {};
-    };
-    EventEmitter.prototype.getListeners = function (name) {
-        var ev = this._events[name];
+    }
+    getListeners(name) {
+        const ev = this._events[name];
         if (ev == null)
             return [];
         return ev.slice(0);
-    };
-    return EventEmitter;
-}());
-export { EventEmitter };
+    }
+}
 //# sourceMappingURL=events.js.map

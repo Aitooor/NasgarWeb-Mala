@@ -1,4 +1,6 @@
 
+import Modal from "../../components/modal.js";
+import Select from "../../components/select.js";
 import { monetize, wait, capitalize, applyFilter } from '../../common/shop.js';
 
 /**
@@ -117,6 +119,34 @@ function CreateItem(data) {
 /**——————————————————**/
 /**       MODAL      **/
 /**——————————————————**/
+
+const modalItem_events = {
+  _delete: (_) => {},
+  _cancel: (_) => {},
+  _save:   (_) => {}
+};
+
+const modalItem = new Modal({
+  title: "Loading...",
+  headerStyle: Modal.HeaderStyle.Solid,
+  body: "",
+  cloneBody: true,
+  actions: [
+    { name: "Delete",
+      color: Modal.ActionColor.Danger,
+      onClick: (modal) => { 
+        modalItem_events._delete(modal);
+      } },
+    { name: "Cancel",
+      onClick: (modal) => {
+        modalItem_events._cancel(modal);
+      } },
+    { name: "Save",
+      onClick: (modal) => {
+        modalItem_events._save(modal);
+      } }
+  ]
+});
 
 /** @type {{ [key: string]: HTMLElement }} */
 const itemModal = {};

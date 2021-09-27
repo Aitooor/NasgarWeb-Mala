@@ -3,7 +3,7 @@ if (!window.custom_cached)
     // @ts-ignore
     window.custom_cached = {};
 // @ts-ignore
-var custom_cached = window.custom_cached;
+const custom_cached = window.custom_cached;
 export function setCache(name, obj) {
     return custom_cached[name] = obj;
 }

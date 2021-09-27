@@ -1,0 +1,76 @@
+export function middlewareEvents(element) {
+    const original_a = element.addEventListener;
+    const original_r = element.removeEventListener;
+    let eventNames = [];
+    const events = {};
+    element.addEventListener = function (...args) {
+        const name = args[0];
+        const listener = args[1];
+        if (events[name] == null)
+            events[name] = [];
+        if (!events[name].includes(listener))
+            events[name].push(listener);
+        eventNames = Object.keys(events);
+        original_a.call(element, ...args);
+    };
+    element.removeEventListener = function (...args) {
+        const name = args[0];
+        const listener = args[1];
+        if (events[name] == null)
+            events[name] = [];
+        events[name].filter(_ => _ !== listener);
+        if (events[name].length === 0)
+            events[name] = undefined;
+        eventNames = Object.keys(events);
+        original_r.call(element, ...args);
+    };
+    return {
+        removeAll() {
+            for (const ev of eventNames)
+                for (const fn of events[ev])
+                    // @ts-ignore
+                    element.removeEventListener(ev, fn);
+        },
+        get eventNames() {
+            return eventNames.slice(0);
+        },
+        get events() {
+            return events;
+        }
+    };
+}
+export function structureCopy(element) {
+    const me = {
+        dom: element,
+        elm: element.nodeName.toLowerCase(),
+        classes: element.classList,
+        attrs: {},
+        events: middlewareEvents(element),
+        hasChilds: element.hasChildNodes(),
+        childs: [],
+        _: {}
+    };
+    /*—————— Attributes ——————*/
+    const attributeNames = element.getAttributeNames();
+    for (const attr of attributeNames) {
+        me.attrs[attr] = element.getAttribute(attr);
+    }
+    /*—————— Childs ——————*/
+    if (me.hasChilds) {
+        const childs = Array.from(element.childNodes);
+        for (const child of childs) {
+            if (child.nodeName === "#text") {
+                continue;
+            }
+            const tag = child.nodeName.toLowerCase();
+            const name = child.dataset.name || null;
+            const prop = name || tag;
+            const sameTags = Object.keys(me._).filter(_ => _.match(new RegExp(`^${prop}\d*$`)) !== null);
+            const structure = structureCopy(child);
+            me._[prop + (sameTags.length || "")] = structure;
+            me.childs.push(structure);
+        }
+    }
+    return me;
+}
+//# sourceMappingURL=html.js.map
