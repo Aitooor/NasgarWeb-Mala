@@ -17,13 +17,15 @@
       </span>
 	    <span class="redirect" >
 	      Redireccionando hacia 
-        <a href="<%= (locals.link?.href || '/') %>" ><%- (locals.link?.text || "la pantalla principal") %></a>... 
+        <a href="<%= (locals.link?.href || '/') %>" >
+          <%- (locals.link?.text || "la pantalla principal") %>
+        </a>... 
 				<span class="time time-counter" >-</span>s
 			</span>
 		</div>
   </div>
 
-  <script lang="javascript">
+  <script>
     ;(()=>{
       const t_d = document.querySelector(".time-counter");
       let secs = parseInt(""+<%- (locals.seconds || "10") %>);

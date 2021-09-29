@@ -1,6 +1,8 @@
 
 interface middlewareEvents_return {
-	removeAll(): void;	
+	removeAll(): void;
+	add(...args: any[]): void;
+	rem(...args: any[]): void;
 	eventNames: string[];
 	events: {
 		[event: string]: Function[];
@@ -48,6 +50,9 @@ export function middlewareEvents(element: HTMLElement): middlewareEvents_return 
 					element.removeEventListener(ev, fn);
 		},
 
+		add: element.addEventListener,
+		rem: element.removeEventListener,
+
 		get eventNames() {
 			return eventNames.slice(0);
 		},
@@ -71,6 +76,8 @@ export interface json_html<T extends HTMLElement = HTMLElement> {
 	readonly _: {
 		[element: string]: json_html<HTMLElement>;
 	};
+
+	addChild<T extends HTMLElement = HTMLElement>(child: T): json_html<T>;
 }
 
 export function structureCopy<T extends HTMLElement>(element: T): json_html<T> {
@@ -82,8 +89,30 @@ export function structureCopy<T extends HTMLElement>(element: T): json_html<T> {
 		events: middlewareEvents(element),
 		hasChilds: element.hasChildNodes(),
 		childs: [],
-		_: {}
+		_: {},
+		// @ts-ignore
+		addChild() {}
 	};
+
+	me.addChild = function<T extends HTMLElement = HTMLElement>(child: T): json_html<T> {
+		if(child.nodeName === "#text") {
+			throw new TypeError("Child is a text");
+		}
+
+		const tag = child.nodeName.toLowerCase();
+		const name = child.dataset.name || null;
+		const prop = name || tag;
+		const sameTags = Object.keys(me._).filter(_ => _.match(new RegExp(`^${prop}\d*$`)) !== null);
+
+		const structure = structureCopy<T>(child);
+
+		me._[prop + (sameTags.length || "")] = structure;
+
+
+		me.childs.push(structure);
+
+		return structure;
+	}
 
 	/*—————— Attributes ——————*/
 	const attributeNames = element.getAttributeNames();
@@ -96,21 +125,7 @@ export function structureCopy<T extends HTMLElement>(element: T): json_html<T> {
 		const childs = <HTMLElement[]>Array.from(element.childNodes);
 		
 		for(const child of childs) {
-      if(child.nodeName === "#text") {
-          continue;
-      }
-
-			const tag = child.nodeName.toLowerCase();
-      const name = child.dataset.name || null;
-      const prop = name || tag;
-      const sameTags = Object.keys(me._).filter(_ => _.match(new RegExp(`^${prop}\d*$`)) !== null);
-
-			const structure = structureCopy<HTMLElement>(child);
-
-      me._[prop + (sameTags.length || "")] = structure;
-
-
-      me.childs.push(structure);
+			try { me.addChild(child) } catch{}
 		}
 		
 	}

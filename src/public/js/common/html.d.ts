@@ -1,5 +1,7 @@
 interface middlewareEvents_return {
     removeAll(): void;
+    add(...args: any[]): void;
+    rem(...args: any[]): void;
     eventNames: string[];
     events: {
         [event: string]: Function[];
@@ -19,6 +21,7 @@ export interface json_html<T extends HTMLElement = HTMLElement> {
     readonly _: {
         [element: string]: json_html<HTMLElement>;
     };
+    addChild<T extends HTMLElement = HTMLElement>(child: T): json_html<T>;
 }
 export declare function structureCopy<T extends HTMLElement>(element: T): json_html<T>;
 export {};

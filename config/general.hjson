@@ -15,6 +15,9 @@
 // Express sessions secret key
   SESSION_KEY: "cCEoEKCs-FFQfbnkv-z1rnpbFO-ODSUTR6C"
 
+// JsonWebToken secret key
+  JWT: "gXO0oONrGOzZzuuwvyIly2QPuGgopeIBafWxjjvWFpk="
+
 // Key for password encript [ WARNING WITH THIS ]
   PASS_KEY: "Password_Key"
 

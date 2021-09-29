@@ -12,6 +12,7 @@ const parent = cache.getCache<HTMLDivElement>(c_parent, document.createElement("
 
 if(!hasParent) {
   document.body.append(parent);
+  parent.classList.add("modal-parent");
   cache.setCache<boolean>(c_hasParent, true);
   cache.setCache<HTMLDivElement>(c_parent, parent);
 }
@@ -73,6 +74,7 @@ export default class Modal {
   public static parent: HTMLDivElement = parent;
   public static HeaderStyle = _Modal.HeaderStyle;
   public static ActionColor = _Modal.ActionColor;
+  public static allModals: Modal[] = [];
 
   private config: _Modal.Config = {
     title: "",
@@ -97,6 +99,7 @@ export default class Modal {
   private _body: HTMLDivElement;
   private _body_json: json_html<HTMLDivElement> = null;
   private _actions: HTMLDivElement;
+  private _actions_json: json_html;
   
   constructor(config: _Modal.Config) {
     this.element  = document.createElement("div");
@@ -109,20 +112,38 @@ export default class Modal {
     this._body.className    = "modal-body";
     this._actions.className = "modal-actions";
 
+    this._actions_json = structureCopy(this._actions);
+
     this.element.append(this._header, this._body, this._actions);
 
     Modal.parent.append(this.element);
 
     this.setConfig(config);
+
+    Modal.allModals.push(this);
+  }
+
+  get isOpen(): boolean {
+    return this.element.classList.contains("active");
+  }
+
+  set isOpen(value: boolean) {
+    if(value)
+      this.open();
+    else
+      this.close();
   }
  
   open() {
     this.element.classList.add("active");
+    Modal.parent.classList.add("active");
     this._events.emit("open", [this]);
   }
 
   close() {
-    this.element.classList.remove("active")
+    this.element.classList.remove("active");
+    if(!Modal.allModals.some(_ => _.isOpen))
+      Modal.parent.classList.remove("active")
     this._events.emit("close", [this]);
   }
 
@@ -139,6 +160,30 @@ export default class Modal {
     }
 
     deep(this._body_json);
+  }
+
+  disableAction(id: string | number) {
+    if(typeof id === "number") {
+      this._actions_json.childs[id].classes.add("disable");
+    }
+    this._actions_json._[id]?.classes?.add?.("disable");
+  }
+
+  disableActions() {
+    for(let actionName in this._actions_json._)
+      this._actions_json._[actionName].classes.add("disabled");
+  }
+
+  undisableAction(id: string | number) {
+    if(typeof id === "number") {
+      this._actions_json.childs[id]?.classes?.remove?.("disable");
+    }
+    this._actions_json._[id]?.classes?.remove?.("disable");
+  }
+
+  undisableActions() {
+    for(let actionName in this._actions_json._)
+      this._actions_json._[actionName].classes.remove("disabled");
   }
 
 
@@ -160,14 +205,23 @@ export default class Modal {
 
     const btn = document.createElement("button");
     btn.innerHTML = action.name;
+    btn.dataset.name = action.name;
     btn.className = action.className ?? "";
     btn.classList.add(_Modal.ActionColor[action.color ?? 0].toLowerCase());
+
+    const btn_json = this._actions_json.addChild(btn);
+    btn_json.events.add("click", action.onClick.bind(this, this));
+    this._actions.append(btn);
   }
 
 
   /*-********* Get Modal parts *********-*/
 
-  getActions(): _Modal.Action[] {
+  getActions(): json_html {
+    return this._actions_json;
+  }
+
+  getActionsConfig(): _Modal.Action[] {
     return this.config.actions.slice(0);
   }
 
@@ -202,7 +256,13 @@ export default class Modal {
     } else {
       if(this.config.cloneBody) {
         const clone = structureCopy<HTMLDivElement>(body);
-        clone.classes.add("modal-body")
+        clone.classes.add("modal-body");
+
+        // Prevent hidden body
+        clone.classes.remove("hidden");
+        clone.dom.removeAttribute("hidden")
+
+        this.element.replaceChild(clone.dom, this._body);
         this._body = clone.dom;
         this._body_json = clone;
       } else {
@@ -211,8 +271,10 @@ export default class Modal {
   }
 
   setActions(actions: _Modal.Action[]) {
+    this.config.actions = [];
+    
     for(const action of actions)
-      this.addAction(action);
+      this.addAction(action); 
   }
 
   setConfig(config: _Modal.Config): void {
@@ -229,6 +291,10 @@ export default class Modal {
         this.on("open", config.events.onOpen);
       if(config.events.onClose)
         this.on("close", config.events.onClose);
+    }
+
+    if(config.actions) {
+      this.setActions(config.actions)
     }
   }
 }

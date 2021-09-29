@@ -1,6 +1,7 @@
+export declare type SelectOption = string | [string, string];
 export interface SelectOptions {
     dom: HTMLSelectElement;
-    options: string[];
+    options: SelectOption[];
     selected?: string | number;
 }
 export default class Select {
@@ -14,7 +15,7 @@ export default class Select {
      */
     constructor(options: SelectOptions);
     select(id: number | string): void;
-    setOptions(options: string[]): void;
+    setOptions(options: SelectOption[]): void;
     get selectedIndex(): number;
     get selectedValue(): string;
 }

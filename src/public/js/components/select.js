@@ -14,11 +14,23 @@ export default class Select {
     addEventListener(type, listener) { }
     removeEventListener(type, listener) { }
     select(id) {
+        if (this.options.length === 0)
+            return;
         if (typeof id === "number") {
             this.element.selectedIndex = id;
         }
         else {
-            this.element.selectedIndex = Math.max(0, this.options.indexOf(id));
+            let i = 0;
+            this.options.find((option, _i) => {
+                const is = typeof option === "string" ?
+                    option === id :
+                    option[1] === id;
+                if (is)
+                    i = _i;
+                return is;
+            });
+            console.log(i);
+            this.element.selectedIndex = i;
         }
     }
     setOptions(options) {
@@ -26,8 +38,14 @@ export default class Select {
         this.options = options;
         for (const option of options) {
             const dom = document.createElement("option");
-            dom.innerHTML = option;
-            dom.value = option;
+            if (typeof option === "string") {
+                dom.innerHTML = option;
+                dom.value = option;
+            }
+            else {
+                dom.innerHTML = option[0];
+                dom.value = option[1];
+            }
             this.element.append(dom);
         }
     }
@@ -35,7 +53,8 @@ export default class Select {
         return this.element.selectedIndex;
     }
     get selectedValue() {
-        return this.options[this.element.selectedIndex];
+        const t = this.options[this.selectedIndex];
+        return typeof t === "string" ? t : t[1];
     }
 }
 //# sourceMappingURL=select.js.map

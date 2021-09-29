@@ -8,6 +8,7 @@ const hasParent = cache.getCache(c_hasParent, false);
 const parent = cache.getCache(c_parent, document.createElement("div"));
 if (!hasParent) {
     document.body.append(parent);
+    parent.classList.add("modal-parent");
     cache.setCache(c_hasParent, true);
     cache.setCache(c_parent, parent);
 }
@@ -53,16 +54,30 @@ export default class Modal {
         this._header.className = "modal-header";
         this._body.className = "modal-body";
         this._actions.className = "modal-actions";
+        this._actions_json = structureCopy(this._actions);
         this.element.append(this._header, this._body, this._actions);
         Modal.parent.append(this.element);
         this.setConfig(config);
+        Modal.allModals.push(this);
+    }
+    get isOpen() {
+        return this.element.classList.contains("active");
+    }
+    set isOpen(value) {
+        if (value)
+            this.open();
+        else
+            this.close();
     }
     open() {
         this.element.classList.add("active");
+        Modal.parent.classList.add("active");
         this._events.emit("open", [this]);
     }
     close() {
         this.element.classList.remove("active");
+        if (!Modal.allModals.some(_ => _.isOpen))
+            Modal.parent.classList.remove("active");
         this._events.emit("close", [this]);
     }
     /**
@@ -78,6 +93,28 @@ export default class Modal {
         }
         deep(this._body_json);
     }
+    disableAction(id) {
+        var _a, _b, _c;
+        if (typeof id === "number") {
+            this._actions_json.childs[id].classes.add("disable");
+        }
+        (_c = (_b = (_a = this._actions_json._[id]) === null || _a === void 0 ? void 0 : _a.classes) === null || _b === void 0 ? void 0 : _b.add) === null || _c === void 0 ? void 0 : _c.call(_b, "disable");
+    }
+    disableActions() {
+        for (let actionName in this._actions_json._)
+            this._actions_json._[actionName].classes.add("disabled");
+    }
+    undisableAction(id) {
+        var _a, _b, _c, _d, _e, _f;
+        if (typeof id === "number") {
+            (_c = (_b = (_a = this._actions_json.childs[id]) === null || _a === void 0 ? void 0 : _a.classes) === null || _b === void 0 ? void 0 : _b.remove) === null || _c === void 0 ? void 0 : _c.call(_b, "disable");
+        }
+        (_f = (_e = (_d = this._actions_json._[id]) === null || _d === void 0 ? void 0 : _d.classes) === null || _e === void 0 ? void 0 : _e.remove) === null || _f === void 0 ? void 0 : _f.call(_e, "disable");
+    }
+    undisableActions() {
+        for (let actionName in this._actions_json._)
+            this._actions_json._[actionName].classes.remove("disabled");
+    }
     /*-********* Events *********-*/
     on(ev, listener) {
         this._events.on(ev, listener);
@@ -91,11 +128,18 @@ export default class Modal {
         this.config.actions.push(action);
         const btn = document.createElement("button");
         btn.innerHTML = action.name;
+        btn.dataset.name = action.name;
         btn.className = (_a = action.className) !== null && _a !== void 0 ? _a : "";
         btn.classList.add(_Modal.ActionColor[(_b = action.color) !== null && _b !== void 0 ? _b : 0].toLowerCase());
+        const btn_json = this._actions_json.addChild(btn);
+        btn_json.events.add("click", action.onClick.bind(this, this));
+        this._actions.append(btn);
     }
     /*-********* Get Modal parts *********-*/
     getActions() {
+        return this._actions_json;
+    }
+    getActionsConfig() {
         return this.config.actions.slice(0);
     }
     getBodyDom() {
@@ -125,6 +169,10 @@ export default class Modal {
             if (this.config.cloneBody) {
                 const clone = structureCopy(body);
                 clone.classes.add("modal-body");
+                // Prevent hidden body
+                clone.classes.remove("hidden");
+                clone.dom.removeAttribute("hidden");
+                this.element.replaceChild(clone.dom, this._body);
                 this._body = clone.dom;
                 this._body_json = clone;
             }
@@ -133,6 +181,7 @@ export default class Modal {
         }
     }
     setActions(actions) {
+        this.config.actions = [];
         for (const action of actions)
             this.addAction(action);
     }
@@ -147,9 +196,13 @@ export default class Modal {
             if (config.events.onClose)
                 this.on("close", config.events.onClose);
         }
+        if (config.actions) {
+            this.setActions(config.actions);
+        }
     }
 }
 Modal.parent = parent;
 Modal.HeaderStyle = _Modal.HeaderStyle;
 Modal.ActionColor = _Modal.ActionColor;
+Modal.allModals = [];
 //# sourceMappingURL=modal.js.map

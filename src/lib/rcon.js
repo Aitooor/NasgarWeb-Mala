@@ -1,21 +1,32 @@
 const RCON = require("rcon");
 const CONFIG = require("../../config");
 
+function wait(ms) {
+  return new Promise(res => {
+    setTimeout(res, ms);
+  });
+}
+
 /**
  * 
  * @param {number} PORT 
  */
- async function rcon(PORT) {
-    const rcon = new RCON(5000);
-    try {
-        await rcon.connect(CONFIG.SV_HOST, PORT, CONFIG.RCON.PASS);
-        
-		console.log("MC is connected on", PORT, "->", rcon.authenticated && rcon.online);
-        
-        return rcon;
-    } catch (e) {
-        console.error(`MC is connected on`, PORT, "->", rcon.online, "\n", e);
-    }
+async function rcon(PORT) {
+  const rcon = new RCON(5000);
+    
+  await rcon.connect(CONFIG.SV_HOST, PORT, CONFIG.RCON.PASS);
+      
+  console.log("MC is connected on", PORT, "->", rcon.authenticated && rcon.online);
+
+  rcon.onError(async (e) => {
+    console.log(`MC ${PORT} error: `, e);
+    console.log(`MC ${PORT} is reconnecting.`);
+    await wait(1500);
+    await rcon.connect(CONFIG.SV_HOST, PORT, CONFIG.RCON.PASS);
+    console.log("MC is connected on", PORT, "->", rcon.authenticated && rcon.online);
+  });
+      
+  return rcon;
 }
 
 /**

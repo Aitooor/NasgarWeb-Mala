@@ -31,6 +31,8 @@ export function middlewareEvents(element) {
                     // @ts-ignore
                     element.removeEventListener(ev, fn);
         },
+        add: element.addEventListener,
+        rem: element.removeEventListener,
         get eventNames() {
             return eventNames.slice(0);
         },
@@ -48,7 +50,22 @@ export function structureCopy(element) {
         events: middlewareEvents(element),
         hasChilds: element.hasChildNodes(),
         childs: [],
-        _: {}
+        _: {},
+        // @ts-ignore
+        addChild() { }
+    };
+    me.addChild = function (child) {
+        if (child.nodeName === "#text") {
+            throw new TypeError("Child is a text");
+        }
+        const tag = child.nodeName.toLowerCase();
+        const name = child.dataset.name || null;
+        const prop = name || tag;
+        const sameTags = Object.keys(me._).filter(_ => _.match(new RegExp(`^${prop}\d*$`)) !== null);
+        const structure = structureCopy(child);
+        me._[prop + (sameTags.length || "")] = structure;
+        me.childs.push(structure);
+        return structure;
     };
     /*—————— Attributes ——————*/
     const attributeNames = element.getAttributeNames();
@@ -59,16 +76,10 @@ export function structureCopy(element) {
     if (me.hasChilds) {
         const childs = Array.from(element.childNodes);
         for (const child of childs) {
-            if (child.nodeName === "#text") {
-                continue;
+            try {
+                me.addChild(child);
             }
-            const tag = child.nodeName.toLowerCase();
-            const name = child.dataset.name || null;
-            const prop = name || tag;
-            const sameTags = Object.keys(me._).filter(_ => _.match(new RegExp(`^${prop}\d*$`)) !== null);
-            const structure = structureCopy(child);
-            me._[prop + (sameTags.length || "")] = structure;
-            me.childs.push(structure);
+            catch (_a) { }
         }
     }
     return me;

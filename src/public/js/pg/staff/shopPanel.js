@@ -51,7 +51,7 @@ header_action.filter.onclick = async () => {
   filterAction_isRunning = true;
   header_action.filter.classList.add("anim");
 
-  await wait(700);
+  await wait(500);
   alert("Not implemented");
 
   header_action.filter.classList.remove("anim");
@@ -64,7 +64,7 @@ header_action.add.onclick = async () => {
   addAction_isRunning = true;
   header_action.add.classList.add("anim");
 
-  await wait(700);
+  await wait(500);
   OpenAddModal();
 
   header_action.add.classList.remove("anim");
@@ -109,9 +109,9 @@ function CreateItem(data) {
   const price = elm.querySelector(".price");
   price.innerHTML = monetize(data.price);
 
-  elm.addEventListener("click", () => {try{
+  elm.addEventListener("click", () => {
     OpenItemModal(data);
-  } catch(e) {alert(e)}});
+  });
 
   return elm;
 }
@@ -121,15 +121,21 @@ function CreateItem(data) {
 /**——————————————————**/
 
 const modalItem_events = {
+  /** @param {Modal} _ */
   _delete: (_) => {},
-  _cancel: (_) => {},
+  /** @param {Modal} _ */
   _save:   (_) => {}
 };
+
+const modalItem_Vars = {};
+
+/** @type {HTMLDivElement} */
+const modalItem_body = document.querySelector("#item-editor-body");
 
 const modalItem = new Modal({
   title: "Loading...",
   headerStyle: Modal.HeaderStyle.Solid,
-  body: "",
+  body: modalItem_body,
   cloneBody: true,
   actions: [
     { name: "Delete",
@@ -139,7 +145,8 @@ const modalItem = new Modal({
       } },
     { name: "Cancel",
       onClick: (modal) => {
-        modalItem_events._cancel(modal);
+        modal.drainEvents();
+        modal.close();
       } },
     { name: "Save",
       onClick: (modal) => {
@@ -148,44 +155,20 @@ const modalItem = new Modal({
   ]
 });
 
-/** @type {{ [key: string]: HTMLElement }} */
-const itemModal = {};
-itemModal.zone    = document.querySelector(".modal-zone.item-editor");
-itemModal.modal   = itemModal.zone.querySelector(".modal");
-itemModal.header  = itemModal.modal.querySelector(".header");
-itemModal.body    = itemModal.modal.querySelector(".body");
-itemModal.actions = itemModal.modal.querySelector(".modal-actions");
-itemModal.delete  = itemModal.actions.querySelector(".delete");
-itemModal.save    = itemModal.actions.querySelector(".save");
-itemModal.cancel  = itemModal.actions.querySelector(".cancel");
-
-
-const _category_enum = /** @enum */ {
-  "private": -1,
-  "key": -1,
-  "rank": -1
-}
-
-/**
- * Vars
- * @type {{ category_index: string[], category_enum: _category_enum, [key: string]: any }}
-*/
-const itemVars = {};
-
-itemVars.category_index = [ "private", "key", "rank" ];
-itemVars.category_enum = itemVars.category_index.reduce((acc, curr, i) => {
-  acc[curr] = i;
-  return acc;
-}, _category_enum);
+const categorySelect = new Select({
+  // @ts-ignore
+  dom: modalItem.getBody()._.category._.select.dom,
+  options: [
+    ["Private", "private"],
+    ["Key", "key"],
+    ["Rank", "rank"]
+  ],
+  selected: "private"
+});
 
 // @ts-ignore
 const tm_item_list_modal = document.querySelector("template#list-item").content.firstElementChild;
 
-itemModal.cancel.addEventListener("click", CloseItemModal);
-
-function ActivateItemModal() {
-  itemModal.zone.classList.add("active");
-}
 
 /**
  * @param {ItemData} data
@@ -203,10 +186,10 @@ function LoadCommandsOnItemModal(data, actual_cmds) {
 function ThrowBadRequestOnItemModal(msg, title) {
   alert("Bad request: " + msg);
   
-  itemModal.save.classList.remove("disabled");
-  itemModal.cancel.classList.remove("disabled");
+  modalItem.getActions()._.Save.classes.remove("disabled");
+  modalItem.getActions()._.Cancel.classes.remove("disabled");
 
-  itemModal.header.innerHTML = title;
+  modalItem.setHeader(title);
 }
 
 /**
@@ -243,7 +226,7 @@ function EncodeCommands(commands, title) {
  * @returns {HTMLElement}
 */
 function NewCommandOnItemModal(cmd, index, cmds_obj) {
-  const command_list = itemModal.body.querySelector("#commands-list")
+  const command_list = modalItem.getBody()._.commands._.list.dom;
   cmds_obj[index] = cmd;
 
   const elm = ElementFromNode(tm_item_list_modal.cloneNode(true));
@@ -272,68 +255,57 @@ function NewCommandOnItemModal(cmd, index, cmds_obj) {
  * @param {string[]} cmds
 */
 function SetCommandActions(cmds) {
-  /** @type {HTMLElement} */
-  const command_list = itemModal.body.querySelector("#commands-list");
+  const command_list = modalItem.getBody()._.commands._.list.dom;
 
-  if(!itemVars.cmd_add_btn)
-    itemVars.cmd_add_btn = itemModal.body.querySelector("#command-add-btn");
+  const addBtn = modalItem.getBody()._.commands._.header._.actions._.button.dom;
 
   // Clear commands
   command_list.innerHTML = "";
   
-  if(itemVars.cmd_fn)
-    RemEvent("click", itemVars.cmd_add_btn, itemVars.cmd_fn);
-  itemVars.cmd_fn = () => {
+  if(modalItem_Vars.cmd_fn)
+    RemEvent("click", addBtn, modalItem_Vars.cmd_fn);
+  modalItem_Vars.cmd_fn = () => {
     NewCommandOnItemModal("", cmds.length, cmds).focus();
   }
 
-  AddEvent("click", itemVars.cmd_add_btn, itemVars.cmd_fn)
+  AddEvent("click", addBtn, modalItem_Vars.cmd_fn)
 }
 
 /**
  * @param {[object, string]} property
- * @param {HTMLElement} elm
+ * @param {import("../../common/html").json_html<HTMLInputElement>} elm
  * @param {string} _default
  * @param {(value: string) => any} [pre]
-*/
-function updateData(property, elm, _default, pre) {
-  // @ts-ignore
-  elm.value = _default;
-
+ */
+function UpdateData(property, elm, _default, pre) {
+  elm.dom.value = _default;
   pre = pre || ((_) => _);
+  property[0][property[1]] = _default;
 
-  if(itemVars[property[1]+"_ac_fn"])
-    RemEvent("change", elm, itemVars[property[1]+"_ac_fn"]);
-
-  itemVars[property[1]+"_ac_fn"] = () => {
-    // @ts-ignore
-    property[0][property[1]] = pre(elm.value);
-  }
-
-  AddEvent("change", elm, itemVars[property[1]+"_ac_fn"]);
+  elm.events.add("change", () => {
+    property[0][property[1]] = pre(elm.dom.value);
+  });
 }
 
 /**
  * @param {[object, string]} property 
- * @param {HTMLSelectElement} elm
- * @param {number} [_default]
+ * @param {import("../../common/html").json_html<HTMLSelectElement>} elm
+ * @param {Select} select
+ * @param {number | string} [_default]
  * @param {(value: string) => any} [pre]
-*/
-function UpdateDataSelect(property, elm, _default, pre) {
+ */
+function UpdateDataSelect(property, elm, select, _default, pre) {
+  pre = pre || (_ => _);
 
-  elm.selectedIndex = _default || 0;
-
-  pre = pre || ((_) => _);
-  property[0][property[1]] = pre(elm.value);
-
-  if(itemVars[property[1]+"_ac_fn"])
-    RemEvent("change", elm, itemVars[property[1]+"_ac_fn"]);
-
-  itemVars[property[1]+"_ac_fn"] = () => {
-    property[0][property[1]] = pre(elm.value);
+  if(typeof _default !== "undefined") {
+    select.select(_default);
   }
 
-  AddEvent("change", elm, itemVars[property[1]+"_ac_fn"]);
+  property[0][property[1]] = pre(select.selectedValue);
+
+  elm.events.add("change", () => {
+    property[0][property[1]] = pre(select.selectedValue);
+  });
 }
 
 function OpenAddModal() {
@@ -350,31 +322,33 @@ function OpenAddModal() {
     created: Date.now()
   };
   const actual_cmds = [];
+
+  const body = modalItem.getBody();
   
   // Title of modal
-  itemModal.header.innerHTML = "New item";
-  itemModal.body
-    .querySelector("#uuid")
-    .classList.add("hidden");
-  itemModal.delete.classList.add("hidden");
+  modalItem.setHeader("New Item");
+  body._.uuid.classes.add("hidden");
+  modalItem.getActions()._.Delete.classes.add("hidden");
 
   // Fields of modal
-  UpdateDataSelect([actual_item_data, "category"], itemModal.body.querySelector("#category"), 0);
+    // @ts-ignore
+  UpdateDataSelect([actual_item_data, "category"], body._.category._.select, categorySelect, "private");
+    
+    // @ts-ignore
+  UpdateData([actual_item_data, "name"], body._.name._.input, "");
 
-  updateData([actual_item_data, "name"], itemModal.body.querySelector("#name"), "");
+    // @ts-ignore
+  UpdateData([actual_item_data, "price"], body._.price._.input, "0", parseFloat);
 
-  updateData([actual_item_data, "price"], itemModal.body.querySelector("#price"), "0", parseFloat);
-
-  updateData([actual_item_data, "description"], itemModal.body.querySelector("#description"), "");
+    // @ts-ignore
+  UpdateData([actual_item_data, "description"], body._.description._.textarea, ""); 
 
   SetCommandActions(actual_cmds);
-   
-
-  async function save() {
-    itemModal.save.classList.add("disabled");
-    itemModal.cancel.classList.add("disabled");
-
-    itemModal.header.innerHTML = "New item [SAVING]";
+  
+  /** @type {Modal} modal */
+  modalItem_events._save = async (modal) => {
+    modal.disableActions();
+    modal.setHeader("New item [SAVING]");
     
     const [ success, [ exec_cmd, exec_params ] ] = EncodeCommands(actual_cmds, "New Item");
 
@@ -394,65 +368,70 @@ function OpenAddModal() {
       });
     } catch(err) {
       alert(err);
+      console.error(err);
       return;
     }
     
     await refreshItems();
 
-    itemModal.save.classList.remove("disabled");
-    itemModal.cancel.classList.remove("disabled");
-
-    RemEvent("click", itemModal.save, save);
-    CloseItemModal();
+    modal.undisableActions();
+    modal.close();
+    modal.drainEvents();
   };
 
-
-  itemVars.save_fn = save;
-  AddEvent("click", itemModal.save, save);
-  ActivateItemModal();
+  modalItem.open();
 }
 
 /**
  * @param {ItemData} data
-*/
+ */
 function OpenItemModal(data) {
-  /** @type {ItemData} */
+  /* @type {ItemData} */
   const actual_item_data = JSON.parse(JSON.stringify(data));
   const actual_cmds = [];
+
+  const body = modalItem.getBody();
   
   // Title of modal
-  itemModal.header.innerHTML = data.name;
-  const uuid_s = itemModal.body.querySelector("#uuid");
-  uuid_s.innerHTML = "UUID: " + data.uuid;
-  uuid_s.classList.remove("hidden")
-  itemModal.delete.classList.remove("hidden");
+  modalItem.setHeader(data.name);
+  const uuid_s = body._.uuid;
+  uuid_s.dom.innerHTML = "UUID: " + data.uuid;
+  uuid_s.classes.remove("hidden")
+  modalItem.getActions()._.Delete.classes.remove("hidden");
 
   // Fields of modal
   let image_selector_waiting = false;
-  // @ts-ignore
-  itemModal.body.querySelector("#image-selector").onclick = async () => {
+  
+  body._.image._.button.events.add("click", async () => {
     if(image_selector_waiting) return;
     image_selector_waiting = true;
     actual_item_data.images = await OpenImageModal(actual_item_data.images);
     image_selector_waiting = false;
-  }
+  });
 
-  UpdateDataSelect([actual_item_data, "category"], itemModal.body.querySelector("#category"), itemVars.category_enum[data.category]);
+  // @ts-ignore
+  UpdateDataSelect([actual_item_data, "category"], body._.category._.select, categorySelect, data.category);
 
-  updateData([actual_item_data, "name"], itemModal.body.querySelector("#name"), data.name);
+  // @ts-ignore
+  UpdateData([actual_item_data, "name"], body._.name._.input, data.name);
 
-  updateData([actual_item_data, "price"], itemModal.body.querySelector("#price"), data.price.toString(), parseFloat);
+  // @ts-ignore
+  UpdateData([actual_item_data, "price"], body._.price._.input, data.price.toString(), parseFloat);
 
-  updateData([actual_item_data, "description"], itemModal.body.querySelector("#description"), data.description);
+  // @ts-ignore
+  UpdateData([actual_item_data, "description"], body._.description._.textarea, data.description);
 
   SetCommandActions(actual_cmds);
   LoadCommandsOnItemModal(data, actual_cmds); 
 
-  async function save() {
-    itemModal.save.classList.add("disabled");
-    itemModal.cancel.classList.add("disabled");
-    itemModal.header.innerHTML = data.name + " [SAVING]"; 
+  /** @param {Modal} modal */
+  modalItem_events._save = async (modal) => {
+    modal.disableActions();
+
+    modal.setHeader(data.name + " [SAVING]");
+    
     const [ success, [ exec_cmd, exec_params ] ] = EncodeCommands(actual_cmds, data.name);
+    
     if(!success) return;
     
     try {
@@ -474,81 +453,93 @@ function OpenItemModal(data) {
     
     await refreshItems();
 
-    itemModal.save.classList.remove("disabled");
-    itemModal.cancel.classList.remove("disabled");
-
-    RemEvent("click", itemModal.save, save);
-    CloseItemModal();
+    modal.undisableActions();
+    modal.drainEvents();
+    modal.close();
   };
 
-  async function _delete() {
+  /** @param {Modal} modal */
+  modalItem_events._delete = async (modal) => {
     if(confirm("Are you sure?")) {
       if(await RemItem(data.uuid, prompt("Write: \"DELETE\""))) {
-        CloseItemModal();
+        modal.close();
         refreshItems();
       }
     }
   }
-  
-  itemVars.save_fn   = save;
-  itemVars.delete_fn = _delete;
-  AddEvent("click", itemModal.save, save);
-  AddEvent("click", itemModal.delete, _delete);
-  ActivateItemModal();
-}
 
-function CloseItemModal() {
-  itemModal.zone.classList.remove("active")
-  RemEvent("click", itemModal.save, itemVars.save_fn);
-  if(itemVars.delete_fn) {
-    RemEvent("click", itemModal.delete, itemVars.delete_fn);
-    itemVars.delete_fn = undefined;
-  }
+  modalItem.open();
 }
 
 
 /*********** Image selector modal ***********/
 
-/** @type {{ [key: string]: HTMLElement }} */
-const imageModal = {};
-imageModal.zone = document.querySelector(".modal-zone#image-selector");
-imageModal.modal = imageModal.zone.querySelector(".modal");
-imageModal.header = imageModal.modal.querySelector(".header");
-imageModal.body = imageModal.modal.querySelector(".body");
-imageModal.actions = imageModal.modal.querySelector(".modal-actions");
-imageModal.save = imageModal.actions.querySelector(".cancel");
-imageModal.cancel = imageModal.actions.querySelector(".save");
+const imageModal_body = document.querySelector("#image-selector");
 
-/** @type {{ [key: string]: any }} */
-const imageVars = {};
+const imageModal_events = {
+  /** @param {Modal} _ */
+  _save: (_) => {},
+  /** @param {Modal} _ */
+  _close: (_) => {}
+}
+
+const imageModal = new Modal({
+  title: "Image Selector",
+  headerStyle: Modal.HeaderStyle.Outline,
+  // @ts-ignore
+  body: imageModal_body,
+  cloneBody: true,
+  actions: [
+    { name: "Cancel",
+      onClick: (modal) => {
+        imageModal_events._close(modal);
+      } },
+    { name: "Save",
+      onClick: (modal) => {
+        imageModal_events._save(modal);
+      } }
+  ]
+});
 
 /**
  * @param {string[]} selected
  * @returns {Promise<string[]>}
-*/
+ */
 function OpenImageModal(selected) {
   return new Promise(res => {
-    //const actual_images = selected.slice(0);
+    const actual_images = selected.slice(0);
 
-    ImageModal_SupEvent(imageModal.cancel, "click", "cancel_ac_fn", () => {
-      itemModal.zone.classList.remove("active");
+    const body = imageModal.getBody();
+    /** @type {import("../../common/html").json_html<HTMLInputElement>} */
+    // @ts-ignore
+    const fileInput = body._.upload._.input;
+
+    body._.upload._.button.events.add("click", ()=>{
+      fileInput.dom.click();
+    });
+
+    fileInput.events.add("change", async () => {
+      const form = new FormData();
+      form.append("total", fileInput.dom.files.length.toFixed(0));
+
+      for(const file of fileInput.dom.files) {
+        form.append(`images`, file);
+      }
+
+      fetch("/api/staff/images", {
+        method: "POST",
+        body: form
+      }).then(() => alert("Success"));
+    });
+    
+    imageModal_events._close = (modal) => {
+      modal.drainEvents();
+      modal.close();
       res(selected);
-    })
+    };
+
+    imageModal.open();
   });
-}
-
-/**
- * @param {HTMLElement} elm
- * @param {string} evt
- * @param {string} property
- * @param {Function} fn
-*/
-function ImageModal_SupEvent(elm, evt, property, fn) {
-  if(imageVars[property]) 
-    RemEvent(evt, elm, imageVars[property]);
-
-  imageVars[property] = fn;
-  AddEvent(evt, elm, imageVars[property]);
 }
 
 
@@ -735,4 +726,3 @@ async function FetchItems() {
 
   return cache_items;
 }
-

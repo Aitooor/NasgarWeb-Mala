@@ -1,14 +1,15 @@
 
+export type SelectOption = string | [string, string];
 export interface SelectOptions {
     dom: HTMLSelectElement;
-    options: string[];
+    options: SelectOption[];
     selected?: string | number;
 }
 
 export default class Select {
 
   element: HTMLSelectElement;
-  private options: string[];
+  private options: SelectOption[];
 
   addEventListener(type: string, listener: Function) {}
   removeEventListener(type: string, listener: Function) {}
@@ -29,21 +30,40 @@ export default class Select {
   }
 
   select(id: number | string) {
+    if(this.options.length === 0) return;
+
     if(typeof id === "number") {
       this.element.selectedIndex = id;
     } else {
-      this.element.selectedIndex = Math.max(0, this.options.indexOf(id))
+      let i = 0;
+      this.options.find((option, _i) => {
+        const is = typeof option === "string" ?
+          option === id :
+          option[1] === id;
+
+        if(is) i = _i;
+        return is;
+      });
+
+      console.log(i);
+
+      this.element.selectedIndex = i;
     }
   }
 
-  setOptions(options: string[]) {
+  setOptions(options: SelectOption[]) {
     this.element.innerHTML = "";
     this.options = options;
 
     for(const option of options) {
       const dom = document.createElement("option");
-      dom.innerHTML = option;
-      dom.value = option;
+      if(typeof option === "string") {
+        dom.innerHTML = option;
+        dom.value = option;
+      } else {
+        dom.innerHTML = option[0];
+        dom.value = option[1];
+      }
       
       this.element.append(dom);
     }
@@ -54,6 +74,7 @@ export default class Select {
   }
 
   get selectedValue(): string {
-    return this.options[this.element.selectedIndex];
+    const t = this.options[this.selectedIndex];
+    return typeof t === "string" ? t : t[1];
   }
 }

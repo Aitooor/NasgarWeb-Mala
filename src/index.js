@@ -39,6 +39,15 @@ app.use(require("express-session")({
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(require("cookie-parser")());
+app.use(require("express-fileupload")({
+	preserveExtension: true,
+	useTempFiles: true,
+	tempFileDir: join(__dirname, "db", "tmpFiles"),
+	parseNested: true,
+	abortOnLimit: true,
+	responseOnLimit: "File is very bigger",
+	safeFileNames: true,
+}));
 app.use(express.static(join(__dirname, "public")));
 
 app.use(normalizeSession);

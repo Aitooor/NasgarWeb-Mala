@@ -54,6 +54,7 @@ export default class Modal {
     static parent: HTMLDivElement;
     static HeaderStyle: typeof _Modal.HeaderStyle;
     static ActionColor: typeof _Modal.ActionColor;
+    static allModals: Modal[];
     private config;
     private _events;
     element: HTMLDivElement;
@@ -61,17 +62,25 @@ export default class Modal {
     private _body;
     private _body_json;
     private _actions;
+    private _actions_json;
     constructor(config: _Modal.Config);
+    get isOpen(): boolean;
+    set isOpen(value: boolean);
     open(): void;
     close(): void;
     /**
      * Just use when `config.cloneBody` is `true`.
      */
     drainEvents(): void;
+    disableAction(id: string | number): void;
+    disableActions(): void;
+    undisableAction(id: string | number): void;
+    undisableActions(): void;
     on(ev: string, listener: event_listener): void;
     off(ev: string, listener: event_listener): void;
     addAction(action: _Modal.Action): void;
-    getActions(): _Modal.Action[];
+    getActions(): json_html;
+    getActionsConfig(): _Modal.Action[];
     getBodyDom(): HTMLDivElement;
     getBody(): json_html<HTMLDivElement>;
     getHeader(): {

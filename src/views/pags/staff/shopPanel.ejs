@@ -36,81 +36,57 @@
 		</div>
 	</div>
 	
-	<div class="modal-zone item-editor" >
-		<div class="modal" >
-			<div class="header" >
-				Product name
-			</div>
-
-			<div class="body" >
-				<div class="placeholder hidden" id="uuid">UUID: -</div>
-				<div class="field">
-					<span>Image selector (<span id="total-images">N</span> images):</span>
-					<button class="input" id="image-selector">Select images</button>
-				</div>
-				<div class="field required" >
-					<span class="title" >Category</span>
-					<select class="input" id="category" >
-						<option value="private" selected >No select / Private</option>
-						<option value="key">Keys</option>
-						<option value="rank">Ranks</option>
-					</select>
-				</div>
-				<div class="field required" >
-					<span class="title" >Name</span>
-					<input id="name" class="input" placeholder="Name of product"  >
-				</div>
-				<div class="field required">
-					<span class="title">Price</span>
-					<input id="price" class="input" type="number" placeholder="Price">
-				</div>
-				<div class="field required" >
-					<span class="title" >Description</span>
-					<textarea id="description" class="input" placeholder="Description" ></textarea>
-				</div>
-				<div class="field list" >
-					<div class="title" >
-						<span class="title" >Commands</span>
-						<div class="actions" >
-							<button id="command-add-btn">
-								<i class="material" >add_circle_outline</i>
-							</button>
-						</div>
-					</div>
-					<div class="list" id="commands-list"></div>
+	<div id="item-editor-body" hidden >
+		<div class="placeholder hidden" data-name="uuid">UUID: -</div>
+		<div class="field" data-name="image">
+			<span>Image selector (<span id="total-images">N</span> images):</span>
+			<button class="input">Select images</button>
+		</div>
+		<div class="field required" data-name="category">
+			<span class="title" >Category</span>
+			<select class="input" >
+				<option value="private" selected >No select / Private</option>
+				<option value="key">Keys</option>
+				<option value="rank">Ranks</option>
+			</select>
+		</div>
+		<div class="field required" data-name="name">
+			<span class="title" >Name</span>
+			<input class="input" placeholder="Name of product"  >
+		</div>
+		<div class="field required" data-name="price">
+			<span class="title">Price</span>
+			<input class="input" type="number" placeholder="Price">
+		</div>
+		<div class="field required" data-name="description">
+			<span class="title" >Description</span>
+			<textarea class="input" placeholder="Description" ></textarea>
+		</div>
+		<div class="field list" data-name="commands">
+			<div class="title" data-name="header">
+				<span class="title" >Commands</span>
+				<div class="actions" data-name="actions">
+					<button>
+						<i class="material" >add_circle_outline</i>
+					</button>
 				</div>
 			</div>
-			
-			<div class="modal-actions" >
-				<button class="delete">Delete</button>
-				<button class="cancel">Cancel</button>
-				<button class="save">Save</button>
-			</div>
+			<div class="list" data-name="list"></div>
 		</div>
 	</div>
 	
-	<div class="modal-zone image-selector" >
-		<div class="modal" >
-			<div class="header outline" >
-				Image selector
-			</div>
-			<div class="body image-select" >
-				<div class="upload-zone" >
-					<span class="total" >5 images</span>
-					<button class="upload" >Upload images</button>
-				</div>
-				<div class="images" >
-					<div class="image selected" ><img src="./img/logo.png" ></div>
-					<div class="image" ><img src="./img/logo.png" ></div>
-					<div class="image" ><img src="./img/logo.png" ></div>
-					<div class="image selected" ><img src="./img/logo.png" ></div>
-					<div class="image" ><img src="./img/logo.png" ></div>
-				</div>
-			</div>
-			<div class="modal-actions" >
-				<button class="cancel" >Cancel</button>
-				<button class="save" >Save</button>
-			</div>
+	<div id="image-selector" class="hidden image-select" >
+		<div class="upload-zone" data-name="upload">
+			<span class="total" >5 images</span>
+			<button class="upload" >Upload images</button>
+			<input hidden multiple type="file" name="images" accept="image/*" />
+		</div>
+		<div class="images" data-name="images">
+			<div class="image selected" ><img src="/img/logo-128x.png" ></div>
+			<div class="image" ><img src="/img/defaultKey.png" ></div>
+			<div class="image" ><img src="/img/logo-128x.png" ></div>
+			<div class="image selected" ><img src="/img/defaultKey.png" ></div>
+			<div class="image" ><img src="/img/logo-128x.png" ></div>
 		</div>
 	</div>
 

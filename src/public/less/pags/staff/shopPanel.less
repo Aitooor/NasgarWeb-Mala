@@ -1,7 +1,8 @@
 @import "../../common/super.less";
 
-template {
-	display: none;
+template,
+.template {
+	display: none !important;
 }
 
 .hidden,
@@ -183,27 +184,20 @@ body {
 		}
 	}
 	
-	> .modal-zone {
+	> .modal-parent {
 		position: fixed;
-		
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+
 		display: none;
-		
+
 		z-index: 1000;
-		
-		&.active { display: flex; }
-		
-		&::before {
-			content: "";
-			position: fixed;
-			top: 0;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			
-			background: #5559;
-		}
-		
+
 		> .modal {
+			z-index: 1001;
+
 			position: fixed;
 			top: 50%;
 			left: 50%;
@@ -217,12 +211,12 @@ body {
 			border-radius: 11px;
 			box-shadow: 0px 2px 3px -1px #555;
 			
-			display: flex;
+			display: none;
 			flex-direction: column;
 			
 			transform: translate(-50%, -50%);
 			
-			> .header {
+			> .modal-header {
 				padding: .5rem 1.25rem;
 			
 				background: @primary;
@@ -244,7 +238,7 @@ body {
 				}
 			}
 			
-			> .body {
+			> .modal-body {
 				padding: .25rem .7rem;
 				height: 100%;
 				
@@ -483,13 +477,37 @@ body {
 					border: solid 2px transparent;
 					border-radius: 5px;
 
-					&.delete {
-						color: @danger;
+					&.secondary { color: @secondary; }
+					&.info { color: @info; }
+					&.danger { color: @danger; }
+					&.warning { color: @warning; }
+
+					&.disabled {
+						cursor: default;
+						pointer-events: none;
 					}
 				}
 			}
+			&.active { display: flex; }
 		}
-	}
+
+		&.active { 
+			display: flex;
+
+			&::before {
+				content: "";
+				position: fixed;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				right: 0;
+
+				z-index: 1000;
+				
+				background: #5559;
+			}
+		}	
+	}	
 }
 
 
