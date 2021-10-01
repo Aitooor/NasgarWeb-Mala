@@ -251,6 +251,8 @@ body {
 				&.image-select {
 					display: flex;
 					flex-direction: column;
+
+					overflow: hidden;
 					
 					> .upload-zone {
 						display: flex;
@@ -272,11 +274,18 @@ body {
 					}
 					
 					> .images {
+						padding-top: 10px;
+						width: 100%;
+						height: 100%;
+						
 						display: grid;
 						justify-content: center;
 						gap: 10px;
-						grid-template-columns: repeat(auto-fit, 150px);
-						grid-template-rows: repeat(auto-fit, 150px);
+						grid-template-columns: repeat(auto-fill, 150px);
+						grid-template-rows: repeat(auto-fill, 150px);
+
+						overflow-x: hidden;
+						overflow-y: auto;
 						
 						> .image {
 							width: 100%;
@@ -286,6 +295,8 @@ body {
 							background: #EEE;
 							border: solid 5px #999;
 							border-radius: 2px;
+
+							box-sizing: border-box;
 							
 							display: flex;
 							
@@ -294,20 +305,21 @@ body {
 								border-color: @primary;
 								
 								&::after {
-									content: "checked";
+									content: "done";
 									.material-icons();
 									
 									position: absolute;
 									top: 0px;
 									left: 100%;
-									width: 28px;
-									height: 28px;
+									//width: 28px;
+									//height: 28px;
 									padding: 2px;
 									
 									background: @primary;
 									color: #FFF;
 									border-radius: 50%;
 									
+									box-sizing: content-box;
 									overflow: hidden;
 									transform: translate(-50%, -50%);
 								}

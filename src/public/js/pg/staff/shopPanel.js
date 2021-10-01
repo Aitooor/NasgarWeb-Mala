@@ -442,7 +442,7 @@ function OpenItemModal(data) {
         price: actual_item_data.price,
         exec_cmd: exec_cmd,
         exec_params: exec_params,
-        images: [],
+        images: actual_item_data.images,
         category: actual_item_data.category,
         created: 0
       });
@@ -473,6 +473,10 @@ function OpenItemModal(data) {
 
 
 /*********** Image selector modal ***********/
+
+/**
+ * @typedef {{ uuid: string, name: string, image: string, created: number }} imageData
+*/
 
 const imageModal_body = document.querySelector("#image-selector");
 
@@ -506,10 +510,17 @@ const imageModal = new Modal({
  * @returns {Promise<string[]>}
  */
 function OpenImageModal(selected) {
-  return new Promise(res => {
+  return new Promise(async res => {
     const actual_images = selected.slice(0);
 
+    let imageList_crude;
+    let imageList;
+
     const body = imageModal.getBody();
+    const selectorList = body._.images.dom;
+
+    await refreshImages();
+
     /** @type {import("../../common/html").json_html<HTMLInputElement>} */
     // @ts-ignore
     const fileInput = body._.upload._.input;
@@ -529,7 +540,7 @@ function OpenImageModal(selected) {
       fetch("/api/staff/images", {
         method: "POST",
         body: form
-      }).then(() => alert("Success"));
+      }).then(() => refreshImages());
     });
     
     imageModal_events._close = (modal) => {
@@ -538,8 +549,76 @@ function OpenImageModal(selected) {
       res(selected);
     };
 
+    imageModal_events._save = (modal) => {
+      modal.drainEvents();
+      modal.close();
+      res(actual_images);
+    }
+
     imageModal.open();
-  });
+
+    async function refreshImages() {
+      imageList_crude = await GetImages();
+      if(imageList_crude === null)
+        return;
+      imageList = imageList_crude.map(image => {
+        const dom = imageModal_image(image, actual_images);
+        
+        dom.addEventListener("click", () => {
+          const i = actual_images.indexOf(image.uuid);
+          if(i !== -1) {
+            actual_images.splice(i, 1);
+          } else {
+            actual_images.push(image.uuid);
+          }
+
+          dom.classList.toggle("selected");
+        });
+
+        return dom;
+      });
+      
+      selectorList.innerHTML = "";
+      selectorList.append(...imageList);
+
+      body._.upload._.span._.span.dom.innerText = imageList_crude.length.toString();
+    }
+  })
+}
+
+/*
+<div class="image selected" >
+  <img src="/img/logo-128x.png" >
+</div>
+*/
+
+/**
+ * @param {imageData} data
+ * @param {string[]} selected
+*/
+function imageModal_image(data, selected) {
+  const div = document.createElement("div");
+
+  div.className = "image";
+
+  if(selected.includes(data.uuid))
+    div.classList.add("selected");
+
+  div.append(newImage(data.image));
+
+  return div;
+}
+
+/**
+ * @param {string} src
+ * @param {number} [width]
+ * @param {number} [height]
+ * @returns {HTMLImageElement}
+*/
+function newImage(src, width, height) {
+  const img = new Image(width, height);
+  img.src = src;
+  return img;
 }
 
 
@@ -624,6 +703,23 @@ function PrePostItem(data) {
     throw new RangeError("Name is very long. Max 30.");
   if(data.price < 0)
     throw new RangeError("Price is negative. only accept positive");
+}
+
+/**
+ * @returns {Promise<imageData[]>} 
+*/
+async function GetImages() {
+  const res = await fetch("/api/staff/images", {
+    credentials: "same-origin"
+  });
+
+  if(!res.ok) {
+    alert("Error fetching images.");
+    console.log(res);
+    return null;
+  }
+
+  return await res.json();
 }
 
 /**
