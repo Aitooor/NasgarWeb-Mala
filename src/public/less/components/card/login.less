@@ -18,9 +18,29 @@
 		justify-content: space-between;
 		gap: 10px;
 
-		& > [type="submit"]:last-of-type {
+		> [type="submit"]:last-of-type {
 			width: 30%;
 			margin: 1rem auto 0px auto;
+		}
+
+		> .progress-line {
+			--line-color: @primary;
+			--line-width: 100%;
+			position: relative;
+			width: 100%;
+			display: flex;
+
+			&::after {
+				content:"";
+				position: absolute;
+				top: -3px;
+				width: var(--line-width);
+	
+				border: none;
+				border-top: solid 3px var(--line-color);
+
+				transition: width .2s ease;
+			}
 		}
 	}
 

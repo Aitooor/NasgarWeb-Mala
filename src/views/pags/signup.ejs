@@ -4,7 +4,9 @@
 	<%- include("../partials/header.ejs") %>
 	<title> Sign up - Nasgar Network </title>
 
-	<%- include("../partials/less.ejs", { paths: ["pags/signup"] }) %> 
+	<%- include("../partials/less.ejs", { paths: ["pags/signup"] }) %>
+
+	<%- include("../partials/script.ejs", {paths: ["pg/signup"]}) %>
 </head>
 <body>
 	<div class="logo">
@@ -22,23 +24,34 @@
 					id="username" 
 					placeholder="Usuario" 
 					autocomplete="username" 
-					spellcheck="false" 
-					value="Apika Luca" />
+					spellcheck="false" />
+				
 				<input 
-					type="username" 
-					name="nick" 
-					id="nick" 
-					placeholder="MC Nick" 
-					autocomplete="nickname" 
-					spellcheck="false" 
-					value="Quiralte234" />
+					type="email" 
+					name="email" 
+					id="email" 
+					placeholder="Email" 
+					autocomplete="email" 
+					spellcheck="false" />
+
 				<input 
 					type="password" 
 					name="password" 
 					id="password" 
 					placeholder="Contraseña"
-					autocomplete="new-password" 
+				  autocomplete="new-password" 
 					spellcheck="false" />
+
+				<div id="passLine" class="progress-line"></div>
+
+				<input 
+					type="rpassword" 
+					name="rpassword" 
+					id="rpassword" 
+					placeholder="Confirma contraseña"
+					autocomplete="false" 
+					spellcheck="false" />
+
 				<button type="submit" class="btn-primary"> Registrar </button>
 			</form>
 		</div>

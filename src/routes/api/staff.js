@@ -79,8 +79,10 @@ module.exports = require("../../lib/Routes/exports")("/staff", async (router, wa
       } catch(e) {
         pool.end();
         console.error(e);
-        res.sendStatus(500);
+        return res.sendStatus(500);
       }
     }
+
+    res.sendStatus(200);
   });
 })

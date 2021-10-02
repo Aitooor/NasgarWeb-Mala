@@ -15,7 +15,7 @@ exports.generate = generate;
  */
 function put(json, res) {
     const str = generate(json);
-    res.cookie("nasgar", str, { maxAge: 9999999, httpOnly: true });
+    res.cookie("nasgar", str, { httpOnly: true });
     return str;
 }
 exports.put = put;
@@ -37,7 +37,7 @@ exports.set = add;
  * Verify token
  */
 function verify(req) {
-    if (typeof req.cookies.nasgar === "string")
+    if (typeof req.cookies.nasgar === "string" && req.cookies.nasgar.length !== 0)
         try {
             jwt.verify(req.cookies.nasgar, CONFIG.JWT);
             return true;
