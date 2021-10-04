@@ -26,35 +26,7 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
 	router.post("/login", async (req, res) => {
 		const { username, password } = req.body;
 
-		if(typeof username != "string" || username?.match?.(/^\s*$/) !== null ||
-		   typeof password != "string" || password?.match?.(/^\s*$/) !== null ) {
-			res.status(400).send("EBAD: Bad request.");
-		}
-
-		const pool = db();
-		const query = (await pool.query(`SELECT * FROM web.accounts WHERE name = "${username}"`))[0];
-    pool.end();
-
-    if(query) {
-      if(query.password === encrypt(password)) {
-		    console.log(`[ACCOUNTS] User logged: ${Level[query.rank]}:${username}`);
-
-				setLevel(query.rank, req, res);
-
-        res
-					.status(200)
-					.send("User Logged");
-				return;
-      } else {
-        return res
-					.status(400)
-					.send("ERRICPASS: Incorrect password.");
-      }
-    } else {
-      return res
-				.status(400)
-				.send("ERRNOUSER: User is'nt exist.");
-    }
+		
 	});
 
 	router.get("/signup", defaultMidd, (_req, res) => {
