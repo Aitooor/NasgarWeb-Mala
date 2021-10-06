@@ -4,6 +4,10 @@ import { Request, Response } from "express";
  */
 export declare function generate(json: object): string;
 /**
+ * Verify jwt token and decode it
+ */
+export declare function decode(token: string): Object;
+/**
  * Clear and Set token to new `json`
  */
 export declare function put(json: any, res: Response): string;

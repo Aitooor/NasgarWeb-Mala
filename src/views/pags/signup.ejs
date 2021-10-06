@@ -6,7 +6,7 @@
 
 	<%- include("../partials/less.ejs", { paths: ["pags/signup"] }) %>
 
-	<%- include("../partials/script.ejs", {paths: ["pg/signup"]}) %>
+	<%- include("../partials/script.ejs", { paths: ["pg/signup"] }) %>
 </head>
 <body>
 	<div class="logo">
@@ -39,20 +39,22 @@
 					name="password" 
 					id="password" 
 					placeholder="Contraseña"
-				  autocomplete="new-password" 
+				  autocomplete="false" 
 					spellcheck="false" />
 
 				<div id="passLine" class="progress-line"></div>
 
 				<input 
-					type="rpassword" 
+					type="password" 
 					name="rpassword" 
 					id="rpassword" 
 					placeholder="Confirma contraseña"
 					autocomplete="false" 
 					spellcheck="false" />
 
-				<button type="submit" class="btn-primary"> Registrar </button>
+				<button type="submit" class="btn-primary">
+					Registrar
+				</button>
 			</form>
 		</div>
 	</div>

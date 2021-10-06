@@ -35,8 +35,14 @@
 
 // RCON data
   RCON: {
-    PASS: "Aitor19992%",
+    PASS: "Aitor19992%"
     PORTS: [ 100 ]
+  }
+
+// Nodemailer auth
+  EMAIL_AUTH: {
+		user: "apikamailer@gmail.com"
+		pass: "Mailer_Test#01"
   }
 
 // PAYPAL data

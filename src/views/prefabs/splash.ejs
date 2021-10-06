@@ -2,7 +2,9 @@
 <html>
 <head>
   <%- include("../partials/header.ejs") %>
-  <title> <%= title %> </title>
+  <title> <%= title %> - Nasgar Network </title>
+
+  <link rel="canonical" href="https://web.nasgar.online" />
 	
   <%- include("../partials/less.ejs", { paths: ["prefabs/splash"] })  %>
 </head>
@@ -26,7 +28,7 @@
   </div>
 
   <script>
-    ;(()=>{
+    ;(() => {
       const t_d = document.querySelector(".time-counter");
       let secs = parseInt(""+<%- (locals.seconds || "10") %>);
 

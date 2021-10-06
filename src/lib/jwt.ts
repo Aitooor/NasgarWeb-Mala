@@ -10,6 +10,19 @@ export function generate(json: object): string {
 }
 
 /**
+ * Verify jwt token and decode it
+ */
+export function decode(token: string): Object {
+	try {
+		return jwt.verify(token, CONFIG.JWT, { 
+			complete: false 
+		});
+	} catch {
+		return null;
+	}
+}
+
+/**
  * Clear and Set token to new `json`
  */
 export function put(json: any, res: Response): string{
@@ -36,7 +49,7 @@ export function add(json: any, req: Request, res: Response): string{
 	}
 }
 
-export var set = add
+export var set: typeof add = add
 
 /**
  * Verify token
