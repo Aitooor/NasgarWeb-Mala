@@ -73,6 +73,7 @@ export function get(req: Request): any | null {
 	if(!verify(req)) return null;
 
 	return jwt.decode(req.cookies.nasgar, {
-		json: true
+		json: true,
+		complete: false
 	})
 }

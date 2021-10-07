@@ -74,7 +74,7 @@ console.log("Paypal is connected");
 // Init All
 (async () => {
 	const db = await database(app);
-	const rcons = true ? null : await rcon(...CONFIG.RCON.PORTS);
+	const rcons = false ? null : await rcon(...CONFIG.RCON.PORTS);
 	//const io = await socketio(server, db.createPool);
 	require("./routes")(app, db.createPool, rcons);
 })();

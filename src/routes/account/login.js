@@ -85,7 +85,7 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
 				});
 		}
 
-		jwt.set({ userLevel: response.data.userLevel }, req, res);
+		jwt.set({ userLevel: response.data.rank }, req, res);
 
 		res.render("prefabs/splash", {
 			title: "Has iniciado sesion",

@@ -14,7 +14,7 @@
   "scripts": {
     "start": "node bin/www",
     "start_forever": "( SET NODE_ENV=production || NODE_ENV=production ) && forever start -a -c \"node --no-warnings\" --uid \"web\" bin/www",
-    "dev": "nodemon bin/www",
+    "dev": "node ./node_modules/nodemon/bin/nodemon.js bin/www",
     "commit": "git add . && git commit -m \"$1\"",
     "hub": "git push origin master && git push nasgar master",
     "compile_less_common": "lessc ./src/public/less/common/super.less ./src/public/css/common.css -x --source-map",
@@ -39,7 +39,6 @@
     "nodemailer": "^6.6.5",
     "paypal-rest-sdk": "^1.8.1",
     "rcon": "git+https://github.com/tehbeard/node-rcon.git",
-    "socket.io": "^4.1.2",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

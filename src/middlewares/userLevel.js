@@ -13,6 +13,7 @@ function middleware(levels, options) {
     return (request, response, next) => {
         // If it has nasgar.userLevel then continue
         let info = (0, jwt_1.get)(request);
+        console.log(info, request.cookies)
         if (info === null)
             info = { userLevel: userLevel_1.Level.Default }
         if( typeof info === "object" &&
