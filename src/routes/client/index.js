@@ -2,8 +2,8 @@ const exec_cmd = "give [&&] tellraw";
 const exec_params = `{{ PlayerName }} stone 1 [&&] {{ PlayerName }} ["",{"text":">>","color":"dark_gray"},{"text":" {{ PlayerName }}","color":"green"},{"text":". Thanks you for buy ","color":"gray"},{"text":"{{ ProductName }}","color":"light_purple"},{"text":".","color":"gray"}]`;
 
 // tellraw @a ["",{"text":">>","color":"dark_gray"},{"text":" Quiralte234","color":"green"},{"text":". Thanks you for buy ","color":"gray"},{"text":"Normal Key x5","color":"light_purple"},{"text":".","color":"gray"}]
-
 const shop = require("../../lib/shop");
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 /**
  * @param {import('rcon')} rcon
@@ -20,14 +20,27 @@ async function execute_command(rcon, command, args, env) {
   return await rcon.send(command + " " + args);
 }
 
+let lastRequest = null;
+let lastRequestTime = 0;
+
 module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, db, rcons) => {
   
   router.get("/discord", (req, res) => {
     res.redirect("https://ds.nasgar.online");
   });
     
-  router.get("/", async(req, res) => {
-    res.render("pags/index");
+  router.get("/", async (req, res) => {
+    if(Date.now() - lastRequestTime >= 1000) {
+      lastRequest = await fetch("https://api.mcsrvstat.us/2/nasgar.online", {
+        headers: {
+          "Cache-Control": "no-cache"
+        }
+      }).then(res => res.json()).catch(() => null);
+
+      lastRequestTime = Date.now();
+    }
+
+    res.render("pags/index", { serverData: lastRequest });
   });
 
   router.get("/shop", async (req, res) => {

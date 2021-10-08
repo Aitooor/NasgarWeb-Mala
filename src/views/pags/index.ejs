@@ -6,12 +6,11 @@
 	<title> Nasgar Network </title>
 
 	<!-- CSS -->
-	<link rel="stylesheet/less" href="/less/pags/index.less">
+	<!-- <link rel="stylesheet/less" href="/less/pags/index.less"> -->
 	
-	<%- include("../partials/less.ejs") -%>
-	<%- include("../partials/socketio.ejs") -%>
+	<%- include("../partials/less.ejs", { paths: ["pags/index"] }) -%>
 
-	<script src="/js/pg/index.js" type="module" defer></script>
+	<%- include("../partials/script.ejs", { paths: ["pg/index"] }) %> 
 </head>
 <body>
 	<%- include("../partials/nav.ejs", { userData, alert }) -%> 
@@ -38,19 +37,22 @@
 				<div class="card-members">
 					<div class="header">
 						<div>Nasgar Network</div>
-						<div class="status"></div>
+						<div class="status <%- serverData.online ? "online" : "offline" %> "></div>
 					</div>
 
 					<div class="body">
 						<div class="online-members">
 							<span>
-								<span class="players">0/0</span>
+								<span class="players"><%= serverData.players.online %>/<%= serverData.players.max %></span>
 							</span>
 						</div>
 					</div>
 				</div>
 				<div class="discord-members">
-					<iframe src="https://discord.com/widget?id=455476931463217174&theme=dark" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+					<iframe src="https://discord.com/widget?id=455476931463217174&theme=dark" 
+						allowtransparency="true" 
+						frameborder="0" 
+						sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
 				</div>
 				<div class="card-40servidoresmc">
 					<div class="header">
