@@ -68,7 +68,7 @@ module.exports = require("../../lib/Routes/exports")("/staff", async (router, wa
           type: file.mimetype,
           image: file.data
         });
-        
+
         pool.end();
 
         setTimeout(() => {
