@@ -48,39 +48,3 @@ async function getData() {
 		}
 	}
 }
-
-function autoUpdate(time = 1000, db) {
-	/** @type {(data: serverData) => void} */
-	let onUpdate = (data) => {};
-	/** @type {{
-	 *   interval: NodeJS.Timer,
-	 *   onUpdate(data: serverData): void
-	 *   clear(): void
-	 * }} */
-	const r = {
-		get onUpdate() {return onUpdate},
-		set onUpdate(v) {
-			if(typeof v === "function") onUpdate = v;
-			return v;
-		},
-		get clear() {
-			return function() {
-				clearInterval(r.interval);
-			}
-		}
-	};
-
-	r.interval = setInterval(async () => {
-		await reloadMaintenance(db);
-		r.onUpdate(await getData());
-	}, Math.max(time, 100));
-
-	return r;
-}
-
-
-module.exports = {
-	getData,
-	reloadMaintenance,
-	autoUpdate
-}

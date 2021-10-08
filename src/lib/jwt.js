@@ -88,7 +88,8 @@ function get(req) {
     if (!verify(req))
         return null;
     return jwt.decode(req.cookies.nasgar, {
-        json: true
+        json: true,
+        complete: false
     });
 }
 exports.get = get;

@@ -1,4 +1,5 @@
 
+const { Level, middleware: userLevel } = require("../../middlewares/userLevel")
 
 const staff_groups = [
   "group.owner", "group.admin", "group.mod",
@@ -7,10 +8,10 @@ const staff_groups = [
 ];
 
 module.exports=require("../../lib/Routes/exports")("/", (router, waRedirect, db, rcons) => {
-  function adminMidd(req, res, next) {
-    if(req.session.admin) next();
-    else res.status(403).type("json").send({ error: "Only admin accounts." });
-  }
+  const adminMidd = userLevel(Level.Admin, {
+    moreThan: true,
+    redirect: true
+  })
 
   router.get("/get/co-users", adminMidd, async (req, res) => {
     if(typeof req.query.uuids !== "string")
