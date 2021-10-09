@@ -1,26 +1,128 @@
-#card {
-	.common {
-		padding: 2rem 1rem;
-		width: min-content;
+@import "../../common/colors.less";
+@import "../../functions/forLoop.less";
 
-		background-color: #FFF;
+.card {
+  --primary-bg: @primary-bg;
+  --primary-fg: @primary-fg;
 
-		border-radius: 7px;
+  body.dark & {
+    --primary-bg: @primary-dark-bg;
+    --primary-fg: @primary-dark-fg;
 
-		box-shadow: 0px 2px 8px #0005;
+    box-shadow: none;
 
-		display: flex;
+    > .card-body {
+      border: solid 1px #9999;
+      border-top: none;
+    }
+  }
 
-		&.centered {
-			margin: 0px auto;
+  background: var(--primary-fg);
+  border-radius: 5px;
 
-			min-width: 200px;
+  display: flex;
+  flex-direction: column;
 
-			@media screen and (min-width: 600px) {
-				& {
-					min-width: 300px;
-				}
-			}
-		}
-	}
+  &.dp-0 {
+    box-shadow: none;
+  }
+
+  @-dp: {
+    &.dp-@{i} {
+      box-shadow: e("0px @{i}px 3px -1px #999");
+    }
+  }
+
+  .-for-loop(1, 5, @-dp);
+
+  &.embed.primary {
+    background: var(--primary-bg);
+
+    > .card-header {
+      padding: 0.2rem 0.3rem;
+      background: transparent;
+      color: #fff;
+    }
+
+    > .card-body {
+      padding: 0.4rem;
+      background: #fff;
+      border-radius: 10px 10px 5px 5px;
+    }
+  }
+
+  > .card-header {
+    padding: 0.5rem 1rem;
+
+    line-height: 1.5;
+    font-size: 1.3rem;
+    background: @primary;
+    color: #fff;
+    border-radius: 5px 5px 0px 0px;
+  }
+
+  > .card-body {
+    padding: 0.3rem 0.5rem;
+
+    border-radius: 0 0 5px 5px;
+
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
+
+    &.centered {
+      justify-content: center;
+
+      > .card-separator[data-text]::before {
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    }
+
+    > .card-separator {
+      position: relative;
+      margin: 0.9rem 0;
+      width: 100%;
+
+      font-size: 0px;
+
+      border: none;
+      border-bottom: solid 2px #999;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: clamp(4px, 10%, 30px);
+
+        background: #fff;
+        color: currentColor;
+
+        font-size: 1rem;
+
+        transform: translate(0, -50%);
+
+        body.dark & {
+          background: darken(#fff, 85%);
+          color: #fff;
+        }
+      }
+
+      &[data-text]::before {
+        content: attr(data-text);
+        padding: 0.1rem 0.2rem;
+      }
+    }
+  }
+
+  &.primary:not(.embed) {
+    > .card-header {
+      background: var(--primary-bg);
+      color: #fff;
+    }
+
+    > .card-body {
+      padding: 0.3rem 0.5rem;
+    }
+  }
 }
