@@ -4,13 +4,16 @@
 
 "Client Devices" means computers, workstations, personal digital assistants, hand-held
 devices, or other electronic devices for which the Software was designed.
+
 "License Key" means a file or a unique sequence of digits and/or symbols provided to You
 by the Licensor, which may carry the information about the License, i.e. its type, the user name
 and the number of licenses, granted under this Agreement, and may enable the full
 functionality of the Software.
+
 "Licensor Site” means the Internet website maintained by or on behalf of the Licensor from
 which the Software is available for download pursuant to a license from the Licensor. The
 Licensor Site is currently located at www.freescreenrecording.com.
+
 “Personal Use” shall mean personal non-commercial use, and not on behalf or for the benefit
 of any clients and excludes any commercial purposes whatsoever, which include without
 limitation: advertising marketing and promotional materials/services on behalf of an actual
@@ -18,6 +21,7 @@ client, employer, employee or for Your own benefit, any products that are commer
 distributed, whether or not for a fee, any materials or services for sale or for which fees or
 charges are paid or received. Additionally, the individual licensing terms may specify other
 terms, conditions and restrictions of Using the Software.
+
 “You” means the individual person installing or Using the Software on his or her own behalf;
 or, if the Software is being downloaded or installed on behalf of an organization, such as an
 employer, or the organization for which the Software is downloaded or installed and You

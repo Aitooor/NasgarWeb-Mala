@@ -25,12 +25,13 @@ export function middleware(levels: _Level | _Level[], options?: userLevelOptions
   return (request: req, response: res, next: NextFunction) => {
     // If it has nasgar.userLevel then continue
     const info = get(request);
-    console.log(info, request.cookies)
+
     if(info !== null &&
        typeof info === "object" && 
        typeof info.userLevel === "number" ) {
       const uLevel = info.userLevel;
       
+      // Normalize to array
       if(!Array.isArray(levels))
         levels = [levels];
 
@@ -54,13 +55,18 @@ export function middleware(levels: _Level | _Level[], options?: userLevelOptions
 
     // Else redirect to auth or send status
     if(options?.redirect !== false) {
+      const query = "next=" + encodeURIComponent(request.originalUrl);
+      
       if(typeof options?.authPage === "string") {
-        response.redirect(`${options.authPage}?next=${request.url}`, 403);
+        response.redirect(`${options.authPage}?${query}`);
       } else 
       if(typeof options?.authPage === "function") {
+        request.query = {
+          next: request.originalUrl
+        };
         options.authPage(request, response);
       } else {
-        response.redirect("/login", 403);
+        response.redirect(`/login?${query}`);
       }
     } else {
       response.sendStatus(403);
