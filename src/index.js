@@ -5,9 +5,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express = require('express');
 const { join } = require("path");
 const paypal = require("paypal-rest-sdk");
-//const passport = require("passport");
-//const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const nodemailer = require("nodemailer");
 const { createServer } = require('http');
 
 // My libs

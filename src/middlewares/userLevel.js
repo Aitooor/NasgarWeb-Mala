@@ -12,13 +12,12 @@ exports.default = middleware;
 function middleware(levels, options) {
     return (request, response, next) => {
         // If it has nasgar.userLevel then continue
-        let info = (0, jwt_1.get)(request);
-        console.log(info, request.cookies)
-        if (info === null)
-            info = { userLevel: userLevel_1.Level.Default }
-        if( typeof info === "object" &&
+        const info = (0, jwt_1.get)(request);
+        if (info !== null &&
+            typeof info === "object" &&
             typeof info.userLevel === "number") {
             const uLevel = info.userLevel;
+            // Normalize to array
             if (!Array.isArray(levels))
                 levels = [levels];
             if ((options === null || options === void 0 ? void 0 : options.moreThan) !== false) {
@@ -41,14 +40,18 @@ function middleware(levels, options) {
         }
         // Else redirect to auth or send status
         if ((options === null || options === void 0 ? void 0 : options.redirect) !== false) {
+            const query = "next=" + encodeURIComponent(request.originalUrl);
             if (typeof (options === null || options === void 0 ? void 0 : options.authPage) === "string") {
-                response.status(403).redirect(`${options.authPage}?next=${request.url}`);
+                response.redirect(`${options.authPage}?${query}`);
             }
             else if (typeof (options === null || options === void 0 ? void 0 : options.authPage) === "function") {
+                request.query = {
+                    next: request.originalUrl
+                };
                 options.authPage(request, response);
             }
             else {
-                response.status(403).redirect("/login");
+                response.redirect(`/login?${query}`);
             }
         }
         else {

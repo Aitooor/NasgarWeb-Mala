@@ -2,17 +2,19 @@
 @import "../button.less";
 
 .login-card {
-	#card.common();
-	padding: 0;
-	flex-direction: column;
+	.card();
+	padding: .5rem;
+	display: flex;
 
-	.form {
-		padding: 2rem 1rem;
+	.card-body {
+		height: 100%;
 		display: flex;
 	}
 
-	.form form {
+	.card-body form {
 		width: 100%;
+		height: 100%;
+
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
