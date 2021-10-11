@@ -1,7 +1,7 @@
 // Basic colors
 @white: #FFF;
-@white-bg: #EDEDED;
-@black: #FFF;
+@white-bg: #EEEEEE;
+@black: #000;
 @black-bg: #212121;
 
 // Light gray
@@ -23,40 +23,60 @@
 // Main Colours
 @primary: #3880be;
 @secondary: #878787;
+@complement: #03bd85; //#5C9;
 @success: #28a745;
 @warning: #f0b503;
-@danger: #dc3545;
+@danger: #ED4245;
 
 // Complement Colors
 @primary-bg: @primary;
 @primary-fg: #FFF;
+
 @secondary-bg: @secondary;
 @secondary-fg: #000;
+
+@complement-bg: @complement;
+@complement-fg: #FFF;
+
 @success-bg: @success;
 @success-fg: #FFF;
+
 @warning-bg: @warning;
 @warning-fg: #000;
+
 @danger-bg: @danger;
 @danger-fg: #FFF;
+
+
 
 // Main Dark Colors
 @primary-dark: desaturate(@primary, 10%);
 @secondary-dark: darken(@secondary, 35%);
+@complement-dark: desaturate(@complement, 15%);
 @success-dark: darken(@success, 35%);
 @warning-dark: darken(@warning, 35%);
 @danger-dark: darken(@danger, 35%);
 
 // Complement Dark Colors
 @primary-dark-bg: @primary-dark;
-@primary-dark-fg: #000;
+@primary-dark-fg: #FFF;
+
 @secondary-dark-bg: @secondary-dark;
-@secondary-dark-fg: #000;
+@secondary-dark-fg: #FFF;
+
+@complement-dark-bg: @complement-dark;
+@complement-dark-fg: #FFF;
+
 @success-dark-bg: @success-dark;
 @success-dark-fg: #FFF;
+
 @warning-dark-bg: @warning-dark;
 @warning-dark-fg: #000;
+
 @danger-dark-bg: @danger-dark;
 @danger-dark-fg: #FFF;
+
+
 
 // Modifiers
 @semi-light-modify: 10%;
