@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<%- include("../partials/header.ejs") -%>
+
+	<title> Nasgar Network </title>
+
+	<!-- CSS -->
+	<!-- <link rel="stylesheet/less" href="/less/pags/index.less"> -->
+	
+	<%- include("../partials/less.ejs", { paths: ["pags/index"] }) %>
+
+	<%- include("../partials/script.ejs", { paths: ["pg/index"] }) %> 
+</head>
+<body class="dar">
+	<%- include("../partials/nav.ejs", { userData, alert }) -%> 
+
+	<div class="main">
+		<div class="present">
+			<div class="svg-back">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+					<path fill="#3880be" fill-opacity="1" d="M0,192L12.6,213.3C25.3,235,51,277,76,282.7C101.1,288,126,256,152,224C176.8,192,202,160,227,165.3C252.6,171,278,213,303,208C328.4,203,354,149,379,154.7C404.2,160,429,224,455,256C480,288,505,288,531,266.7C555.8,245,581,203,606,197.3C631.6,192,657,224,682,202.7C707.4,181,733,107,758,96C783.2,85,808,139,834,149.3C858.9,160,884,128,909,117.3C934.7,107,960,117,985,138.7C1010.5,160,1036,192,1061,186.7C1086.3,181,1112,139,1137,112C1162.1,85,1187,75,1213,101.3C1237.9,128,1263,192,1288,186.7C1313.7,181,1339,107,1364,80C1389.5,53,1415,75,1427,85.3L1440,96L1440,320L1427.4,320C1414.7,320,1389,320,1364,320C1338.9,320,1314,320,1288,320C1263.2,320,1238,320,1213,320C1187.4,320,1162,320,1137,320C1111.6,320,1086,320,1061,320C1035.8,320,1011,320,985,320C960,320,935,320,909,320C884.2,320,859,320,834,320C808.4,320,783,320,758,320C732.6,320,707,320,682,320C656.8,320,632,320,606,320C581.1,320,556,320,531,320C505.3,320,480,320,455,320C429.5,320,404,320,379,320C353.7,320,328,320,303,320C277.9,320,253,320,227,320C202.1,320,177,320,152,320C126.3,320,101,320,76,320C50.5,320,25,320,13,320L0,320Z"></path>
+				</svg>
+			</div>
+			<div class="banner-ip" data-commons-onclick="copy, <%= server.ip %>"></div>
+			<div class="banner-discord" data-commons-onclick="link, /discord, _blank"></div>
+		</div> 
+
+		<div class="body">
+			<main>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quid autem sit, quod ita moveat itaque a natura in primo ortu appetatur, non constat deque eo est inter philosophos, cum summum bonum exquiritur, omnis dissensio. Nihil est enim, de quo aliter tu sentias atque ego, modo commutatis verbis ipsas res conferamus. Duo Reges: constructio interrete. Haec mirabilia videri intellego, sed cum certe superiora firma ac vera sint, his autem ea consentanea et consequentia, ne de horum quidem est veritate dubitandum. 
+				Est enim perspicuum nullam artem ipsam in se versari, sed esse aliud artem ipsam, aliud quod propositum sit arti. An ne hoc quidem Peripateticis concedis, ut dicant omnium bonorum virorum, id est sapientium omnibusque virtutibus ornatorum, vitam omnibus partibus plus habere semper boni quam mali? Quae quidem omnia et innumerabilia praeterea quis est quin intellegat et eos qui fecerint dignitatis splendore ductos inmemores fuisse utilitatum suarum nosque, cum ea laudemus, nulla alla re nisi honestate duci? Sit, inquam, tam facilis, quam vultis, comparatio voluptatis, quid de dolore dicemus? Huic verbo omnes, qui ubique sunt, qui Latine sciunt, duas res subiciunt, laetitiam in animo, commotionem suavem iucunditatis in corpore. Rem unam praeclarissimam omnium maximeque laudandam, penitus viderent, quonam gaudio complerentur, cum tantopere eius adumbrata opinione laetentur? Et ille, cum erubuisset: Noli, inquit, ex me quaerere, qui in Phalericum etiam descenderim, quo in loco ad fluctum alunt declamare solitum Demosthenem, ut fremitum assuesceret voce vincere. At modo dixeras nihil in istis rebus esse, quod interesset. Nam illud quidem adduci vix possum, ut ea, quae senserit ille, tibi non vera videantur. Vadem te ad mortem tyranno dabis pro amico, ut Pythagoreus ille Siculo fecit tyranno? 
+				Id autem eius modi est, ut additum ad virtutem auctoritatem videatur habiturum et expleturum cumulate vitam beatam, de quo omnis haec quaestio est. Alia quaedam dicent, credo, magna antiquorum esse peccata, quae ille veri investigandi cupidus nullo modo ferre potuerit. Alteri negant quicquam esse bonum, nisi quod honestum sit, alteri plurimum se et longe longeque plurimum tribuere honestati, sed tamen et in corpore et extra esse quaedam bona. Hoc vero non videre, maximo argumento esse voluptatem illam, qua sublata neget se intellegere omnino quid sit bonum-eam autem ita persequitur: quae palato percipiatur, quae auribus; Vobis autem, quibus nihil est aliud propositum nisi rectum atque honestum, unde officii, unde agendi principlum nascatur non reperietis. Tum ille: Finem, inquit, interrogandi, si videtur, quod quidem ego a principio ita me malle dixeram hoc ipsum providens, dialecticas captiones. 
+				Haec mirabilia videri intellego, sed cum certe superiora firma ac vera sint, his autem ea consentanea et consequentia, ne de horum quidem est veritate dubitandum. Qua exposita scire cupio quae causa sit, cur Zeno ab hac antiqua constitutione desciverit, quidnam horum ab eo non sit probatum; Quis animo aequo videt eum, quem inpure ac flagitiose putet vivere? Esse tantam vim virtutis tantamque, ut ita dicam, auctoritatem honestatis, ut reliqua non illa quidem nulla, sed ita parva sint, ut nulla esse videantur. Me quidem ad altiorem memoriam Oedipodis huc venientis et illo mollissimo carmine quaenam essent ipsa haec loca requirentis species quaedam commovit, inaniter scilicet, sed commovit tamen. Et quae per vim oblatum stuprum volontaria morte lueret inventa est et qui interficeret filiam, ne stupraretur. Praeclare Laelius, et recte sofñw, illudque vere: O Publi, o gurges, Galloni! es homo miser, inquit. Quis, quaeso, illum negat et bonum virum et comem et humanum fuisse? Hic dolor populi Romani duce et auctore Bruto causa civitati libertatis fuit, ob eiusque mulieris memoriam primo anno et vir et pater eius consul est factus. Perturbationes autem nulla naturae vi commoventur, omniaque ea sunt opiniones ac iudicia levitatis. 
+			</main>
+			<aside>
+				<div class="card primary dp-2 card-members">
+					<div class="card-header">
+						<div>Nasgar Network</div>
+						<div class="status <%- serverData.online ? "online" : "offline" %> "></div>
+					</div>
+
+					<div class="card-body">
+						<div class="online-members">
+							<span class="players">
+								<%= serverData.players.online %>/<%= serverData.players.max %>
+							</span>
+						</div>
+					</div>
+				</div>
+				<div class="discord-members">
+					<iframe src="https://discord.com/widget?id=455476931463217174&theme=dark" 
+						allowtransparency="true" 
+						frameborder="0" 
+						sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+				</div>
+				<div class="card primary dp-2 card-40servidoresmc">
+					<div class="card-header">
+						<a href='https://www.40servidoresmc.es/' target='_blank'>
+							40servidoresmc 
+							<i class="material">open_in_new</i>
+						</a>
+					</div>
+					<div class="card-body">
+						<a href='https://www.40servidoresmc.es/nasgar-network' target='_blank'>
+							<img style='max-width:160px;' src='https://www.40servidoresmc.es/img/botonvota.png' alt='Servidores de Minecraft 40servidoresM., Vota por Nasgar Network'>
+						</a>
+					</div>
+				</div>
+			</aside>
+		</div>
+	</div>
+
+
+	<div class="toasts"></div>
+</body>
+</html>
