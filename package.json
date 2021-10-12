@@ -8,6 +8,7 @@
   },
   "type": "commonjs",
   "module": "nasgar-web",
+  "typings": "@types",
   "engines": {
     "node": ">=14.0.0"
   },

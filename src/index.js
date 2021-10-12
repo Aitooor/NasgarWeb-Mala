@@ -12,6 +12,7 @@ const userDataByReq = require("./lib/userDataByReq");
 const normalizeSession = require("./lib/normalizeSession");
 const database = require("./lib/database");
 const rcon = require("./lib/rcon");
+const languageMidd = require("./middlewares/language").middleware;
 
 // Configuration
 const CONFIG = require("../config");
@@ -52,6 +53,7 @@ app.use(express.static(join(__dirname, "public")));
 
 app.use(normalizeSession);
 app.use(userDataByReq.middleware);
+app.use(languageMidd);
 
 // Init paypal -- Dev
 paypal.configure({

@@ -1,19 +1,18 @@
 {
   "include": [
-    "**/*.js",
     "**/*.ts",
-    "**/*.d.ts"
   ],
   "compilerOptions": {
-    "outDir": "./dist",
-    "allowJs": true,
+    "declaration": true,
+    "declarationDir": "./types",
+    "allowJs": false,
     "target": "ES6",
     "module": "CommonJS",
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "moduleResolution": "Node",
     "allowSyntheticDefaultImports": true,
-    "checkJs": true,
+    "checkJs": false,
     "strict": false,
     "removeComments": false,
     "experimentalDecorators": true
