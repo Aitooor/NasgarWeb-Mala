@@ -1,0 +1,90 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "Language Nasgar Json",
+  "required": ["name"],
+  "properties": {
+    "name": {
+      "type": "object",
+      "properties": {
+        "native": {
+          "type": "string"
+        },
+        "english": {
+          "type": "string"
+        }
+      }
+    },
+    "menu": {
+      "type": "object",
+      "properties": {
+        "home": {
+          "type": "string",
+          "default": "Home"
+        },
+        "updates": {
+          "type": "string",
+          "default": "Updates"
+        },
+        "vote": {
+          "type": "string",
+          "default": "Vote"
+        },
+        "bans": {
+          "type": "string",
+          "default": "Bans"
+        },
+        "shop": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "default": "Shop"
+            },
+            "ranks": {
+              "type": "string",
+              "default": "Ranks"
+            },
+            "keys": {
+              "type": "string",
+              "default": "Keys"
+            }
+          }
+        },
+        "login": {
+          "type": "string",
+          "default": "Login"
+        }
+      }
+    },
+
+    "landing": {
+      "type": "object",
+      "default": {},
+      "properties": {
+        "description": {
+          "type": "string",
+          "default": "Play <b>Nasgar</b> for free today."
+        },
+
+        "about": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "default": "About us"
+            },
+            "content": {
+              "type": "string",
+              "default": ""
+            }
+          }
+        },
+
+        "team": {
+          "type": "string",
+          "default": "Team"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+    "$schema": "./schema.json",
+
+    "name": {
+        "english": "Spanish",
+        "native": "Español"
+    },
+
+    "menu": {
+        "home": "Principal",
+        "updates": "Actualizaciones",
+        "bans": "Sanciones",
+        "vote": "Votar",
+        "login": "Ingresar",
+        "shop": {
+            "title": "Tienda",
+            "ranks": "Rangos",
+            "keys": "Llaves"
+        }
+    },
+
+    "landing": {
+        "description": "Juega gratis a <b>Nasgar</b> hoy.",
+        "about": {
+            "content": "Nasgar es un server de maincra :)"
+        }
+    }
+}
