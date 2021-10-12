@@ -1,141 +1,249 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="<%= global.langISO %>">
+  <head>
     <%- include("../partials/header.ejs") -%>
 
-	<title> Nasgar Network </title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400;500&display=swap" rel="stylesheet">
-    
-	<!-- CSS -->
-	<%- include("../partials/less.ejs", { paths: ["pags/index"] }) %>
-</head>
-<body>
-    <nav>
-        <div class="desktop">
-            <a href="/" class="logo">
-                <img src="/img/logo-128x.png" alt="Nasgar Network">
-            </a>
-            <div class="tabs">
-                <a href="/" class="tab selected">Home</a>
-                <a href="#about" class="tab">Actualizaciones</a>
-                <div class="tab">
-                    <div class="title">Tienda</div>
-                    <div class="options">
-                        <a href="/shop" class="option">Rangos</a>
-                        <a href="/shop" class="option">Llaves</a>
-                    </div>
-                </div>
-                <a href="#team" class="tab">Sanciones</a>
-                <a href="/vote" target="_blank" class="tab">Votar</a>
-                <a href="/login" class="tab login">Login</a>
-            </div>
-        </div>
+    <title>Nasgar Network</title>
 
-        <div class="mobile">
-            <div class="header">
-                <a href="/" class="logo">
-                    <img src="/img/logo-128x.png" alt="Nasgar Network">
-                </a>
-                <button class="menu">
-                    <i class="material">menu</i>
-                </button>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- CSS -->
+    <%- include("../partials/less.ejs", { paths: ["pags/index"] }) %>
+  </head>
+  <body>
+    <nav>
+      <div class="desktop">
+        <a href="/" class="logo">
+          <img src="/img/logo-128x.png" alt="Nasgar Network" />
+        </a>
+        <div class="tabs">
+          <a href="/" class="tab selected"><%= global.lang.menu.home %></a>
+          <a href="/updates" class="tab"><%= global.lang.menu.updates %></a>
+          <div class="tab">
+            <div class="title"><%= global.lang.menu.shop.title %></div>
+            <div class="options">
+              <a href="/shop" class="option"><%= global.lang.menu.shop.ranks %></a>
+              <a href="/shop" class="option"><%= global.lang.menu.shop.keys %></a>
             </div>
-            <div class="tabs">
-                <a href="/" class="tab selected">Home</a>
-                <a href="#about" class="tab">About</a>
-                <a href="#" class="tab">Updates</a>
-                <div class="tab">
-                    <div class="title">Shop</div>
-                    <div class="options">
-                        <a href="/shop" class="option">Ranks</a>
-                        <a href="/shop" class="option">Keys</a>
-                    </div>
-                </div>
-                <a href="#team" class="tab">Team</a>
-                <a href="/login" class="tab login">Login</a>
-            </div>
+          </div>
+          <a href="#team" class="tab">Sanciones</a>
+          <a href="/vote" target="_blank" class="tab">Votar</a>
+          <a href="/login" class="tab login">Login</a>
         </div>
+      </div>
+
+      <div class="mobile">
+        <div class="header">
+          <a href="/" class="logo">
+            <img src="/img/logo-128x.png" alt="Nasgar Network" />
+          </a>
+          <button class="menu">
+            <i class="material">menu</i>
+          </button>
+        </div>
+        <div class="tabs">
+          <a href="/" class="tab selected"><%= global.lang.menu.home %></a>
+          <a href="/updates" class="tab"><%= global.lang.menu.updates %></a>
+          <div class="tab">
+            <div class="title"><%= global.lang.menu.shop.title %></div>
+            <div class="options">
+              <a href="/shop" class="option"><%= global.lang.menu.shop.ranks %></a>
+              <a href="/shop" class="option"><%= global.lang.menu.shop.keys %></a>
+            </div>
+          </div>
+          <a href="/bans" class="tab"><%= global.lang.menu.bans %></a>
+          <a href="/vote" class="tab"><%= global.lang.menu.vote %></a>
+          <a href="/login" class="tab login"><%= global.lang.menu.login %></a>
+        </div>
+      </div>
     </nav>
 
+    <div class="landing-header">
+      <div class="tabs">
+        <div class="left">
+          <a href="#" class="tab"><%= global.lang.menu.home %></a>
+          <a href="#" class="tab"><%= global.lang.menu.bans %></a>
+        </div>
+        <div class="logo">
+          <img src="/img/logo-128x.png" alt="Nasgar Network">
+        </div>
+        <div class="right">
+          <div class="tab">
+            <div class="title"><%= global.lang.menu.shop.title %></div>
+            <div class="options">
+              <a href="/shop" class="option"><%= global.lang.menu.shop.ranks %></a>
+              <a href="/shop" class="option"><%= global.lang.menu.shop.keys %></a>
+            </div>
+          </div>
+          <a href="#" class="tab"><%= global.lang.menu.updates %></a>
+        </div>
+      </div>
+    </div>
+
     <div class="landing">
-        <div class="ip" onclick="copyToClipboard('nasgar.online')">nasgar.online</div>
-        <div class="desc">
-            <span>Play <b>Nasgar</b> for free today!</span>
-            <span>1.7 - 1.17.x</span>
-        </div>
-        <div class="discord">
-            <img src="/img/discord-logo.svg" alt="Discord Icon" onclick="open('https://ds.nasgar.online', '_blank')">
-        </div>
+      <div class="ip" onclick="copyToClipboard('nasgar.online')">
+        nasgar.online
+      </div>
+      <div class="desc">
+        <span><%- global.lang.landing.description %></span>
+        <span>1.7 - 1.17.x</span>
+      </div>
+      <div class="discord">
+        <img
+          src="/img/discord-logo.svg"
+          alt="Discord Icon"
+          onclick="open('https://ds.nasgar.online', '_blank')"
+        />
+      </div>
     </div>
 
     <!--———————— Bottom ————————-->
 
     <div class="container-full">
-        <div class="body">
-            <div id="about" class="solid d-block">
-                <div class="title">About</div>
-                <div>
-                    Nasgar es un server de maincra :)
-                </div>
-            </div>
-            <div>
-                <a href="/discord" target="_blank" class="stat">
-                    <div class="icon">
-                        <img src="/img/discord-logo.svg" alt="Discord Icon">
-                    </div>
-                    <div class="name">Discord</div>
-                </a>
-                <a href="https://twitter.com/NasgarNetwork" target="_blank" class="stat">
-                    <div class="icon">
-                        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMjQgNC41NTdjLS44ODMuMzkyLTEuODMyLjY1Ni0yLjgyOC43NzUgMS4wMTctLjYwOSAxLjc5OC0xLjU3NCAyLjE2NS0yLjcyNC0uOTUxLjU2NC0yLjAwNS45NzQtMy4xMjcgMS4xOTUtLjg5Ny0uOTU3LTIuMTc4LTEuNTU1LTMuNTk0LTEuNTU1LTMuMTc5IDAtNS41MTUgMi45NjYtNC43OTcgNi4wNDUtNC4wOTEtLjIwNS03LjcxOS0yLjE2NS0xMC4xNDgtNS4xNDQtMS4yOSAyLjIxMy0uNjY5IDUuMTA4IDEuNTIzIDYuNTc0LS44MDYtLjAyNi0xLjU2Ni0uMjQ3LTIuMjI5LS42MTYtLjA1NCAyLjI4MSAxLjU4MSA0LjQxNSAzLjk0OSA0Ljg5LS42OTMuMTg4LTEuNDUyLjIzMi0yLjIyNC4wODQuNjI2IDEuOTU2IDIuNDQ0IDMuMzc5IDQuNiAzLjQxOS0yLjA3IDEuNjIzLTQuNjc4IDIuMzQ4LTcuMjkgMi4wNCAyLjE3OSAxLjM5NyA0Ljc2OCAyLjIxMiA3LjU0OCAyLjIxMiA5LjE0MiAwIDE0LjMwNy03LjcyMSAxMy45OTUtMTQuNjQ2Ljk2Mi0uNjk1IDEuNzk3LTEuNTYyIDIuNDU3LTIuNTQ5eiIvPjwvc3ZnPg==" alt="Twitter icon">
-                    </div>
-                    <div class="name">Twitter</div>
-                </a>
-                <a href="/vote" target="_blank" class="stat">
-                    <div class="icon">
-                        <img src="https://www.40servidoresmc.es/img/favicon.png" alt="40servidoresmc icon">
-                    </div>
-                    <div class="name">40servidoresmc</div>
-                </a>
-            </div>
-            <div id="team" class="solid d-block">
-                <div class="title">Team</div>
-                <div class="d-grid">
-                    Someone
-                </div>
-            </div>
+      <div class="body">
+        <div id="about" class="solid d-block">
+          <div class="title"><%- global.lang.landing.about.title %></div>
+          <div><%- global.lang.landing.about.content %></div>
         </div>
+        <div>
+          <a href="/discord" target="_blank" class="stat">
+            <div class="icon">
+              <img src="/img/discord-logo.svg" alt="Discord Icon" />
+            </div>
+            <div class="name">Discord</div>
+          </a>
+          <a
+            href="https://twitter.com/NasgarNetwork"
+            target="_blank"
+            class="stat"
+          >
+            <div class="icon">
+              <img
+                src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMjQgNC41NTdjLS44ODMuMzkyLTEuODMyLjY1Ni0yLjgyOC43NzUgMS4wMTctLjYwOSAxLjc5OC0xLjU3NCAyLjE2NS0yLjcyNC0uOTUxLjU2NC0yLjAwNS45NzQtMy4xMjcgMS4xOTUtLjg5Ny0uOTU3LTIuMTc4LTEuNTU1LTMuNTk0LTEuNTU1LTMuMTc5IDAtNS41MTUgMi45NjYtNC43OTcgNi4wNDUtNC4wOTEtLjIwNS03LjcxOS0yLjE2NS0xMC4xNDgtNS4xNDQtMS4yOSAyLjIxMy0uNjY5IDUuMTA4IDEuNTIzIDYuNTc0LS44MDYtLjAyNi0xLjU2Ni0uMjQ3LTIuMjI5LS42MTYtLjA1NCAyLjI4MSAxLjU4MSA0LjQxNSAzLjk0OSA0Ljg5LS42OTMuMTg4LTEuNDUyLjIzMi0yLjIyNC4wODQuNjI2IDEuOTU2IDIuNDQ0IDMuMzc5IDQuNiAzLjQxOS0yLjA3IDEuNjIzLTQuNjc4IDIuMzQ4LTcuMjkgMi4wNCAyLjE3OSAxLjM5NyA0Ljc2OCAyLjIxMiA3LjU0OCAyLjIxMiA5LjE0MiAwIDE0LjMwNy03LjcyMSAxMy45OTUtMTQuNjQ2Ljk2Mi0uNjk1IDEuNzk3LTEuNTYyIDIuNDU3LTIuNTQ5eiIvPjwvc3ZnPg=="
+                alt="Twitter icon"
+              />
+            </div>
+            <div class="name">Twitter</div>
+          </a>
+          <a href="/vote" target="_blank" class="stat">
+            <div class="icon">
+              <img
+                src="https://www.40servidoresmc.es/img/favicon.png"
+                alt="40servidoresmc icon"
+              />
+            </div>
+            <div class="name">40servidoresmc</div>
+          </a>
+        </div>
+        <div id="team" class="solid d-block">
+          <div class="title"><%- global.lang.landing.team %></div>
+          <div class="d-grid">
+
+            <div class="card primary user">
+              <div class="card-header">
+                Aitor
+              </div>
+              <div class="card-body">
+                <div class="avatar">
+                  <img src="https://cdn.discordapp.com/avatars/454002606084194305/3e5fa678a4182a039c5add272a8de93c.webp?size=256" alt="Aitoor's Avatar">
+                </div>
+                <div class="rank owner"></div>
+              </div>
+            </div>
+
+            <div class="card primary user">
+              <div class="card-header">
+                Coldstrom25
+              </div>
+              <div class="card-body">
+                <div class="avatar">
+                  <img src="https://cdn.discordapp.com/avatars/715294936412586004/3f4958ba0d8437cf05f2b8f3c9c64e0b.webp?size=256" alt="Apika Luca's Avatar">
+                </div>
+                <div class="rank admin"></div>
+              </div>
+            </div>
+            
+            <div class="card primary user">
+              <div class="card-header">
+                Edu47
+              </div>
+              <div class="card-body">
+                <div class="avatar">
+                  <img src="https://cdn.discordapp.com/avatars/697509860803084318/ca45321d958c3b14ff463e752c45719b.webp?size=256" alt="Apika Luca's Avatar">
+                </div>
+                <div class="rank admin"></div>
+              </div>
+            </div>
+
+            <div class="card primary user">
+              <div class="card-header">
+                Matias67Y
+              </div>
+              <div class="card-body">
+                <div class="avatar">
+                  <img src="https://cdn.discordapp.com/avatars/480850778567868437/720bc14242dd672cbf5e4ec68dcbad5f.webp?size=256" alt="Apika Luca's Avatar">
+                </div>
+                <div class="rank builder"></div>
+              </div>
+            </div>
+
+            <div class="card primary user">
+              <div class="card-header">
+                Fckml
+              </div>
+              <div class="card-body">
+                <div class="avatar">
+                  <img src="https://cdn.discordapp.com/avatars/714948434385174539/2559c53de4023c76cce724732919d04a.webp?size=256" alt="Apika Luca's Avatar">
+                </div>
+                <div class="rank dev-head"></div>
+              </div>
+            </div>
+
+            <div class="card primary user">
+              <div class="card-header">
+                Apika Luca
+              </div>
+              <div class="card-body">
+                <div class="avatar">
+                  <img src="https://cdn.discordapp.com/avatars/809848854106341429/b7282b51fc3443ef18d1612d89f9ba87.webp?size=256" alt="Apika Luca's Avatar">
+                </div>
+                <div class="rank dev-web"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script>
-        ;(() => {
-            const shop = document.querySelector("div.tab");
+      (() => {
+        const shop = document.querySelector("div.tab");
 
-            shop.addEventListener("click", () => {
-                shop.classList.toggle("active")
-            });
+        shop.addEventListener("click", () => {
+          shop.classList.toggle("active");
+        });
 
+        const menubtn = document.querySelector("button.menu");
+        const mobile = document.querySelector(".mobile");
 
+        menubtn.addEventListener("click", () => {
+          mobile.classList.toggle("active");
+        });
 
-            const menubtn = document.querySelector("button.menu");
-            const mobile = document.querySelector(".mobile");
+        const nav = document.querySelector("nav");
 
-            menubtn.addEventListener("click", () => {
-                mobile.classList.toggle("active");
-            });
-
-            const nav = document.querySelector("nav");
-
-            document.addEventListener("scroll", () => {
-                let top  = window.pageYOffset || document.documentElement.scrollTop;                
-                if(top > 150) {
-                    nav.classList.add("scrolled")
-                } else {
-                    nav.classList.remove("scrolled")
-                }
-            })
-        })();
+        document.addEventListener("scroll", () => {
+          let top = window.pageYOffset || document.documentElement.scrollTop;
+          if (top > 150) {
+            nav.classList.add("scrolled");
+          } else {
+            nav.classList.remove("scrolled");
+          }
+        });
+      })();
     </script>
-</body>
+  </body>
 </html>

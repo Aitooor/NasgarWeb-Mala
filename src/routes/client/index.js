@@ -42,7 +42,7 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
       }).then(res => res.json()).catch(() => null);
 
       lastRequestTime = Date.now();
-    }
+    };
 
     res.render("pags/index", { serverData: lastRequest });
   });
