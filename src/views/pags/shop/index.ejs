@@ -26,28 +26,30 @@
 							<div class="product-name"><%= product.name %></div>
 							<div class="footer">
 								<div class="product-price"><%= product.price %></div>
-								<button type="submit" class="add-basket">Add to basket</button>
+								<button type="submit" class="add-basket primary hover-anim-ball">
+									<span>Add to basket</span>
+								</button>
 							</div>
 						</div>
 					<% }) %> 
 				</div>
 			</main>
 			<aside>
-				<section>
-					<div class="header">Compras Recientes</div>
-					<div class="body">
+				<section class="card primary">
+					<div class="card-header">Compras Recientes</div>
+					<div class="card-body">
 						<div class="purchase">
 							
 						</div>
 					</div>
 				</section>
-				<section>
-					<div class="header">Top Compras</div>
-					<div class="body">Lorem ipsum dolor 2</div>
+				<section class="card primary">
+					<div class="card-header">Top Compras</div>
+					<div class="card-body">Lorem ipsum dolor 2</div>
 				</section>
-				<section>
-					<div class="header">Top Donadores</div>
-					<div class="body">Lorem ipsum dolor 3</div>
+				<section class="card primary">
+					<div class="card-header">Top Donadores</div>
+					<div class="card-body">Lorem ipsum dolor 3</div>
 				</section>
 			</aside>
 		</div>

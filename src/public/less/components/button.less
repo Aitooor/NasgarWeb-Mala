@@ -1,20 +1,93 @@
 @import "../mixins/button.less";
 
-[class*="btn-"]:is(button, a) {
-	.render(@color) {
-		#btn.common(@color);
-		
-		&:not([class*="btn-out"]) {
-			#btn.fill();
+button,
+.btn {
+	cursor: pointer;
+  width: auto;
+  margin: 1px;
+  padding: .4rem .8rem;
+
+  background: @primary;
+  color: #fff;
+
+  border: solid 2px transparent;
+  border-radius: 2.5px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &.disabled,
+  &[disabled] {
+    background: #777;
+  }
+
+  &.primary {
+    background: @primary;
+    color: #fff;
+  }
+  &.success {
+    background: @success;
+    color: #fff;
+  }
+  &.danger {
+    background: @danger;
+    color: #fff;
+  }
+  &.warning {
+    background: @warning;
+    color: #000;
+  }
+
+
+	// Animations
+
+	&.hover-anim-ball {
+		position: relative;
+		box-sizing: border-box;
+
+		overflow: hidden;
+
+		&::after {
+			content: "";
+			position: absolute;
+			top: calc(-100% - 55px);
+			width: calc(100% + 5px);
+			height: calc(100% + 55px);
+
+			background: #0004;
+			border-radius: 0 0 50% 50%;
+
+			transition: .4s ease-in-out top;
+			z-index: 1;
 		}
 
-		&[class*="btn-out-"] {
-			#btn.outline();
+		&:hover::after {
+			top: -5px;
+		}
+
+		& span {
+			pointer-events: none;
+			z-index: 2;
 		}
 	}
-
-	&[class*="-primary"] { .render(@primary-button-colors); }
-	&[class*="-success"] { .render(@success-button-colors); }
-	&[class*="-warning"] { .render(@warning-button-colors); }
-	&[class*="-danger"]  { .render(@danger-button-colors); }
 }
+
+// [class*="btn-"]:is(button, a) {
+// 	.render(@color) {
+// 		#btn.common(@color);
+
+// 		&:not([class*="btn-out"]) {
+// 			#btn.fill();
+// 		}
+
+// 		&[class*="btn-out-"] {
+// 			#btn.outline();
+// 		}
+// 	}
+
+// 	&[class*="-primary"] { .render(@primary-button-colors); }
+// 	&[class*="-success"] { .render(@success-button-colors); }
+// 	&[class*="-warning"] { .render(@warning-button-colors); }
+// 	&[class*="-danger"]  { .render(@danger-button-colors); }
+// }

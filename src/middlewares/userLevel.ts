@@ -51,6 +51,9 @@ export function middleware(levels: _Level | _Level[], options?: userLevelOptions
           else
             return next();
       }
+    } else 
+    if(info === null && (levels === Level.Default || (Array.isArray(levels) && levels.includes(Level.Default)))) {
+      return next();
     }
 
     // Else redirect to auth or send status

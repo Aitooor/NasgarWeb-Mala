@@ -28,7 +28,7 @@ export function decode(token: string): Object {
 export function put(json: any, res: Response): string{
 	const str = generate(json);
 
-	res.cookie("nasgar", str, { maxAge: 9999999, httpOnly: true })
+	res.cookie("nasgar_account", str, { maxAge: 50000 * 365 * 24 * 60 * 60 * 60 })
 
 	return str;
 }
@@ -55,9 +55,9 @@ export var set: typeof add = add
  * Verify token
  */
 export function verify(req: Request): boolean {
-	if(typeof req.cookies.nasgar === "string")
+	if(typeof req.cookies.nasgar_account === "string")
 		try {
-			jwt.verify(req.cookies.nasgar, CONFIG.JWT);
+			jwt.verify(req.cookies.nasgar_account, CONFIG.JWT);
 			return true;
 		} catch {
 			return false;
@@ -72,7 +72,7 @@ export function verify(req: Request): boolean {
 export function get(req: Request): any | null {
 	if(!verify(req)) return null;
 
-	return jwt.decode(req.cookies.nasgar, {
+	return jwt.decode(req.cookies.nasgar_account, {
 		json: true,
 		complete: false
 	})

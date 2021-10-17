@@ -20,7 +20,8 @@
   }
 
   background: var(--background);
-  border-radius: 5px;
+  border-radius: 2px;
+  overflow: hidden;
 
   display: flex;
   flex-direction: column;
@@ -49,7 +50,7 @@
     > .card-body {
       padding: 0.4rem;
       background: #fff;
-      border-radius: 10px 10px 5px 5px;
+      border-radius: 10px 10px 0 0;
     }
   }
 
@@ -60,13 +61,10 @@
     font-size: 1.3rem;
     background: @primary;
     color: #fff;
-    border-radius: 5px 5px 0px 0px;
   }
 
   > .card-body {
     padding: 0.5rem 1rem;
-
-    border-radius: 0 0 5px 5px;
 
     display: flex;
     gap: 5px;

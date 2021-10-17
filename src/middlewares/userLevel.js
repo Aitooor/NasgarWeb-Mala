@@ -38,6 +38,9 @@ function middleware(levels, options) {
                         return next();
             }
         }
+        else if (info === null && (levels === exports.Level.Default || (Array.isArray(levels) && levels.includes(exports.Level.Default)))) {
+            return next();
+        }
         // Else redirect to auth or send status
         if ((options === null || options === void 0 ? void 0 : options.redirect) !== false) {
             const query = "next=" + encodeURIComponent(request.originalUrl);

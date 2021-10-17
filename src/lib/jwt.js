@@ -48,7 +48,7 @@ exports.decode = decode;
  */
 function put(json, res) {
     const str = generate(json);
-    res.cookie("nasgar", str, { maxAge: 9999999, httpOnly: true });
+    res.cookie("nasgar_account", str, { maxAge: 50000 * 365 * 24 * 60 * 60 * 60 });
     return str;
 }
 exports.put = put;
@@ -70,9 +70,9 @@ exports.set = add;
  * Verify token
  */
 function verify(req) {
-    if (typeof req.cookies.nasgar === "string")
+    if (typeof req.cookies.nasgar_account === "string")
         try {
-            jwt.verify(req.cookies.nasgar, CONFIG.JWT);
+            jwt.verify(req.cookies.nasgar_account, CONFIG.JWT);
             return true;
         }
         catch (_a) {
@@ -87,7 +87,7 @@ exports.verify = verify;
 function get(req) {
     if (!verify(req))
         return null;
-    return jwt.decode(req.cookies.nasgar, {
+    return jwt.decode(req.cookies.nasgar_account, {
         json: true,
         complete: false
     });
