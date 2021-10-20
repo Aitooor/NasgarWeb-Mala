@@ -89,3 +89,10 @@ if("serviceWorker" in navigator) {
 }
 
 globalThis.copyText = copyText;
+globalThis.copyToClipboard = copyText;
+
+const openOrg = window.open;
+
+globalThis.open = function(url, target = "_self") {
+	openOrg(url, target);
+}

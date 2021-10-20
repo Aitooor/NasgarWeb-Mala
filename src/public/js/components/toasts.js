@@ -125,9 +125,9 @@ class Toast {
 		const actions = document.createElement("div");
 
 		main.className = "toast";
-		header.className = "header";
-		body.className = "body";
-		actions.className = "actions";
+		header.className = "toast-header";
+		body.className = "toast-body";
+		actions.className = "toast-actions";
 
 		main.append(header);
 		main.append(body);

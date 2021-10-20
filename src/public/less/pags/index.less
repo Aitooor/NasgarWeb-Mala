@@ -1,5 +1,6 @@
 @import "../common/super.less";
 @import "../common/colors.less";
+@import "../components/toasts.less";
 @import "../components/card/common.less";
 
 html {
@@ -267,19 +268,21 @@ nav {
           > .options {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 0px;
 
             > .option {
               position: relative;
-              padding: 0 1rem;
+              padding: 5px 1rem;
               pointer-events: all;
+
+              transition: padding .3s ease, margin .3s ease;
 
               &::before {
                 content: "";
                 position: absolute;
                 top: 0;
                 left: 0;
-                width: 0rem;
+                width: 2px;
                 height: 100%;
 
                 background-color: @details;
@@ -292,9 +295,17 @@ nav {
                 background-color: desaturate(@details, 50%);
               }
 
-              &:hover::before {
-                width: 0.5rem;
-                background-color: @details;
+              &:hover {
+                padding: 2.5px 1rem;
+                margin: 2.5px 0;
+
+                // &:first-child { margin: 0 0 2.5px 0; }
+                // &:last-child { margin: 2.5px 0 0 0; }
+
+                &::before {
+                  width: 0.5rem;
+                  background-color: @details;
+                }
               }
             }
           }
@@ -534,6 +545,7 @@ nav {
 
     > .logo {
       img {
+        cursor: pointer;
         width: 100px;
         height: 100px;
       }
@@ -556,6 +568,7 @@ nav {
   text-align: center;
 
   > .ip {
+    cursor: pointer;
     font-family: "Maven Pro", sans-serif;
     font-size: 5rem;
     font-weight: 500;
@@ -575,6 +588,7 @@ nav {
 
   > .discord {
     img {
+      cursor: pointer;
       width: 32px;
       height: 32px;
     }
@@ -736,7 +750,7 @@ nav {
   }
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 370px) {
   .body {
     > div {
       flex-direction: column;

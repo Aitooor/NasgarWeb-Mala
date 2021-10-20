@@ -84,7 +84,7 @@
     </div>
 
     <div class="landing">
-      <div class="ip" onclick="copyToClipboard('nasgar.online')">
+      <div class="ip" title="Copy" onclick="globalThis.copyToClipboard('nasgar.online')">
         nasgar.online
       </div>
       <div class="desc">
@@ -95,7 +95,8 @@
         <img
           src="/img/discord-logo.svg"
           alt="Discord Icon"
-          onclick="open('https://ds.nasgar.online', '_blank')"
+          title="Go to Nasgar Discord"
+          onclick="globalThis.open('https://ds.nasgar.online', '_blank')"
         />
       </div>
     </div>
@@ -140,6 +141,8 @@
         </div>
       </div>
     </div>
+
+    <div class="toasts"></div>
 
     <script>
       (() => {
