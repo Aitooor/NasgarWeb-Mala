@@ -15,10 +15,8 @@ export async function middleware(req: Request, res: Response, next: NextFunction
         lang = await Language.getLanguage(langISO);
     }
 
-    res.locals.global = {
-        lang,
-        langISO
-    };
+    res.locals.global.lang = lang;
+    res.locals.global.langISO = langISO;
 
     next();
 };

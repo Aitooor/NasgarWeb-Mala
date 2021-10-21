@@ -43,10 +43,8 @@ function middleware(req, res, next) {
             langISO = Language.getLanguageISO(req.headers["accept-language"]);
             lang = yield Language.getLanguage(langISO);
         }
-        res.locals.global = {
-            lang,
-            langISO
-        };
+        res.locals.global.lang = lang;
+        res.locals.global.langISO = langISO;
         next();
     });
 }
