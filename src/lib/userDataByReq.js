@@ -1,38 +1,53 @@
 const express = require("express");
+const jwt = require("./jwt");
+const Account = require("../api/account");
+const UserLevel = require("../@types/userLevel")
 
-/**
- * @param {express.Request<RouteParameters<string>, any, any, qs.ParsedQs, Record<string, any>>} req
- * @param {express.Response<any, Record<string, any>, number>} res
- * @param {express.NextFunction} next
- */
-function middleware(req, res, next) {
-  /** @type {import("..").UserData} */
-  const userData = {
-    account: {
-      level: {
-        string: req.session.accountLevelString,
-        int: req.session.accountLevelInt,
+
+module.exports = function(db) {
+  /**
+   * @param {express.Request<RouteParameters<string>, any, any, qs.ParsedQs, Record<string, any>>} req
+   * @param {express.Response<any, Record<string, any>, number>} res
+   * @param {express.NextFunction} next
+   */
+  async function middleware(req, res, next) {
+    /** @type {import("..").UserData} */
+    const userData = {
+      account: {
+        level: {
+          string: req.session.accountLevelString,
+          int: req.session.accountLevelInt,
+        },
       },
-    },
-  };
+    };
 
-  req.userData = userData;
-  res.locals.userData = userData;
-  res.locals.server = {
-    ip: "nasgar.online",
-  };
+    req.userData = userData;
+    res.locals.userData = userData;
+    res.locals.server = {
+      ip: "nasgar.online",
+    };
 
-  res.locals.alert = {
-    show: req.session.showAlert,
-    text: req.session.alert,
-  };
+    res.locals.alert = {
+      show: req.session.showAlert,
+      text: req.session.alert,
+    };
 
-  req.session.showAlert = false;
+    req.session.showAlert = false;
 
-  next();
+    res.locals.global = {
+      "const": {
+        LEVEL: UserLevel.Level
+      }
+    };
+
+    const userId = jwt.get(req)?.uuid;
+    const userInfo = userId ? await Account.getUserInfo(db, userId) : null;
+    res.locals.global.user = userInfo?.data || null;
+
+    console.log(userId, userInfo);
+
+    next();
+  }
+
+  return { middleware }
 }
-
-module.exports = {
-  middleware,
-};
-

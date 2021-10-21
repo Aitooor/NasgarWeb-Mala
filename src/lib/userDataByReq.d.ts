@@ -5,8 +5,8 @@ declare function middleware(
 	res: express.Response<any, Record<string, any>, number>,
 	next: express.NextFunction): void;
 
-var _exports = {
+declare function _exports(): {
 	middleware
-};
+}
 
 export = _exports;
