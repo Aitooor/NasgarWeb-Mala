@@ -103,7 +103,7 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
   });
 
 	router.get("/logout", (req, res) => {
-		setLevel(Level.Default, req, res);
+		res.cookie("nasgar_account", "", { maxAge: 1 })
 		res.render("prefabs/splash", {
 			title: "Cerrando sesion",
 			texts: {

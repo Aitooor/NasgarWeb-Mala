@@ -27,6 +27,12 @@ body {
   font-family: "Rubik";
 }
 
+
+@details: @primary;
+@details-bg: @primary-bg;
+@details-fg: @primary-fg;
+@details-dark: @primary-dark;
+
 nav {
   position: fixed;
   width: 100vw;
@@ -39,11 +45,6 @@ nav {
   justify-content: center;
 
   z-index: 100;
-
-  @details: @primary;
-  @details-bg: @primary-bg;
-  @details-fg: @primary-fg;
-  @details-dark: @primary-dark;
 
   > .desktop {
     width: 100%;
@@ -73,6 +74,8 @@ nav {
         padding: 0.2rem 0.4rem;
         color: @white;
         text-transform: uppercase;
+
+        line-height: 1.5;
 
         &::before {
           content: "";
@@ -113,6 +116,14 @@ nav {
 
           > .title {
             pointer-events: none;
+
+            display: flex;
+            gap: 5px;
+            align-items: center;
+
+            > i {
+              font-size: 1.5rem;
+            }
           }
 
           > .options {
@@ -136,6 +147,10 @@ nav {
               position: relative;
               padding: 0.2rem 1rem;
               white-space: nowrap;
+
+              display: flex;
+              gap: 5px;
+              align-items: center;
 
               &::before {
                 content: "";
@@ -169,7 +184,7 @@ nav {
         }
       }
 
-      > .login {
+      .login {
         color: lighten(@details, 10%);
       }
     }
@@ -264,6 +279,14 @@ nav {
 
           > .title {
             pointer-events: none;
+
+            display: flex;
+            gap: 5px;
+            align-items: center;
+
+            > i {
+              font-size: 1.5rem;
+            }
           }
           > .options {
             display: flex;
@@ -274,6 +297,10 @@ nav {
               position: relative;
               padding: 5px 1rem;
               pointer-events: all;
+
+              display: flex;
+              gap: 5px;
+              align-items: center;
 
               transition: padding .3s ease, margin .3s ease;
 
@@ -312,7 +339,7 @@ nav {
         }
       }
 
-      > .login {
+        .login {
         background: @details-bg;
         color: @details-fg;
       }
@@ -554,6 +581,126 @@ nav {
 
   @media screen and (max-width: 768px) {
     display: none;
+  }
+}
+
+.desktop-login > .login {
+  cursor: pointer;
+  position: absolute;
+  top: 1.5rem;
+  right: 2.5rem;
+
+  color: @details;
+  padding: 0.2rem 0.4rem;
+  text-transform: uppercase;
+
+  line-height: 1.5;
+
+  z-index: 100;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    width: 0%;
+    height: 2px;
+
+    background-color: @details;
+
+    transition: width 0.2s ease, background-color 0.5s ease;
+  }
+
+  &.selected::before {
+    width: 100%;
+    background-color: desaturate(@details, 50%);
+  }
+
+  &:hover::before {
+    width: 100%;
+    background-color: @details;
+  }
+
+  @media screen and (max-width: 768px) {
+    display: none;
+  }
+}
+
+.desktop-login > div.login {
+  &::after {
+    content: "expand_more";
+    .material-icons();
+    position: absolute;
+    top: 0;
+    right: -15px;
+
+    font-size: 20px;
+  }
+
+  > .title {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+
+    > i {
+      font-size: 1.5rem;
+    }
+  }
+
+  > .options {
+    pointer-events: none;
+    text-transform: none;
+    position: absolute;
+    width: fit-content;
+    padding: 5px 0;
+
+    background: @white-bg;
+    color: @black;
+
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    opacity: 0;
+
+    transition: opacity 0.3s ease;
+
+    > .option {
+      position: relative;
+      padding: 0.2rem 1rem;
+      white-space: nowrap;
+
+      display: flex;
+      gap: 5px;
+      align-items: center;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0rem;
+        height: 100%;
+
+        background-color: @details;
+
+        transition: width 0.3s ease, background-color 0.5s ease;
+      }
+
+      &.selected::before {
+        width: 0.5rem;
+        background-color: desaturate(@details, 50%);
+      }
+
+      &:hover::before {
+        width: 0.5rem;
+        background-color: @details;
+      }
+    }
+  }
+
+  &.active > .options {
+    pointer-events: all;
+    opacity: 1;
   }
 }
 
