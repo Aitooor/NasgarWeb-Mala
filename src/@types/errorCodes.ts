@@ -6,9 +6,9 @@ export enum ErrorCode {
   EAcInvalidArgs,
     // Login
     EAcIncorrect,
-    EAcNoVerified
+    EAcNoVerified,
     // Sign up
-    EAcExists,
+    EAcExists
 }
 
 export default ErrorCode;
