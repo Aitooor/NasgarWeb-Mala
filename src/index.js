@@ -51,10 +51,6 @@ app.use(require("express-fileupload")({
 }));
 app.use(express.static(join(__dirname, "public")));
 
-app.use(normalizeSession);
-app.use(userDataByReq.middleware);
-app.use(languageMidd);
-
 // Init paypal -- Dev
 paypal.configure({
 	mode: "sandbox",
@@ -75,6 +71,11 @@ console.log("Paypal is connected");
 	const db = await database(app);
 	const rcons = false ? null : await rcon(...CONFIG.RCON.PORTS);
 	//const io = await socketio(server, db.createPool);
+
+	app.use(normalizeSession);
+	app.use(userDataByReq(db.createPool).middleware);
+	app.use(languageMidd);
+
 	require("./routes")(app, db.createPool, rcons);
 })();
 

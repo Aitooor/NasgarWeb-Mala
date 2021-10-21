@@ -9,8 +9,8 @@ const PREFIX = "\x1b[0;1;31m[ACCOUNTS] \x1b[0;37m";
 
 /**
  * @param {() => import("mysql").Pool} db
- * @param {string?} username
- * @param {string?} password
+ * @param {string} username
+ * @param {string} password
  *
  * @returns {Promise<{ done: boolean, data: object | null, error: AccountError | null }>}
 */
@@ -81,9 +81,9 @@ async function login(db, username, password) {
 
 /**
  * @param {() => import("mysql").Pool} db
- * @param {string?} username
- * @param {string?} email
- * @param {string?} password
+ * @param {string} username
+ * @param {string} email
+ * @param {string} password
  *
  * @returns {Promise<{ done: boolean, data: object | null, error: AccountError | null }>}
 */
@@ -136,5 +136,48 @@ async function signup(db, username, email, password) {
   }
 }
 
-module.exports = { login, signup };
+/** @typedef {{ uuid: string, name: string, rank: number }} UserInfo */
+
+/**
+ * @param {() => import("mysql").Pool} db
+ * @param {string} id
+ *
+ * @returns {Promise<{ done: boolean, data: UserInfo | null, error: AccountError | null }>}
+ */
+async function getUserInfo(db, uuid) {
+  if(typeof uuid !== "string") {
+    return {
+      done: false,
+      data: null,
+      error: {
+        status: 400,
+        code: ErrorCode.EAcInvalidArgs,
+        msg: errorDesc.EAcInvalidArgs
+      }
+    }
+  }
+
+  const pool = db();
+  const query = await pool.query(`SELECT uuid, name, rank FROM web.accounts WHERE uuid = "${uuid}"`);
+  
+  if(query.length === 1) {
+    return {
+      done: true,
+      data: query[0],
+      error: null
+    };
+  } else {
+    return {
+      done: false,
+      data: null,
+      error: {
+        status: 404,
+        code: ErrorCode.EAcExists,
+        msg: errorDesc.EAcExists
+      }
+    }
+  }
+}
+
+module.exports = { login, signup, getUserInfo };
 
