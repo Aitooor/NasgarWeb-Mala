@@ -10,15 +10,20 @@ export declare const DefaultLanguage: {
         updates: string;
         bans: string;
         vote: string;
+        login: string;
         shop: {
             title: string;
             keys: string;
             ranks: string;
         };
-        login: string;
     };
     landing: {
         description: string;
+        about: {
+            title: string;
+            content: string;
+        };
+        team: string;
     };
 };
 export declare type LanguageSchema = typeof EnglishLanguage;
