@@ -36,7 +36,7 @@
 // RCON data
   RCON: {
     PASS: "Aitor19992%"
-    PORTS: [ 100 ]
+    PORTS: [ 100, 101 ]
   }
 
 // Nodemailer auth
