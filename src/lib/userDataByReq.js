@@ -44,8 +44,6 @@ module.exports = function(db) {
     const userInfo = userId ? await Account.getUserInfo(db, userId) : null;
     res.locals.global.user = userInfo?.data || null;
 
-    console.log(userId, userInfo);
-
     next();
   }
 
