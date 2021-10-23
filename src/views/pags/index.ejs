@@ -14,80 +14,7 @@
     <%- include("../partials/less.ejs", { paths: ["pags/index"] }) %>
   </head>
   <body>
-    <nav>
-      <div class="desktop">
-        <a href="/" class="logo">
-          <img src="/img/logo-128x.png" alt="Nasgar Network" />
-        </a>
-        <div class="tabs">
-          <a href="/" class="tab selected"><%= global.lang.menu.home %></a>
-          <a href="/updates" class="tab"><%= global.lang.menu.updates %></a>
-          <div class="tab">
-            <div class="title"><%= global.lang.menu.shop.title %></div>
-            <div class="options">
-              <a href="/shop" class="option"><%= global.lang.menu.shop.ranks %></a>
-              <a href="/shop" class="option"><%= global.lang.menu.shop.keys %></a>
-            </div>
-          </div>
-          <a href="#team" class="tab"><%= global.lang.menu.bans %></a>
-          <a href="/vote" target="_blank" class="tab"><%= global.lang.menu.vote %></a>
-          <% if (global.user !== null) { %>
-            <div class="tab login">
-              <div class="title"><i class="material">account_circle</i> <%= global.user.name %></div>
-              <div class="options">
-                <a href="/profile" class="option"><i class="material">person</i> <span>Profile</span></a>
-                <% if (global.user.rank >= global.const.LEVEL.Staff) { %>
-                  <a href="/staff" class="option"><i class="material">admin_panel_settings</i> <span>Staff</span></a>
-                <% } %>  
-                <a href="/settings" class="option"><i class="material">settings</i> <span>Settings</span></a>
-                <a href="/logout" class="option"><i class="material">logout</i> <span>Log Out</span></a>
-              </div>
-            </div>
-          <% } else { %>
-            <a href="/login" class="login"><%= global.lang.menu.login %></a>
-          <% } %>
-        </div>
-      </div>
-
-      <div class="mobile">
-        <div class="header">
-          <a href="/" class="logo">
-            <img src="/img/logo-128x.png" alt="Nasgar Network" />
-          </a>
-          <button class="menu">
-            <i class="material">menu</i>
-          </button>
-        </div>
-        <div class="tabs">
-          <a href="/" class="tab selected"><%= global.lang.menu.home %></a>
-          <a href="/updates" class="tab"><%= global.lang.menu.updates %></a>
-          <div class="tab">
-            <div class="title"><%= global.lang.menu.shop.title %></div>
-            <div class="options">
-              <a href="/shop" class="option"><%= global.lang.menu.shop.ranks %></a>
-              <a href="/shop" class="option"><%= global.lang.menu.shop.keys %></a>
-            </div>
-          </div>
-          <a href="/bans" class="tab"><%= global.lang.menu.bans %></a>
-          <a href="/vote" class="tab"><%= global.lang.menu.vote %></a>
-          <% if (global.user !== null) { %>
-            <div class="tab login">
-              <div class="title"><i class="material">account_circle</i> <%= global.user.name %></div>
-              <div class="options">
-                <a href="/profile" class="option"><i class="material">person</i> <span>Profile</span></a>
-                <% if (global.user.rank >= global.const.LEVEL.Staff) { %>
-                  <a href="/staff" class="option"><i class="material">admin_panel_settings</i> <span>Staff</span></a>
-                <% } %>  
-                <a href="/settings" class="option"><i class="material">settings</i> <span>Settings</span></a>
-                <a href="/logout" class="option"><i class="material">logout</i> <span>Log Out</span></a>
-              </div>
-            </div>
-          <% } else { %>
-            <a href="/login" class="login"><%= global.lang.menu.login %></a>
-          <% } %>
-        </div>
-      </div>
-    </nav>
+    <%- include("../partials/nav_modern.ejs", { global, transparent: true, transparent_height: -1 }) %> 
 
     <div class="landing-header">
       <div class="tabs">
@@ -113,19 +40,21 @@
 
     <div class="desktop-login">
       <% if (global.user !== null) { %>
-        <div class="tab login">
-          <div class="title"><i class="material">account_circle</i> <%= global.user.name %></div>
-          <div class="options">
-            <a href="/profile" class="option"><i class="material">person</i> <span>Profile</span></a>
-            <% if (global.user.rank >= global.const.LEVEL.Staff) { %>
-              <a href="/staff" class="option"><i class="material">admin_panel_settings</i> <span>Staff</span></a>
-            <% } %>  
-            <a href="/settings" class="option"><i class="material">settings</i> <span>Settings</span></a>
-            <a href="/logout" class="option"><i class="material">logout</i> <span>Log Out</span></a>
+        <div class="tabs">
+          <div class="tab login">
+            <div class="title"><i class="material">account_circle</i> <%= global.user.name %></div>
+            <div class="options">
+              <a href="/profile" class="option"><i class="material">person</i> <span>Profile</span></a>
+              <% if (global.user.rank >= global.const.LEVEL.Staff) { %>
+                <a href="/staff" class="option"><i class="material">admin_panel_settings</i> <span>Staff</span></a>
+              <% } %>  
+              <a href="/settings" class="option"><i class="material">settings</i> <span>Settings</span></a>
+              <a href="/logout" class="option"><i class="material">logout</i> <span>Log Out</span></a>
+            </div>
           </div>
         </div>
       <% } else { %>
-        <a href="/login" class="login"><%= global.lang.menu.login %></a>
+        <a href="/login" class="tab login"><%= global.lang.menu.login %></a>
       <% } %>
     </div>
 
@@ -185,39 +114,12 @@
             <div class="name">40servidoresmc</div>
           </a>
         </div>
+        <div>
+          <span>This server is <b>not</b> associated with Mojang</span>
+        </div>
       </div>
     </div>
 
     <div class="toasts"></div>
-
-    <script>
-      (() => {
-        const tabs = [...document.querySelectorAll("div.tab")];
-
-        tabs.forEach(tab => {
-          tab.addEventListener("click", () => {
-            tab.classList.toggle("active");
-          });
-        })
-
-        const menubtn = document.querySelector("button.menu");
-        const mobile = document.querySelector(".mobile");
-
-        menubtn.addEventListener("click", () => {
-          mobile.classList.toggle("active");
-        });
-
-        const nav = document.querySelector("nav");
-
-        document.addEventListener("scroll", () => {
-          let top = window.pageYOffset || document.documentElement.scrollTop;
-          if (top > 150) {
-            nav.classList.add("scrolled");
-          } else {
-            nav.classList.remove("scrolled");
-          }
-        });
-      })();
-    </script>
   </body>
 </html>

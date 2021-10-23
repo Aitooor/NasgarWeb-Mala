@@ -3,12 +3,13 @@
 <head>
 	<%- include("../partials/header.ejs") %> 
 	<title> Error 404 </title>
+
+  <%- include("../partials/less.ejs", { paths: ["partials/nav_modern"] }) %> 
 </head>
 <body>
-	<%- include("../partials/nav.ejs") %>
-	<div class="header-separator"></div>
+	<%- include("../partials/nav_modern.ejs", { global }) %>
 
-	<div style="text-align: center;">
+	<div class="body body-100" style="text-align: center;">
 		<div style="font-size: 5rem;font-weight: 100;">
 			404
 		</div>
