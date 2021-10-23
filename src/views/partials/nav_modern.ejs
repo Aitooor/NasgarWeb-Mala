@@ -1,0 +1,87 @@
+<% const _transparent = typeof transparent === "boolean" ? transparent : false; %> 
+<% const _solid       = typeof solid === "boolean" ? solid : false; %> 
+<% const _style       = typeof style === "string" ? style : ""; %> 
+<% const _nav_class   = (
+     (_transparent  ? "" : "always") + 
+     (!_transparent && _solid ? " solid" : "") + 
+     (!_transparent ? " " : "") + _style 
+);%> 
+<% const _height       = typeof transparent_height === "number" ? transparent_height : 17; %>
+<% const _height_style = _height === -1 ? "0px" : `calc(50px + ${_height}rem)`%> 
+<nav class="<%= _nav_class %> ">
+  <div class="desktop">
+    <a href="/" class="logo">
+      <img src="/img/logo-128x.png" alt="Nasgar Network" />
+    </a>
+    <div class="tabs">
+      <a href="/" class="tab selected"><%= global.lang.menu.home %></a>
+      <a href="/updates" class="tab"><%= global.lang.menu.updates %></a>
+      <div class="tab">
+        <div class="title"><%= global.lang.menu.shop.title %></div>
+        <div class="options">
+          <a href="/shop" class="option"><%= global.lang.menu.shop.ranks %></a>
+          <a href="/shop" class="option"><%= global.lang.menu.shop.keys %></a>
+        </div>
+      </div>
+      <a href="/bans" class="tab"><%= global.lang.menu.bans %></a>
+      <a href="/vote" target="_blank" class="tab"><%= global.lang.menu.vote %></a>
+      <% if (global.user !== null) { %>
+        <div class="tab login">
+          <div class="title"><i class="material">account_circle</i> <%= global.user.name %></div>
+          <div class="options">
+            <a href="/profile" class="option"><i class="material">person</i> <span>Profile</span></a>
+            <% if (global.user.rank >= global.const.LEVEL.Staff) { %>
+              <a href="/staff" class="option"><i class="material">admin_panel_settings</i> <span>Staff</span></a>
+            <% } %>  
+            <a href="/settings" class="option"><i class="material">settings</i> <span>Settings</span></a>
+            <a href="/logout" class="option"><i class="material">logout</i> <span>Log Out</span></a>
+          </div>
+        </div>
+      <% } else { %>
+        <a href="/login" class="login"><%= global.lang.menu.login %></a>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="mobile">
+    <div class="header">
+      <a href="/" class="logo">
+        <img src="/img/logo-128x.png" alt="Nasgar Network" />
+      </a>
+      <button class="menu">
+        <i class="material">menu</i>
+      </button>
+    </div>
+    <div class="tabs">
+      <a href="/" class="tab selected"><%= global.lang.menu.home %></a>
+      <a href="/updates" class="tab"><%= global.lang.menu.updates %></a>
+      <div class="tab">
+        <div class="title"><%= global.lang.menu.shop.title %></div>
+        <div class="options">
+          <a href="/shop" class="option"><%= global.lang.menu.shop.ranks %></a>
+          <a href="/shop" class="option"><%= global.lang.menu.shop.keys %></a>
+        </div>
+      </div>
+      <a href="/bans" class="tab"><%= global.lang.menu.bans %></a>
+      <a href="/vote" class="tab"><%= global.lang.menu.vote %></a>
+      <% if (global.user !== null) { %>
+        <div class="tab login">
+          <div class="title"><i class="material">account_circle</i> <%= global.user.name %></div>
+          <div class="options">
+            <a href="/profile" class="option"><i class="material">person</i> <span>Profile</span></a>
+            <% if (global.user.rank >= global.const.LEVEL.Staff) { %>
+              <a href="/staff" class="option"><i class="material">admin_panel_settings</i> <span>Staff</span></a>
+            <% } %>  
+            <a href="/settings" class="option"><i class="material">settings</i> <span>Settings</span></a>
+            <a href="/logout" class="option"><i class="material">logout</i> <span>Log Out</span></a>
+          </div>
+        </div>
+      <% } else { %>
+        <a href="/login" class="login"><%= global.lang.menu.login %></a>
+      <% } %>
+    </div>
+  </div>
+</nav>
+
+
+<div class="nav_transparent_height" style="height: <%= _height_style %>;"></div>
