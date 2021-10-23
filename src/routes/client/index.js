@@ -32,6 +32,12 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
   router.get("/vote", (req, res) => {
     res.redirect("https://www.40servidoresmc.es/nasgar-network-votar");
   });
+
+  router.get("/updates",  (_req, res) => { res.status(501).render("prefabs/soon") });
+  router.get("/bans",     (_req, res) => { res.status(501).render("prefabs/soon") });
+  router.get("/settings", (_req, res) => { res.status(501).render("prefabs/soon") });
+  router.get("/profile",  (_req, res) => { res.status(501).render("prefabs/soon") });
+  router.get("/staff",    (_req, res) => { res.status(501).render("prefabs/soon") });
     
   router.get("/", async (req, res) => {
     if(Date.now() - lastRequestTime >= 1000) {
