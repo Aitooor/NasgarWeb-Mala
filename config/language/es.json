@@ -20,9 +20,9 @@
     },
 
     "landing": {
-        "description": "Juega gratis a <b>Nasgar</b> hoy.",
+        "description": "Juega a <b>Nasgar</b> hoy.",
         "about": {
-            "content": "Nasgar es un server de maincra :)"
+            "content": "Un servidor donde puedes jugar con tus amigos"
         }
     }
 }
