@@ -1,0 +1,12 @@
+<% const _url = typeof url === "string" ? url : "/index" %>
+<% const title_inner = typeof title === "string" ? title : _url %>
+<% const less_paths = typeof styles === "object" ? styles : [ "pags" + _url ]; %> 
+<% const js_paths   = typeof scripts === "object" ? scripts : [ "pg" + _url ]; %> 
+
+<head>
+  <%- include("./header.ejs") %> 
+
+  <title><%= title_inner %> - Nasgar Network</title>
+
+  <%- include("./less.ejs", { paths: less_paths }) %> 
+  <%- include("./script.ejs", { paths: js_paths }) %> 

@@ -1,0 +1,22 @@
+<%- include("../partials/head.ejs", { url: "/", title: title, styles: [ "prefabs/cards_menu" ], scripts: [] }) %>
+
+<%- include("../partials/body.ejs") %>
+
+<div class="main">
+  <% for(const card of data) { %> 
+    <a href="<%- card.url %>" class="card primary dp-5">
+      <div class="card-header"><%- card.title %></div>
+      <div class="card-body">
+        <img src="https://fonts.gstatic.com/s/i/materialiconsoutlined/<%- card.icon %>/24px.svg" alt="Icon" class="img">
+      </div>
+    </a>
+  <% } %> 
+  <div onclick="window.history.back()" class="card primary dp-5">
+    <div class="card-header">Back</div>
+    <div class="card-body">
+      <img src="https://fonts.gstatic.com/s/i/materialiconsoutlined/arrow_back/v16/24px.svg" alt="Icon" class="img">
+    </div>
+  </div>
+</div>
+
+<%- include("../partials/body_end.ejs") %>
