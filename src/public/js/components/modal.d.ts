@@ -8,34 +8,14 @@ export declare namespace _Modal {
         onClick: (modal: Modal) => void;
     }
     interface Config {
-        /**
-         * Title of modal.
-         * default: "Modal"
-         */
         title?: string;
-        /**
-         * Header style.
-         * default: Solid
-         */
         headerStyle?: HeaderStyle;
-        /**
-         * Body of modal.
-         * default: ""
-         */
         body?: HTMLDivElement | string;
-        /**
-         * Clone body.
-         * default: true
-         */
         cloneBody?: boolean;
         events?: {
             onOpen?: (modal: Modal) => void;
             onClose?: (modal: Modal) => void;
         };
-        /**
-         * Action buttons of modal.
-         * default: close button
-         */
         actions?: Action[];
     }
     enum HeaderStyle {
@@ -68,9 +48,6 @@ export default class Modal {
     set isOpen(value: boolean);
     open(): void;
     close(): void;
-    /**
-     * Just use when `config.cloneBody` is `true`.
-     */
     drainEvents(): void;
     disableAction(id: string | number): void;
     disableActions(): void;

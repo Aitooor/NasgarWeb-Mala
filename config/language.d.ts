@@ -25,6 +25,7 @@ export declare const DefaultLanguage: {
         };
         team: string;
     };
+    footer: string;
 };
 export declare type LanguageSchema = typeof EnglishLanguage;
 export declare type LanguageList = string;
