@@ -24,7 +24,7 @@
     "compile_less": "npm run compile_less_common && npm run compile_less_components && npm run compile_less_partials"
   },
   "keywords": [],
-  "author": "",
+  "author": "Nasgar Network",
   "license": "ISC",
   "dependencies": {
     "cookie-parser": "^1.4.5",
@@ -34,7 +34,6 @@
     "express-fileupload": "^1.2.1",
     "express-session": "^1.17.2",
     "hjson": "^3.2.2",
-    "http-errors": "^1.8.0",
     "jsonwebtoken": "^8.5.1",
     "mysql": "^2.18.1",
     "node-fetch": "^3.0.0",
@@ -56,7 +55,6 @@
     "@types/socket.io-client": "^3.0.0",
     "@types/uuid": "^8.3.1",
     "dotenv": "^10.0.0",
-    "morgan": "^1.10.0",
     "nodemon": "^2.0.7"
   }
 }
