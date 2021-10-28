@@ -4,7 +4,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // Modules
 const express = require('express');
 const { join } = require("path");
-const paypal = require("paypal-rest-sdk");
 const { createServer } = require('http');
 
 // My libs
@@ -12,6 +11,7 @@ const userDataByReq = require("./lib/userDataByReq");
 const normalizeSession = require("./lib/normalizeSession");
 const database = require("./lib/database");
 const rcon = require("./lib/rcon");
+const paypal = require("./api/paypal")
 const languageMidd = require("./middlewares/language").middleware;
 
 // Configuration
@@ -34,9 +34,6 @@ app.use(require("express-session")({
 	resave: true
 }));
 
-// Show HTTP Requests
-// if(!inProduction) app.use(require('morgan')("dev"));
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(require("cookie-parser")());
@@ -51,20 +48,13 @@ app.use(require("express-fileupload")({
 }));
 app.use(express.static(join(__dirname, "public")));
 
-// Init paypal -- Dev
-paypal.configure({
-	mode: "sandbox",
-	client_id: CONFIG.PAYPAL.SANDBOX.ID,
-	client_secret: CONFIG.PAYPAL.SANDBOX.SECRET
-});
-
 console.log("\n");
 console.log("+—————————————————+");
 console.log("| Starting Server |");
 console.log("+—————————————————+");
 console.log("");
 
-console.log("Paypal is connected");
+paypal.configure();
 
 // Init All
 (async () => {
