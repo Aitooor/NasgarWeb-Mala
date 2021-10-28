@@ -4,7 +4,7 @@ import express from "express";
 import { Server as SocketServer} from "socket.io";
 import { Server as HttpServer } from "http";
 
-namespace Routes {
+declare namespace Routes {
 	interface Route {
         (db: () => Pool, rcons: Rcon, io: lib_SocketIo.SocketIo): void;
         r: express.Router;
@@ -12,16 +12,17 @@ namespace Routes {
     }
 }
 
-namespace MyExpress {
-    declare type Request = express.Request<RouteParameters<string>, any, any, qs.ParsedQs, Record<string, any>>;
-    declare type _Response = express.Response<any, Record<string, any>, number>;
+declare namespace MyExpress {
+    type Request = express.Request<{ [k: string]: string }, any, any, qs.ParsedQs, Record<string, any>>;
+    type _Response = express.Response<any, Record<string, any>>;
 
-    declare var Response: express.Response<any, Record<string, any>, number>; 
+    var Response: express.Response<any, Record<string, any>>; 
 }
 
-namespace lib_SocketIo {
+declare namespace lib_SocketIo {
     interface SocketIo {
-        io: SocketServer<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>
+        io: SocketServer
     }
-    declare function exports(app: HttpServer): SocketIo;
+    
+    function exports(app: HttpServer): SocketIo;
 }
