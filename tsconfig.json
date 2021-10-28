@@ -2,10 +2,15 @@
   "include": [
     "**/*.ts",
   ],
+  "exclude": [
+    "./node_modules",
+    "./src/public"
+  ],
   "compilerOptions": {
     "declaration": true,
-    "declarationDir": "./types",
+    // "declarationDir": "./types",
     "allowJs": false,
+    "watch": true,
     "target": "ES6",
     "module": "CommonJS",
     "resolveJsonModule": true,
@@ -15,6 +20,10 @@
     "checkJs": false,
     "strict": false,
     "removeComments": false,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+
+    "typeRoots": [
+      "./node_modules/@types"
+    ]
   }
 }

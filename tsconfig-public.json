@@ -1,0 +1,29 @@
+{
+  "include": [
+    "./src/public/js/**/*.ts",
+  ],
+  "exclude": [
+    "./node_modules"
+  ],
+  "compilerOptions": {
+    "declaration": false,
+    "allowJs": false,
+    "watch": true,
+    "target": "ES6",
+    "module": "ES2020",
+    "esModuleInterop": true,
+    "moduleResolution": "Classic",
+    "allowSyntheticDefaultImports": true,
+    "checkJs": false,
+    "strict": false,
+    "removeComments": true,
+    "experimentalDecorators": false,
+    "typeRoots": [],
+    "lib": [
+      "DOM",
+      "ESNext",
+      "ES2015",
+      "ES2016"
+    ]
+  }
+}
