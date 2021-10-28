@@ -47,4 +47,3 @@ export class EventEmitter {
         return ev.slice(0);
     }
 }
-//# sourceMappingURL=events.js.map

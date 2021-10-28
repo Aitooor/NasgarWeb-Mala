@@ -1,8 +1,4 @@
 export default class Select {
-    /**
-     * @example
-     * const select = new Select({ ... });
-     */
     constructor(options) {
         var _a;
         this.element = options.dom;
@@ -57,4 +53,3 @@ export default class Select {
         return typeof t === "string" ? t : t[1];
     }
 }
-//# sourceMappingURL=select.js.map

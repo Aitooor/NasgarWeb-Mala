@@ -1,5 +1,5 @@
 
-const paypal = require("paypal-rest-sdk");
+const paypal = require("../../api/paypal");
 const shop = require("../../lib/shop");
 
 module.exports = require("../../lib/Routes/exports")("/paypal", (router, waRedirect, db) => {
@@ -43,60 +43,23 @@ module.exports = require("../../lib/Routes/exports")("/paypal", (router, waRedir
       });
     };
 
-    const cart_total = cart.reduce((old, { quantity, price }) => quantity * price + old, 0);
-    
-    if(cupon_valid) {
-      cart.push({
-        name: `Discount by cupon - ${Math.floor(cupon_modify * 100)}%`,
-        uuid: "discount",
-        quantity: 1,
-        price: cart_total * -cupon_modify,
-        gift: false
+    try {
+      const payment = await paypal.createShopPayment({
+        cart: cart,
+        cart_string: body.shopCart,
+        discount: cupon_valid ? {
+          modify: cupon_modify
+        } : undefined
       });
-    }
 
-    const payment = {
-      intent: "sale",
-      payer: {
-        payment_method: "paypal"
-      },
-      redirect_urls: {
-        return_url: `${process.env.WEB_HREF}/pay/return?cart=${body.shop_cart}`,
-        cancel_url: `${process.env.WEB_HREF}/pay/cancel`
-      },
-      transactions: [{
-        item_list: {
-          items: cart.map(item => ({
-            name: item.name + (item.gift ? ` <${item.gift}>` : ""),
-            sku: item.uuid,
-            quantity: item.quantity,
-            currency: "USD",
-            price: item.price
-          }))
-        },
-        amount: {
-          currency: "USD",
-          total: cart_total * (1 - cupon_modify)
-        },
-        description: "Nasgar Network - " + 
-          cart.reduce((a, {quantity, uuid}) => a + (uuid === "discount" ? 0 : quantity), 0) + 
-          " item(s)" + 
-          (cupon.length === 0 ? "" : ` - with cupon`)
-      }]
-    };
-
-    paypal.payment.create(payment, (err, _res) => {
-      if(err) {
-        console.error(err);
-        res.status(500).type("json").send(err);
-        return;
-      }
-
-      res.redirect(_res
+      res.redirect(payment
         .links
         .find(_ => _.method === "REDIRECT") // Select REDIRECT link
         .href
       );
-    });
+    } catch(err) {
+      console.error(err);
+      res.status(500).type("json").send(err);
+    }
   });
 });

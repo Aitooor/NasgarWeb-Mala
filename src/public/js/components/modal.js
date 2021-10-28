@@ -80,9 +80,6 @@ export default class Modal {
             Modal.parent.classList.remove("active");
         this._events.emit("close", [this]);
     }
-    /**
-     * Just use when `config.cloneBody` is `true`.
-     */
     drainEvents() {
         if (!this.config.cloneBody)
             return;
@@ -115,14 +112,12 @@ export default class Modal {
         for (let actionName in this._actions_json._)
             this._actions_json._[actionName].classes.remove("disabled");
     }
-    /*-********* Events *********-*/
     on(ev, listener) {
         this._events.on(ev, listener);
     }
     off(ev, listener) {
         this._events.off(ev, listener);
     }
-    /*-********* Add Modal parts *********-*/
     addAction(action) {
         var _a, _b;
         this.config.actions.push(action);
@@ -135,7 +130,6 @@ export default class Modal {
         btn_json.events.add("click", action.onClick.bind(this, this));
         this._actions.append(btn);
     }
-    /*-********* Get Modal parts *********-*/
     getActions() {
         return this._actions_json;
     }
@@ -155,7 +149,6 @@ export default class Modal {
             style: this.config.headerStyle
         };
     }
-    /*-********* Set Modal parts *********-*/
     setHeader(title, style) {
         if (title)
             this._header.innerHTML = title;
@@ -169,7 +162,6 @@ export default class Modal {
             if (this.config.cloneBody) {
                 const clone = structureCopy(body);
                 clone.classes.add("modal-body");
-                // Prevent hidden body
                 clone.classes.remove("hidden");
                 clone.dom.removeAttribute("hidden");
                 this.element.replaceChild(clone.dom, this._body);
@@ -205,4 +197,3 @@ Modal.parent = parent;
 Modal.HeaderStyle = _Modal.HeaderStyle;
 Modal.ActionColor = _Modal.ActionColor;
 Modal.allModals = [];
-//# sourceMappingURL=modal.js.map

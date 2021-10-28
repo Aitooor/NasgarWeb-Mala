@@ -47,7 +47,7 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
           icon: "inventory_2/v9"
         },
         {
-          url: "/staff/shop/order",
+          url: "/staff/shop/categories",
           title: "Order (Not implemented)",
           icon: "reorder/v15"
         }
@@ -55,7 +55,7 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
     }) 
   });
 
-  router.get("/staff/shop/order",  (_req, res) => { res.status(501).render("prefabs/soon") });
+  router.get("/staff/shop/categories",  (_req, res) => { res.render("pags/staff/shop/categories") });
     
   router.get("/staff",    (_req, res) => { 
     res.render("prefabs/cards_menu", {

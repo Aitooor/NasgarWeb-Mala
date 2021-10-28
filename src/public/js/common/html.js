@@ -28,7 +28,6 @@ export function middlewareEvents(element) {
         removeAll() {
             for (const ev of eventNames)
                 for (const fn of events[ev])
-                    // @ts-ignore
                     element.removeEventListener(ev, fn);
         },
         add: element.addEventListener,
@@ -51,7 +50,6 @@ export function structureCopy(element) {
         hasChilds: element.hasChildNodes(),
         childs: [],
         _: {},
-        // @ts-ignore
         addChild() { }
     };
     me.addChild = function (child) {
@@ -67,12 +65,10 @@ export function structureCopy(element) {
         me.childs.push(structure);
         return structure;
     };
-    /*—————— Attributes ——————*/
     const attributeNames = element.getAttributeNames();
     for (const attr of attributeNames) {
         me.attrs[attr] = element.getAttribute(attr);
     }
-    /*—————— Childs ——————*/
     if (me.hasChilds) {
         const childs = Array.from(element.childNodes);
         for (const child of childs) {
@@ -84,4 +80,3 @@ export function structureCopy(element) {
     }
     return me;
 }
-//# sourceMappingURL=html.js.map

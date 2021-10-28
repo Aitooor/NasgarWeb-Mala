@@ -273,6 +273,7 @@ nav {
       top: 73px;
       left: 0;
       width: 100vw;
+      height: 0px;
 
       background: @white-bg;
       box-shadow: 0px 1px 3px #999;
@@ -281,6 +282,10 @@ nav {
       display: flex;
       gap: 5px;
       flex-direction: column;
+
+      overflow: hidden;
+
+      transition: opacity ease .2s;
 
       &.active {
         opacity: 1;
@@ -404,7 +409,9 @@ nav {
         }
       }
       > .tabs {
+        height: initial;
         opacity: 1;
+        z-index: 1000;
       }
     }
   }

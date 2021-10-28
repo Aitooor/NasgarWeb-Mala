@@ -20,11 +20,11 @@ function wait(ms) {
 async function rconTry(rcon, PORT) {
   await rcon.connect(CONFIG.SV_HOST, PORT, CONFIG.RCON.PASS);
       
-  console.log(PREFIX(PORT) + "Is connected on", PORT, "->", rcon.authenticated && rcon.online);
+  console.log(PREFIX(PORT) + "Is connected on", PORT, "-> \x1b[0m", rcon.authenticated && rcon.online);
 
   rcon.socket.on("error", async (e) => {
-    console.log(PREFIX(PORT) + `Error: `, e);
-    console.log(PREFIX(PORT) + `Is reconnecting.`);
+    console.log(PREFIX(PORT) + `Error: \x1b[0m`, e);
+    console.log(PREFIX(PORT) + `Is reconnecting.\x1b[0m`);
     await wait(1500);
     rconTry(rcon, PORT);
   });
