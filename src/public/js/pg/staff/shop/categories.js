@@ -1,6 +1,6 @@
 
-import * as Modal from "../../../components/modal.js";
-import * as Select from "../../../components/select.js";
+import Modal from "../../../components/modal.js";
+import Select from "../../../components/select.js";
 import { monetize, wait, capitalize, applyFilter } from '../../../common/shop.js';
 
 /**
@@ -748,7 +748,7 @@ async function UpdateItem(data) {
  */
 async function AddItem(data) {
   PrePostItem(data);
-  const res = await fetch("/api/add/product", {
+  const res = await fetch("/api/shop/category", {
     method: "POST",
     credentials: "same-origin",
     headers: {
@@ -797,7 +797,7 @@ async function RemItem(uuid, confirmation) {
  * @returns {Promise<{ [uuid: string]: ItemData }>}
  */
 async function FetchItems() {
-  const res = await fetch("/api/get/products", {
+  const res = await fetch("/api/shop/categories", {
     method: "GET",
     cache: "no-cache"
   });

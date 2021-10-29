@@ -1,6 +1,11 @@
 
 const { v4 } = require('uuid');
 
+
+/****************************************/
+/***             Products             ***/
+/****************************************/
+
 /** @typedef {{ uuid: string, name: string, description: string, price: number, exec_cmd: string, exec_params: string, images: string[] | null, created: number }} ItemData */
 /** @typedef {{ uuid: string, name: string, description: string, price: number, exec_cmd: string, exec_params: string, images: string, created: number }} ItemDataCrude */
 
@@ -151,10 +156,102 @@ async function getCupon(_db, cupon) {
   } else {
     return {
       cupon,
-      valid: false
+      valid: false,
+      modify: 0
     };
   }
 }
+
+
+/****************************************/
+/***            Categories            ***/
+/****************************************/
+
+/** @typedef {{ uuid: string, name: string, display: string, description: string, order: string[], image: string, min_rank: number }} Category */
+/** @typedef {{ uuid: string, name: string, display: string, description: string, order: string,   image: string, min_rank: number }} CategoryCrude */
+
+/**
+ * 
+ * @param {CategoryCrude} category 
+ * @return {Category}
+ */
+function parseCategory(category) {
+  return {
+    ...category,
+    order: JSON.parse(category.order)
+  }
+}
+
+/**
+ * 
+ * @param {Category} category 
+ * @returns {CategoryCrude}
+ */
+function stringifyCategory(category) {
+  return {
+    ...category,
+    order: JSON.stringify(category.order)
+  }
+}
+
+
+/**
+ * @param {()=>import('mysql').Pool} db
+ * @returns {Promise<Category[]>}
+*/
+async function getAllCategories(db) {
+	const pool = db();
+	const query = await pool.query("SELECT * FROM web.categories");
+	pool.end();
+
+	return query.map(parseCategory);
+}
+
+
+/**
+ * @param {()=>import('mysql').Pool} db
+ * @param {string} uuid
+ * @returns {Promise<Category>}
+*/
+async function getCategory(db, uuid) {
+	const pool = db();
+	try {
+		const query = await pool.query("SELECT * FROM web.categories WHERE uuid = ?", uuid);
+		pool.end();
+
+    if(!query[0]) return null;
+
+		return parseCategory(query[0]) ?? null;
+	} catch(e) {
+		pool.end();
+		console.error(e);
+		
+		return null;
+	}
+}
+
+/**
+ * @param {()=>import('mysql').Pool} db
+ * @param {Category} data
+ * @returns {Promise<boolean>}
+*/
+async function addCategory(db, data) {
+  const pool = db();
+  try {
+    data.uuid = v4();
+    await pool.query(`INSERT INTO web.categories SET ? `, [stringifyCategory(data)]);
+
+    return true;
+  } catch(e) {
+    pool.end();
+    console.error(e);
+
+    return false;
+  }
+}
+
+
+
 
 module.exports = { 
 	getAllProducts, 
@@ -163,5 +260,9 @@ module.exports = {
   getCupon,
   updateProduct,
   addProduct,
-  delProduct
+  delProduct,
+
+  getAllCategories,
+  getCategory,
+  addCategory
 };
