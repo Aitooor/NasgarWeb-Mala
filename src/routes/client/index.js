@@ -48,10 +48,12 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
         },
         {
           url: "/staff/shop/categories",
-          title: "Order (Not implemented)",
+          title: "Catergories",
           icon: "reorder/v15"
         }
-      ]
+      ],
+      back: "url",
+      back_url: "/staff"
     }) 
   });
 
@@ -76,7 +78,8 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
           title: "Test_Empty",
           icon: "block/v15"
         }
-      ]
+      ],
+      back: false
     }) 
   });
     

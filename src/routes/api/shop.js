@@ -102,4 +102,40 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
 
     res.status(200).send(await shop.getCupon(db, cupon));
   });
+
+
+	/****************************************/
+	/***            Categories            ***/
+	/****************************************/
+
+	router.get("/shop/categories", async (_req, res) => {
+		res.status(200).send(await shop.getAllCategories(db));
+	});
+
+	router.get("/shop/category/:uuid", async (req, res) => {
+		/** @type {any} */
+    let _res = { error: "ERRNOUUID: Bad uuid" };
+    let status = 400;
+    const uuid = req.params.uuid;
+        
+    try {
+      const json = await shop.getCategory(db, uuid);
+          
+      _res = json;
+      status = 200;
+    } catch {};
+
+    res.type("json").status(status).send(_res);
+	});
+
+	router.post("/shop/category", async (req, res) => {
+		try {
+			if(await shop.addCategory(db, req.body))
+				res.sendStatus(200);
+			else
+				res.sendStatus(400);
+		} catch {
+			res.sendStatus(500);
+		}
+	});
 })
