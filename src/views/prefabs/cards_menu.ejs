@@ -1,22 +1,49 @@
+<% const _back_mode = typeof back === "boolean" ? 
+      back ? "js" : "none" : 
+      typeof back === "string" ?
+        back === "url" ? "url" :
+        back === "js"  ? "js"  :
+        back === "none"? "none":
+        "js" : "js"; %> 
+<% const _back_args = typeof back === "boolean" ? 
+      back ? "window.history.back()" : "" : 
+      typeof back === "string" ?
+        back === "url" ? back_url :
+        back === "js"  ? back_js  :
+        back === "none"? ""       :
+        "window.history.back()" : "window.history.back()"; %>
+
 <%- include("../partials/head.ejs", { url: "/", title: title, styles: [ "prefabs/cards_menu" ], scripts: [] }) %>
 
 <%- include("../partials/body.ejs") %>
 
 <div class="main">
   <% for(const card of data) { %> 
-    <a href="<%- card.url %>" class="card primary dp-5">
-      <div class="card-header"><%- card.title %></div>
-      <div class="card-body">
-        <img src="https://fonts.gstatic.com/s/i/materialiconsoutlined/<%- card.icon %>/24px.svg" alt="Icon" class="img">
-      </div>
-    </a>
-  <% } %> 
-  <div onclick="window.history.back()" class="card primary dp-5">
+  <a href="<%- card.url %>" class="card primary dp-5">
+    <div class="card-header"><%- card.title %></div>
+    <div class="card-body">
+      <img src="https://fonts.gstatic.com/s/i/materialiconsoutlined/<%- card.icon %>/24px.svg" alt="Icon" class="img">
+    </div>
+  </a>
+  <% } %>
+
+  <% if (_back_mode !== "none") { %>
+    <% if(_back_mode === "js") { %>
+  <div onclick="<%- _back_args %>" class="card primary dp-5">
     <div class="card-header">Back</div>
     <div class="card-body">
       <img src="https://fonts.gstatic.com/s/i/materialiconsoutlined/arrow_back/v16/24px.svg" alt="Icon" class="img">
     </div>
   </div>
+    <% } else if(_back_mode === "url") { %> 
+  <a href="<%- _back_args %>" class="card primary dp-5">
+    <div class="card-header">Back</div>
+    <div class="card-body">
+      <img src="https://fonts.gstatic.com/s/i/materialiconsoutlined/arrow_back/v16/24px.svg" alt="Icon" class="img">
+    </div>
+  </a>
+    <% } %>
+  <% } %>
 </div>
 
 <%- include("../partials/body_end.ejs") %>
