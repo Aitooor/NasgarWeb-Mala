@@ -1,5 +1,13 @@
 
-interface middlewareEvents_return {
+export function query<T extends HTMLElement = HTMLElement>(str: string, parent: Document | HTMLElement = document): T {
+	return parent.querySelector<T>(str);
+}
+
+export function queryAll<T extends HTMLElement = HTMLElement>(str: string, parent: Document | HTMLElement = document): T[] {
+	return Array.from<T>(parent.querySelectorAll<T>(str));
+}
+
+export interface middlewareEvents_return {
 	removeAll(): void;
 	add(...args: any[]): void;
 	rem(...args: any[]): void;

@@ -197,3 +197,4 @@ Modal.parent = parent;
 Modal.HeaderStyle = _Modal.HeaderStyle;
 Modal.ActionColor = _Modal.ActionColor;
 Modal.allModals = [];
+//# sourceMappingURL=modal.js.map

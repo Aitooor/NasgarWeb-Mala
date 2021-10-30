@@ -53,3 +53,4 @@ export default class Select {
         return typeof t === "string" ? t : t[1];
     }
 }
+//# sourceMappingURL=select.js.map

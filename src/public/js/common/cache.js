@@ -9,3 +9,4 @@ export function getCache(name, _default) {
         return custom_cached[name];
     return custom_cached[name] = _default;
 }
+//# sourceMappingURL=cache.js.map

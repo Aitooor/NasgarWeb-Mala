@@ -1,3 +1,9 @@
+export function query(str, parent = document) {
+    return parent.querySelector(str);
+}
+export function queryAll(str, parent = document) {
+    return Array.from(parent.querySelectorAll(str));
+}
 export function middlewareEvents(element) {
     const original_a = element.addEventListener;
     const original_r = element.removeEventListener;
@@ -80,3 +86,4 @@ export function structureCopy(element) {
     }
     return me;
 }
+//# sourceMappingURL=html.js.map

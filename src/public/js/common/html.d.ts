@@ -1,4 +1,6 @@
-interface middlewareEvents_return {
+export declare function query<T extends HTMLElement = HTMLElement>(str: string, parent?: Document | HTMLElement): T;
+export declare function queryAll<T extends HTMLElement = HTMLElement>(str: string, parent?: Document | HTMLElement): T[];
+export interface middlewareEvents_return {
     removeAll(): void;
     add(...args: any[]): void;
     rem(...args: any[]): void;
@@ -24,4 +26,3 @@ export interface json_html<T extends HTMLElement = HTMLElement> {
     addChild<T extends HTMLElement = HTMLElement>(child: T): json_html<T>;
 }
 export declare function structureCopy<T extends HTMLElement>(element: T): json_html<T>;
-export {};
