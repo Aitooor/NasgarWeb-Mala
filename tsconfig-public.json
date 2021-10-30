@@ -1,12 +1,14 @@
 {
   "include": [
     "./src/public/js/**/*.ts",
+    "./tsconfig-public.json"
   ],
   "exclude": [
     "./node_modules"
   ],
   "compilerOptions": {
-    "declaration": false,
+    "declaration": true,
+    "sourceMap": true,
     "allowJs": false,
     "watch": true,
     "target": "ES6",
