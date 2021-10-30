@@ -6,7 +6,7 @@ export class EventEmitter {
     }
     emit(name, args) {
         const ev = this._events[name];
-        if (ev == null)
+        if (typeof ev === "undefined")
             return;
         for (const fn of ev)
             fn(...args);
@@ -16,9 +16,10 @@ export class EventEmitter {
         if (!this._eventNames.includes(name))
             return;
         const ev = this._events[name];
-        if (ev == null) {
+        if (typeof ev === "undefined") {
             this._events[name] = [];
             this.on(name, listener);
+            return;
         }
         this.off(name, listener);
         ev.push(listener);
@@ -28,7 +29,7 @@ export class EventEmitter {
     }
     off(name, listener) {
         const ev = this._events[name];
-        if (ev == null)
+        if (typeof ev === "undefined")
             return;
         this._events[name] = ev.filter(fn => {
             return fn !== listener;
@@ -42,8 +43,9 @@ export class EventEmitter {
     }
     getListeners(name) {
         const ev = this._events[name];
-        if (ev == null)
+        if (typeof ev === "undefined")
             return [];
         return ev.slice(0);
     }
 }
+//# sourceMappingURL=events.js.map

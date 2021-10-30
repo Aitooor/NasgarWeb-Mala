@@ -12,6 +12,9 @@ export class EventEmitter {
 	private _events: __events = {};
 	private _eventNames: string[] = [];
 
+	/**
+	 * @param opts Event names
+	 */
 	constructor(opts: string[]) {
 		this._eventNames = opts;
 	}
@@ -19,7 +22,7 @@ export class EventEmitter {
 	emit(name: string, args: any[]) {
 		const ev = this._events[name];
 
-		if(ev == null) return;
+		if(typeof ev === "undefined") return;
 
 		for(const fn of ev) 
 			fn(...args);
@@ -32,9 +35,10 @@ export class EventEmitter {
 
 		const ev = this._events[name];
 
-		if(ev == null) {
+		if(typeof ev === "undefined") {
 			this._events[name] = [];
 			this.on(name, listener);
+			return;
 		}
 
 		this.off(name, listener);
@@ -49,7 +53,7 @@ export class EventEmitter {
 	off(name: string, listener: _listener) {
 		const ev = this._events[name];
 
-		if(ev == null) return;
+		if(typeof ev === "undefined") return;
 
 		this._events[name] = ev.filter(fn => {
 			return fn !== listener;
@@ -67,7 +71,7 @@ export class EventEmitter {
 	getListeners(name: string) {
 		const ev = this._events[name];
 
-		if(ev == null) return [];
+		if(typeof ev === "undefined") return [];
 
 		return ev.slice(0);
 	}
