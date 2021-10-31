@@ -1,15 +1,13 @@
 
-export interface _listener {
-	(...args: any[]): void;
+export type _listener<T extends any[] = Array<any>> = (...args: T) => void;
+
+export interface __events<T extends any[] = Array<any>> {
+	[event: string]: _listener<T>[];
 }
 
-export interface __events {
-	[event: string]: _listener[];
-}
+export class EventEmitter<T extends any[] = Array<any>> {
 
-export class EventEmitter {
-
-	private _events: __events = {};
+	private _events: __events<T> = {};
 	private _eventNames: string[] = [];
 
 	/**
@@ -19,7 +17,7 @@ export class EventEmitter {
 		this._eventNames = opts;
 	}
 
-	emit(name: string, args: any[]) {
+	emit(name: string, args: T) {
 		const ev = this._events[name];
 
 		if(typeof ev === "undefined") return;
@@ -30,7 +28,7 @@ export class EventEmitter {
 		return;
 	}
 
-	on(name: string, listener: _listener) {
+	on(name: string, listener: _listener<T>) {
 		if(!this._eventNames.includes(name)) return;
 
 		const ev = this._events[name];
@@ -46,11 +44,11 @@ export class EventEmitter {
 		ev.push(listener);
 	}
 
-	addListener(name: string, listener: _listener) {
+	addListener(name: string, listener: _listener<T>) {
 		this.on(name, listener);
 	}
 
-	off(name: string, listener: _listener) {
+	off(name: string, listener: _listener<T>) {
 		const ev = this._events[name];
 
 		if(typeof ev === "undefined") return;
@@ -60,7 +58,7 @@ export class EventEmitter {
 		});
 	}
 
-	removeListener(name: string, listener: _listener) {
+	removeListener(name: string, listener: _listener<T>) {
 		this.off(name, listener);
 	}
 
