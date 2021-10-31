@@ -13,24 +13,33 @@ export interface ElementList_Cache<T extends any> {
   [id: string]: T
 }
 
+enum Events {
+  Refresh = "refresh",
+  Render = "render"
+}
+
+type Events_type = "refresh" | "render";
+
 export class ElementList<T extends any, K extends HTMLElement = HTMLDivElement> {
   private data: T[] = [];
   private cache: ElementList_Cache<T> = {};
 
-  private options: ElementList_Options;
+  private _options: ElementList_Options;
 
   private template: K = null;
 
-  private _isLoading: boolean = false;
+  public isLoading: boolean = false;
 
-  private _events: EventEmitter = new EventEmitter(["refresh", "refresh", "render"]);
+  private _events: EventEmitter<[ElementList<T, K>, boolean | undefined]> = 
+    new EventEmitter<[ElementList<T, K>, boolean | undefined]>([Events.Refresh, Events.Render]);
 
+  static Events: typeof Events = Events;
+  public Events: typeof Events = Events;
 
   constructor(private parent: HTMLDivElement, private url: string, options: ElementList_Options = DefaultElementList_Options) {
-    this.options = Object.assign({}, DefaultElementList_Options, options);
+    this._options = Object.assign({}, DefaultElementList_Options, options);
+    Object.values(Events)
   }
-
-  
   
   setTemplate(template: string | K): this {
     if(typeof template === "string") {
@@ -55,7 +64,7 @@ export class ElementList<T extends any, K extends HTMLElement = HTMLDivElement> 
   /*******************************/
 
 
-  on(name: string, listener: EventListener): this {
+  on(name: Events_type, listener: EventListener): this {
     this._events.on(name, listener);
     return this;
   }
@@ -92,10 +101,11 @@ export class ElementList<T extends any, K extends HTMLElement = HTMLDivElement> 
   }
 
   async refresh(): Promise<T[]> {
-    if(this._isLoading) return;
-    this._isLoading = true;
-    this._events.emit("refresh", [this, true]);
+    if(this.isLoading) return this.data;
+    this.isLoading = true;
+    this._events.emit(Events.Refresh, [this, true]);
 
+    this.parent.classList.remove("no-data")
     this.parent.classList.add("loading");
     this.parent.innerHTML = "Loading...";
 
@@ -103,11 +113,20 @@ export class ElementList<T extends any, K extends HTMLElement = HTMLDivElement> 
 
     const elements: K[] = this._render();
 
-    this.parent.append(...elements);
+    if(elements.length === 0) {
+      this.parent.innerHTML = "No data";
+      this.parent.classList.add("no-data")
+    } else {
+      this.parent.innerHTML = "";
+      this.parent.append(...elements);
+    }
+
     this.parent.classList.remove("loading");
 
-    this._events.emit("refresh", [this, false]);
-    this._isLoading = false;
+    this._events.emit(Events.Refresh, [this, false]);
+    this.isLoading = false;
+
+    return this.data;
   }
 
   async refreshData(): Promise<T[] | null> {
@@ -128,7 +147,7 @@ export class ElementList<T extends any, K extends HTMLElement = HTMLDivElement> 
 
     this.data = json;
     this.cache = this.data.reduce((prev, acc) => {
-      prev[acc[this.options.idTarget]] = acc;
+      prev[acc[this._options.idTarget]] = acc;
       return prev;
     }, {});
 
