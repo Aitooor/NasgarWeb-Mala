@@ -25,33 +25,36 @@
 	
 	<div id="category-editor-body" hidden >
 		<div class="placeholder hidden" data-name="uuid">UUID: -</div>
+
 		<div class="field" data-name="image">
 			<span>Image selector (<span id="total-images">N</span> images):</span>
 			<button class="input primary hover-anim-ball"><span>Select images</span></button>
 		</div>
-		<div class="field required" data-name="category">
-			<span class="title" >Category</span>
-			<select class="input" >
-				<option value="private" selected >No select / Private</option>
-				<option value="key">Keys</option>
-				<option value="rank">Ranks</option>
-			</select>
-		</div>
+
 		<div class="field required" data-name="name">
 			<span class="title" >Name</span>
-			<input class="input" placeholder="Name of product"  >
+			<input class="input" placeholder="Name of category"  >
 		</div>
-		<div class="field required" data-name="price">
-			<span class="title">Price</span>
-			<input class="input" type="number" placeholder="Price">
+
+		<div class="field required" data-name="display">
+			<span class="title">HTML Display</span>
+			<input class="input" placeholder="Display in html">
 		</div>
+
 		<div class="field required" data-name="description">
 			<span class="title" >Description</span>
 			<textarea class="input" placeholder="Description" ></textarea>
 		</div>
+
+		<div class="field required" data-name="rank">
+			<span class="title" >Min Rank</span>
+			<select class="input" >
+			</select>
+		</div>
+
 		<div class="field list" data-name="commands">
 			<div class="title" data-name="header">
-				<span class="title" >Commands</span>
+				<span class="title" >Products</span>
 				<div class="actions" data-name="actions">
 					<button>
 						<i class="material" >add_circle_outline</i>
@@ -74,19 +77,19 @@
 	</div>
 
 	<template id="category" >
-		<div class="item card primary">
+		<div class="category card primary">
 			<div class="top" >
 				<span class="name" >Normal Key x5</span>
 			</div>
 			<div class="bottom" >
 				<span class="category" >Keys</span>
-				<span class="price" >1.50</span>
+				<span class="display" >1.50</span>
 			</div>
 		</div>
 	</template>
 
-	<template id="list-item" >
-		<div class="item" >
+	<template id="list-category" >
+		<div class="category" >
 			<input class="input" placeholder="Value"  >
 			<button class="delete" >
 				<i class="material">delete</i> 

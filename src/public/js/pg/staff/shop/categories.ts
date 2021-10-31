@@ -1,6 +1,7 @@
 import Modal from "../../../components/modal.js";
 import Select from "../../../components/select.js";
 import ElementList from "../../../components/list/list.js";
+import type { json_html } from "../../../common/html.js";
 import {
   monetize,
   wait,
@@ -10,6 +11,19 @@ import {
 
 import { query as querySelector } from "../../../common/html.js";
 
+enum UserRank {
+  "Default" = 1,
+  "User" = 2,
+  "Partner" = 3,
+  "Staff" = 4,
+  "Builder" = 5,
+  "Dev" = 6,
+  "Soporte" = 7,
+  "Mod" = 8,
+  "Admin" = 9,
+  "Owner" = 10,
+}
+
 interface Category {
   uuid: string;
   name: string;
@@ -17,7 +31,7 @@ interface Category {
   description: string;
   order: string[];
   image: string;
-  min_rank: number;
+  min_rank: UserRank;
 }
 
 // const filters = {
@@ -51,17 +65,12 @@ const header_action = {
 };
 
 const refreshAction_fn = async () => {
+  if (category_list.isLoading) return;
+  header_action.refresh.classList.add("anim");
   await Promise.all([wait(1000), category_list.refresh()]);
+  header_action.refresh.classList.remove("anim");
 };
 header_action.refresh.onclick = refreshAction_fn;
-
-category_list.on("refresh", (_this: ElementList<Category>, mode: boolean) => {
-  if(mode) {
-    header_action.refresh.classList.add("anim");
-  } else {
-    header_action.refresh.classList.remove("anim");
-  }
-});
 
 let filterAction_isRunning = false;
 header_action.filter.onclick = async () => {
@@ -69,7 +78,7 @@ header_action.filter.onclick = async () => {
   filterAction_isRunning = true;
   header_action.filter.classList.add("anim");
 
-  await wait(500);
+  await wait(1000);
   alert("Not implemented");
 
   header_action.filter.classList.remove("anim");
@@ -83,94 +92,70 @@ header_action.add.onclick = async () => {
   header_action.add.classList.add("anim");
 
   await wait(500);
-  // OpenAddModal();
+  OpenAddModal();
 
   header_action.add.classList.remove("anim");
   addAction_isRunning = false;
 };
 
-// /** @type {{ [uuid: string]: ItemData }} */
-// let cache_items = {};
-
-// /** @type {string[]} */
-// let cache_ordened_uuid = [];
-
-// async function refreshItems() {
-//   items_list.classList.add("loading");
-
-//   items_list.innerHTML = "";
-
-//   await FetchItems();
-
-//   for(let uuid of cache_ordened_uuid)
-//     items_list.append(CreateItem(cache_items[uuid]));
-
-//   items_list.classList.remove("loading");
-// }
-
 refreshAction_fn().catch(alert);
 
-// /**——————————————————**/
-// /**       MODAL      **/
-// /**——————————————————**/
+/**——————————————————**/
+/**       MODAL      **/
+/**——————————————————**/
 
-// const modalItem_events = {
-//   /** @param {Modal} _ */
-//   _delete: (_) => {},
-//   /** @param {Modal} _ */
-//   _save:   (_) => {}
-// };
+const modalCategory_events = {
+  _delete: (_: Modal) => {},
+  _save: (_: Modal) => {},
+};
 
-// const modalItem_Vars = {};
+const modalCategory_Vars = {};
 
-// /** @type {HTMLDivElement} */
-// const modalItem_body = document.querySelector("#item-editor-body");
+const modalCategory_body = querySelector<HTMLDivElement>(
+  "#category-editor-body"
+);
 
-// const modalItem = new Modal({
-//   title: "Loading...",
-//   headerStyle: Modal.HeaderStyle.Solid,
-//   body: modalItem_body,
-//   cloneBody: true,
-//   actions: [
-//     { name: "Delete",
-//       color: Modal.ActionColor.Danger,
-//       onClick: (modal) => {
-//         modalItem_events._delete(modal);
-//       } },
-//     { name: "Cancel",
-//       onClick: (modal) => {
-//         modal.drainEvents();
-//         modal.close();
-//       } },
-//     { name: "Save",
-//       onClick: (modal) => {
-//         modalItem_events._save(modal);
-//       } }
-//   ]
-// });
+const modalCategory = new Modal({
+  title: "Loading...",
+  headerStyle: Modal.HeaderStyle.Solid,
+  body: modalCategory_body,
+  cloneBody: true,
+  actions: [
+    {
+      name: "Delete",
+      color: Modal.ActionColor.Danger,
+      onClick: (modal) => {
+        modalCategory_events._delete(modal);
+      },
+    },
+    {
+      name: "Cancel",
+      onClick: (modal) => {
+        modal.drainEvents();
+        modal.close();
+      },
+    },
+    {
+      name: "Save",
+      onClick: (modal) => {
+        modalCategory_events._save(modal);
+      },
+    },
+  ],
+});
 
-// const categorySelect = new Select({
-//   // @ts-ignore
-//   dom: modalItem.getBody()._.category._.select.dom,
-//   options: [
-//     ["Private", "private"],
-//     ["Key", "key"],
-//     ["Rank", "rank"]
-//   ],
-//   selected: "private"
-// });
+const rankSelect: Select = new Select({
+  dom: <HTMLSelectElement> modalCategory.getBody()._.rank._.select.dom,
+  options: Object.keys(UserRank).filter(_ => typeof UserRank[_] === "number")
+});
 
-// // @ts-ignore
-// const tm_item_list_modal = document.querySelector("template#list-item").content.firstElementChild;
+console.log(rankSelect);
 
-// /**
-//  * @param {ItemData} data
-//  * @param {string[]} actual_cmds
-// */
-// function LoadCommandsOnItemModal(data, actual_cmds) {
-//   for(let [ command, i ] of ArrayIndex(GetItemCommands(data)))
-//     NewCommandOnItemModal(command, i, actual_cmds);
-// }
+
+const tmCategoryListModal = <HTMLDivElement>(
+  querySelector<HTMLTemplateElement>("template#list-category").content
+    .firstElementChild
+);
 
 // /**
 //  * @param {string} msg
@@ -183,33 +168,6 @@ refreshAction_fn().catch(alert);
 //   modalItem.getActions()._.Cancel.classes.remove("disabled");
 
 //   modalItem.setHeader(title);
-// }
-
-// /**
-//  * @param {string[]} commands
-//  * @param {string} title
-//  * @returns {[boolean, [ string, string ]]}
-// */
-// function EncodeCommands(commands, title) {
-//   const exec_cmd = [];
-//   const exec_params = [];
-
-//   for(let cmd of commands) {
-//     if(cmd === null) continue;
-
-//     const s = (/^([a-z0-9/_-]+)\s*(.*)$/i).exec(cmd);
-//     if(s === null)
-//       return ThrowBadRequestOnItemModal("Commando no valido: " + cmd, title), [ false, [ "", "" ]];
-
-//     exec_cmd.push(s[1]);
-//     exec_params.push(s[2] || "");
-//   }
-
-//   return [
-//     true,
-//     [ exec_cmd.join(" [&&] "),
-//       exec_params.join(" [&&] ") ]
-//   ];
 // }
 
 // /**
@@ -264,126 +222,127 @@ refreshAction_fn().catch(alert);
 //   AddEvent("click", addBtn, modalItem_Vars.cmd_fn)
 // }
 
-// /**
-//  * @param {[object, string]} property
-//  * @param {import("../../common/html").json_html<HTMLInputElement>} elm
-//  * @param {string} _default
-//  * @param {(value: string) => any} [pre]
-//  */
-// function UpdateData(property, elm, _default, pre) {
-//   elm.dom.value = _default;
-//   pre = pre || ((_) => _);
-//   property[0][property[1]] = _default;
+function UpdateData(
+  property: [object, string],
+  elm: json_html<HTMLInputElement>,
+  _default: string,
+  pre?: (value: string) => any
+) {
+  elm.dom.value = _default;
+  pre = pre || ((_) => _);
+  property[0][property[1]] = _default;
 
-//   elm.events.add("change", () => {
-//     property[0][property[1]] = pre(elm.dom.value);
-//   });
-// }
+  elm.events.add("change", () => {
+    property[0][property[1]] = pre(elm.dom.value);
+  });
+}
 
-// /**
-//  * @param {[object, string]} property
-//  * @param {import("../../common/html").json_html<HTMLSelectElement>} elm
-//  * @param {Select} select
-//  * @param {number | string} [_default]
-//  * @param {(value: string) => any} [pre]
-//  */
-// function UpdateDataSelect(property, elm, select, _default, pre) {
-//   pre = pre || (_ => _);
+function UpdateDataSelect(
+  property: [object, string],
+  elm: json_html<HTMLSelectElement>,
+  select: Select,
+  _default: number | string,
+  pre?: (value: string) => any
+) {
+  pre = pre || ((_) => _);
 
-//   if(typeof _default !== "undefined") {
-//     select.select(_default);
-//   }
+  if (typeof _default !== "undefined") {
+    select.select(_default);
+  }
 
-//   property[0][property[1]] = pre(select.selectedValue);
+  property[0][property[1]] = pre(select.selectedValue);
 
-//   elm.events.add("change", () => {
-//     property[0][property[1]] = pre(select.selectedValue);
-//   });
-// }
+  elm.events.add("change", () => {
+    property[0][property[1]] = pre(select.selectedValue);
+  });
+}
 
-// function OpenAddModal() {
-//   /** @type {ItemData} */
-//   const actual_item_data = {
-//     uuid: "",
-//     name: "",
-//     description: "",
-//     price: 0,
-//     exec_cmd: "",
-//     exec_params: "",
-//     images: [],
-//     category: "",
-//     created: Date.now()
-//   };
-//   const actual_cmds = [];
+function OpenAddModal() {
+  const actual_category_data: Category = {
+    uuid: "",
+    name: "",
+    display: "",
+    description: "",
+    image: "",
+    min_rank: UserRank.Default,
+    order: [],
+  };
+  const actual_order = [];
 
-//   const body = modalItem.getBody();
+  const body = modalCategory.getBody();
 
-//   // Title of modal
-//   modalItem.setHeader("New Item");
-//   body._.uuid.classes.add("hidden");
-//   modalItem.getActions()._.Delete.classes.add("hidden");
+  // Title of modal
+  modalCategory.setHeader("New Category");
+  body._.uuid.classes.add("hidden");
+  modalCategory.getActions()._.Delete.classes.add("hidden");
 
-//   // Fields of modal
-//     // @ts-ignore
-//   UpdateDataSelect([actual_item_data, "category"], body._.category._.select, categorySelect, "private");
+  // Fields of modal
 
-//     // @ts-ignore
-//   UpdateData([actual_item_data, "name"], body._.name._.input, "");
+  UpdateData(
+    [actual_category_data, "name"],
+    <json_html<HTMLInputElement>>body._.name._.input,
+    ""
+  );
 
-//     // @ts-ignore
-//   UpdateData([actual_item_data, "price"], body._.price._.input, "0", parseFloat);
+  UpdateData(
+    [actual_category_data, "display"],
+    <json_html<HTMLInputElement>>body._.display._.input,
+    ""
+  );
 
-//     // @ts-ignore
-//   UpdateData([actual_item_data, "description"], body._.description._.textarea, "");
+  UpdateData(
+    [actual_category_data, "description"],
+    <json_html<HTMLInputElement>>body._.description._.textarea,
+    ""
+  );
 
-//   SetCommandActions(actual_cmds);
+  UpdateDataSelect(
+    [actual_category_data, "min_rank"],
+    <json_html<HTMLSelectElement>>body._.rank._.select,
+    rankSelect,
+    0,
+    (value: string) => UserRank[value]
+  )
 
-//   /** @type {Modal} modal */
-//   modalItem_events._save = async (modal) => {
-//     modal.disableActions();
-//     modal.setHeader("New item [SAVING]");
+  // SetCommandActions(actual_cmds);
 
-//     const [ success, [ exec_cmd, exec_params ] ] = EncodeCommands(actual_cmds, "New Item");
+  modalCategory_events._save = async (modal: Modal) => {
+    modal.disableActions();
+    modal.setHeader("New category [SAVING]");
 
-//     if(!success) return;
+    try {
+      console.log(actual_category_data);
+      alert("Not implemented")
+      // await AddCategory({
+      //   uuid: "",
+      //   name: actual_category_data.name,
+      //   description: actual_category_data.description,
+      //   price: actual_category_data.price,
+      //   category: actual_category_data.category,
+      //   created: actual_category_data.created
+      // });
+    } catch (err) {
+      alert(err);
+      console.error(err);
+      return;
+    }
 
-//     try {
-//       await AddItem({
-//         uuid: "",
-//         name: actual_item_data.name,
-//         description: actual_item_data.description,
-//         price: actual_item_data.price,
-//         exec_cmd: exec_cmd,
-//         exec_params: exec_params,
-//         images: [],
-//         category: actual_item_data.category,
-//         created: actual_item_data.created
-//       });
-//     } catch(err) {
-//       alert(err);
-//       console.error(err);
-//       return;
-//     }
+    await refreshAction_fn();
 
-//     await refreshItems();
+    modal.undisableActions();
+    modal.close();
+    modal.drainEvents();
+  };
 
-//     modal.undisableActions();
-//     modal.close();
-//     modal.drainEvents();
-//   };
+  modalCategory.open();
+}
 
-//   modalItem.open();
-// }
-
-// /**
-//  * @param {ItemData} data
-//  */
-// function OpenItemModal(data) {
-//   /* @type {ItemData} */
+// function OpenCategoryModal(data) {
+//   /* @type {CategoryData} */
 //   const actual_item_data = JSON.parse(JSON.stringify(data));
 //   const actual_cmds = [];
 
-//   const body = modalItem.getBody();
+//   const body = modalCategory.getBody();
 
 //   // Title of modal
 //   modalItem.setHeader(data.name);
