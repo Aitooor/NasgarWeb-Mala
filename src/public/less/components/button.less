@@ -1,4 +1,4 @@
-@import "../mixins/button.less";
+@import (reference) "../mixins/button.less";
 
 button,
 .btn {
@@ -7,8 +7,8 @@ button,
   margin: 1px;
   padding: .4rem .8rem;
 
-  background: @primary;
   color: #fff;
+  .onhover(@primary);
 
   border: solid 2px transparent;
   border-radius: 2.5px;
@@ -23,19 +23,19 @@ button,
   }
 
   &.primary {
-    background: @primary;
+    .onhover(@primary);
     color: #fff;
   }
   &.success {
-    background: @success;
+    .onhover(@success);
     color: #fff;
   }
   &.danger {
-    background: @danger;
+    .onhover(@danger);
     color: #fff;
   }
   &.warning {
-    background: @warning;
+    .onhover(@warning);
     color: #000;
   }
 

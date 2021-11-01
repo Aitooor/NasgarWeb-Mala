@@ -56,3 +56,12 @@
 		}
 	}
 }
+
+
+.onhover(@color) {
+	background: @color;
+	
+	&:hover {
+		background: desaturate(@color, 20%);
+	}
+}

@@ -586,12 +586,6 @@ function OpenImageModal(selected) {
   })
 }
 
-/*
-<div class="image selected" >
-  <img src="/img/logo-128x.png" >
-</div>
-*/
-
 /**
  * @param {imageData} data
  * @param {string[]} selected
