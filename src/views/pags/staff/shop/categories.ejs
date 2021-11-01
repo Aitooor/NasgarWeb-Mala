@@ -39,6 +39,9 @@
 		<div class="field required" data-name="display">
 			<span class="title">HTML Display</span>
 			<input class="input" placeholder="Display in html">
+			<div class="preview">
+				Hola
+			</div>
 		</div>
 
 		<div class="field required" data-name="description">
@@ -52,7 +55,7 @@
 			</select>
 		</div>
 
-		<div class="field list" data-name="commands">
+		<div class="field list" data-name="orders">
 			<div class="title" data-name="header">
 				<span class="title" >Products</span>
 				<div class="actions" data-name="actions">
@@ -62,6 +65,11 @@
 				</div>
 			</div>
 			<div class="list" data-name="list"></div>
+			<datalist id="products_list">
+				<option value="46578913215649138755316">Lorem ipsum dolor sit amet.</option>
+				<option value="01231957682401256794315">Lorem, ipsum dolor.</option>
+				<option value="12461975834689567678402">Lorem ipsum dolor sit amet consectetur.</option>
+			</datalist>
 		</div>
 	</div>
 	
@@ -89,11 +97,15 @@
 	</template>
 
 	<template id="list-category" >
-		<div class="category" >
+		<div class="item" >
 			<input class="input" placeholder="Value"  >
 			<button class="delete" >
 				<i class="material">delete</i> 
 			</button>
+			<div class="ord-btns">
+				<button class="up"><i class="material">keyboard_arrow_up</i></button>
+				<button class="down"><i class="material">keyboard_arrow_down</i></button>
+			</div>
 		</div>
 	</template>
 

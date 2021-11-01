@@ -103,9 +103,50 @@ const rankSelect = new Select({
     dom: modalCategory.getBody()._.rank._.select.dom,
     options: Object.keys(UserRank).filter(_ => typeof UserRank[_] === "number")
 });
-console.log(rankSelect);
 const tmCategoryListModal = (querySelector("template#list-category").content
     .firstElementChild);
+function NewOrderOnItemModal(order, index, order_obj) {
+    const order_list = modalCategory.getBody()._.orders._.list.dom;
+    order_obj[index] = order;
+    const elm = tmCategoryListModal.cloneNode(true);
+    const inp = querySelector(".input", elm);
+    inp.setAttribute("list", "products_list");
+    inp.value = order;
+    AddEvent("input", inp, () => {
+        order_obj[index] = inp.value;
+    });
+    AddEventChild("click", elm, ".delete", () => {
+        order_obj.splice(index, 1);
+        elm.remove();
+    });
+    AddEventChild("click", elm, ".up", () => {
+        if (index === 0)
+            return;
+        const [tmp] = order_obj.splice(index, 1);
+        order_obj.splice(index - 1, 0, tmp);
+        LoadProductsOnCategoryModal(order_obj);
+    });
+    AddEventChild("click", elm, ".down", () => {
+        if (index === order_obj.length - 1)
+            return;
+        const [tmp] = order_obj.splice(index, 1);
+        order_obj.splice(index + 1, 0, tmp);
+        LoadProductsOnCategoryModal(order_obj);
+    });
+    order_list.append(elm);
+    return inp;
+}
+function SetOrderActions(order) {
+    const order_list = modalCategory.getBody()._.orders._.list.dom;
+    const addBtn = modalCategory.getBody()._.orders._.header._.actions._.button.dom;
+    order_list.innerHTML = "";
+    if (modalCategory_Vars.ctg_fn)
+        RemEvent("click", addBtn, modalCategory_Vars.ctg_fn);
+    modalCategory_Vars.ctg_fn = () => {
+        NewOrderOnItemModal("", order.length, order).focus();
+    };
+    AddEvent("click", addBtn, modalCategory_Vars.ctg_fn);
+}
 function UpdateData(property, elm, _default, pre) {
     elm.dom.value = _default;
     pre = pre || ((_) => _);
@@ -134,7 +175,7 @@ function OpenAddModal() {
         min_rank: UserRank.Default,
         order: [],
     };
-    const actual_order = [];
+    const actual_order = actual_category_data.order;
     const body = modalCategory.getBody();
     modalCategory.setHeader("New Category");
     body._.uuid.classes.add("hidden");
@@ -143,6 +184,7 @@ function OpenAddModal() {
     UpdateData([actual_category_data, "display"], body._.display._.input, "");
     UpdateData([actual_category_data, "description"], body._.description._.textarea, "");
     UpdateDataSelect([actual_category_data, "min_rank"], body._.rank._.select, rankSelect, 0, (value) => UserRank[value]);
+    SetOrderActions(actual_order);
     modalCategory_events._save = (modal) => __awaiter(this, void 0, void 0, function* () {
         modal.disableActions();
         modal.setHeader("New category [SAVING]");
@@ -162,7 +204,22 @@ function OpenAddModal() {
     });
     modalCategory.open();
 }
+function RemEvent(ev, elm, fn) {
+    elm.removeEventListener(ev, fn);
+}
+function AddEventChild(ev, parent, selector, fn) {
+    AddEvent(ev, parent.querySelector(selector), fn);
+}
+function AddEvent(ev, elm, fn) {
+    elm.addEventListener(ev, fn);
+}
+function LoadProductsOnCategoryModal(actual) {
+    for (let [product, i] of ArrayIndex(actual)) {
+        NewOrderOnItemModal(product, i, actual);
+    }
+}
 function* ArrayIndex(arr) {
+    modalCategory.getBody()._.orders._.list.dom.innerHTML = "";
     for (let i = 0; i < arr.length; i++) {
         yield [arr[i], i];
     }

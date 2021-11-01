@@ -109,7 +109,9 @@ const modalCategory_events = {
   _save: (_: Modal) => {},
 };
 
-const modalCategory_Vars = {};
+const modalCategory_Vars: {
+  ctg_fn?: () => void
+} = {};
 
 const modalCategory_body = querySelector<HTMLDivElement>(
   "#category-editor-body"
@@ -149,8 +151,6 @@ const rankSelect: Select = new Select({
   options: Object.keys(UserRank).filter(_ => typeof UserRank[_] === "number")
 });
 
-console.log(rankSelect);
-
 
 const tmCategoryListModal = <HTMLDivElement>(
   querySelector<HTMLTemplateElement>("template#list-category").content
@@ -170,57 +170,64 @@ const tmCategoryListModal = <HTMLDivElement>(
 //   modalItem.setHeader(title);
 // }
 
-// /**
-//  * @param {string} cmd
-//  * @param {number} index
-//  * @param {string[]} cmds_obj
-//  * @returns {HTMLElement}
-// */
-// function NewCommandOnItemModal(cmd, index, cmds_obj) {
-//   const command_list = modalItem.getBody()._.commands._.list.dom;
-//   cmds_obj[index] = cmd;
+function NewOrderOnItemModal(order: string, index: number, order_obj: string[]): HTMLInputElement {
+  const order_list = modalCategory.getBody()._.orders._.list.dom;
+  order_obj[index] = order;
 
-//   const elm = ElementFromNode(tm_item_list_modal.cloneNode(true));
-//   /**
-//    * @ignore
-//    * @type {HTMLInputElement}
-//   */
-//   const inp = elm.querySelector(".input");
+  const elm = <HTMLDivElement>tmCategoryListModal.cloneNode(true);
+  /**
+   * @ignore
+   * @type {HTMLInputElement}
+  */
+  const inp = querySelector<HTMLInputElement>(".input", elm);
+  inp.setAttribute("list", "products_list")
 
-//   inp.value = cmd;
-//   AddEvent("input", inp, () => {
-//     cmds_obj[index] = inp.value;
-//   });
+  inp.value = order;
+  AddEvent("input", inp, () => {
+    order_obj[index] = inp.value;
+  });
 
-//   AddEventChild("click", elm, ".delete", () => {
-//     cmds_obj[index] = null;
-//     elm.remove();
-//   });
+  AddEventChild("click", elm, ".delete", () => {
+    order_obj.splice(index, 1);
+    elm.remove();
+  });
 
-//   command_list.append(elm);
+  AddEventChild("click", elm, ".up", () => {
+    if(index === 0) return;
+    const [ tmp ] = order_obj.splice(index, 1);
+    order_obj.splice(index - 1, 0, tmp);
+    LoadProductsOnCategoryModal(order_obj);
+  });
 
-//   return inp;
-// }
+  AddEventChild("click", elm, ".down", () => {
+    if(index === order_obj.length - 1) return;
+    const [ tmp ] = order_obj.splice(index, 1);
+    order_obj.splice(index + 1, 0, tmp);
+    LoadProductsOnCategoryModal(order_obj);
+  });
 
-// /**
-//  * @param {string[]} cmds
-// */
-// function SetCommandActions(cmds) {
-//   const command_list = modalItem.getBody()._.commands._.list.dom;
+  order_list.append(elm);
 
-//   const addBtn = modalItem.getBody()._.commands._.header._.actions._.button.dom;
+  return inp;
+}
 
-//   // Clear commands
-//   command_list.innerHTML = "";
+function SetOrderActions(order: string[]) {
+  const order_list = modalCategory.getBody()._.orders._.list.dom;
 
-//   if(modalItem_Vars.cmd_fn)
-//     RemEvent("click", addBtn, modalItem_Vars.cmd_fn);
-//   modalItem_Vars.cmd_fn = () => {
-//     NewCommandOnItemModal("", cmds.length, cmds).focus();
-//   }
+  const addBtn = modalCategory.getBody()._.orders._.header._.actions._.button.dom;
 
-//   AddEvent("click", addBtn, modalItem_Vars.cmd_fn)
-// }
+  // Clear orders
+  order_list.innerHTML = "";
+
+  if(modalCategory_Vars.ctg_fn)
+    RemEvent("click", addBtn, modalCategory_Vars.ctg_fn);
+
+  modalCategory_Vars.ctg_fn = () => {
+    NewOrderOnItemModal("", order.length, order).focus();
+  }
+
+  AddEvent("click", addBtn, modalCategory_Vars.ctg_fn)
+}
 
 function UpdateData(
   property: [object, string],
@@ -267,7 +274,7 @@ function OpenAddModal() {
     min_rank: UserRank.Default,
     order: [],
   };
-  const actual_order = [];
+  const actual_order: string[] = actual_category_data.order;
 
   const body = modalCategory.getBody();
 
@@ -304,7 +311,7 @@ function OpenAddModal() {
     (value: string) => UserRank[value]
   )
 
-  // SetCommandActions(actual_cmds);
+  SetOrderActions(actual_order);
 
   modalCategory_events._save = async (modal: Modal) => {
     modal.disableActions();
@@ -456,7 +463,33 @@ function OpenAddModal() {
 //   elm.addEventListener(ev, fn)
 // }
 
+function RemEvent(ev: string, elm: HTMLElement, fn: (e?: Event) => void) {
+  elm.removeEventListener(ev, fn);
+}
+
+/**
+ * AddEvent(#ev, #parent.querySelector(#selector), fn);
+*/
+function AddEventChild(ev: string, parent: HTMLElement, selector: string, fn: (e?: Event) => void) {
+  AddEvent(
+    ev, 
+    parent.querySelector(selector), 
+    fn
+  );
+}
+
+function AddEvent(ev: string, elm: HTMLElement, fn: (e?: Event) => void) {
+  elm.addEventListener(ev, fn)
+}
+
+function LoadProductsOnCategoryModal(actual: string[]) {
+  for(let [product, i] of ArrayIndex<string>(actual)) {
+    NewOrderOnItemModal(product, i, actual);
+  }
+}
+
 function* ArrayIndex<T extends any = any>(arr: T[]): Generator<[T, number]> {
+  modalCategory.getBody()._.orders._.list.dom.innerHTML = "";
   for (let i = 0; i < arr.length; i++) {
     yield [arr[i], i];
   }
