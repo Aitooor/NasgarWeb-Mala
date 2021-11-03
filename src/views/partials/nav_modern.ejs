@@ -26,19 +26,43 @@
       <a href="/bans" class="tab"><%= global.lang.menu.bans %></a>
       <a href="/vote" target="_blank" class="tab"><%= global.lang.menu.vote %></a>
       <% if (global.user !== null) { %>
+
         <div class="tab login">
-          <div class="title"><i class="material">account_circle</i> <%= global.user.name %></div>
+          <div class="title">
+            <i class="material">account_circle</i> 
+            <%= global.user.name %>
+          </div>
           <div class="options">
-            <a href="/profile" class="option"><i class="material">person</i> <span>Profile</span></a>
+            <a href="/profile" class="option">
+              <i class="material">person</i> 
+              <span>Profile</span>
+            </a>
+
             <% if (global.user.rank >= global.const.LEVEL.Staff) { %>
-              <a href="/staff" class="option"><i class="material">admin_panel_settings</i> <span>Staff</span></a>
+
+              <a href="/staff" class="option">
+                <i class="material">admin_panel_settings</i> 
+                <span>Staff</span>
+              </a>
             <% } %>  
-            <a href="/settings" class="option"><i class="material">settings</i> <span>Settings</span></a>
-            <a href="/logout" class="option"><i class="material">logout</i> <span>Log Out</span></a>
+
+            <a href="/settings" class="option">
+              <i class="material">settings</i> 
+              <span>Settings</span>
+            </a>
+            <a href="/logout" class="option">
+              <i class="material">logout</i> 
+              <span>Log Out</span>
+            </a>
           </div>
         </div>
+
       <% } else { %>
-        <a href="/login" class="tab login"><%= global.lang.menu.login %></a>
+
+        <a href="/login" class="tab login">
+          <%= global.lang.menu.login %>
+        </a>
+
       <% } %>
     </div>
   </div>
@@ -65,23 +89,50 @@
       <a href="/bans" class="tab"><%= global.lang.menu.bans %></a>
       <a href="/vote" class="tab"><%= global.lang.menu.vote %></a>
       <% if (global.user !== null) { %>
+
         <div class="tab login">
-          <div class="title"><i class="material">account_circle</i> <%= global.user.name %></div>
+          <div class="title">
+            <i class="material">account_circle</i> 
+            <%= global.user.name %>
+          </div>
           <div class="options">
-            <a href="/profile" class="option"><i class="material">person</i> <span>Profile</span></a>
+            <a href="/profile" class="option">
+              <i class="material">person</i> 
+              <span>Profile</span>
+            </a>
+
             <% if (global.user.rank >= global.const.LEVEL.Staff) { %>
-              <a href="/staff" class="option"><i class="material">admin_panel_settings</i> <span>Staff</span></a>
+
+              <a href="/staff" class="option">
+                <i class="material">
+                  admin_panel_settings</i> 
+                <span>Staff</span>
+              </a>
             <% } %>  
-            <a href="/settings" class="option"><i class="material">settings</i> <span>Settings</span></a>
-            <a href="/logout" class="option"><i class="material">logout</i> <span>Log Out</span></a>
+
+            <a href="/settings" class="option">
+              <i class="material">settings</i> 
+              <span>Settings</span>
+            </a>
+            <a href="/logout" class="option">
+              <i class="material">logout</i> 
+              <span>Log Out</span>
+            </a>
           </div>
         </div>
+
       <% } else { %>
-        <a href="/login" class="tab login"><%= global.lang.menu.login %></a>
+
+        <a href="/login" class="tab login">
+          <%= global.lang.menu.login %>
+        </a>
+
       <% } %>
     </div>
   </div>
 </nav>
 
 
-<div class="nav_transparent_height" style="height: <%= _height_style %>;"></div>
+<div 
+  class="nav_transparent_height" 
+  style="height: <%= _height_style %>;"></div>
