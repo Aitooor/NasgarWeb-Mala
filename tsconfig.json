@@ -8,7 +8,6 @@
   ],
   "compilerOptions": {
     "declaration": true,
-    // "declarationDir": "./types",
     "allowJs": false,
     "watch": true,
     "target": "ES6",

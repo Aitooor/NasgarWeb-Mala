@@ -1,9 +1,27 @@
 import * as express from "express";
+import winston from "winston";
 
 declare global {
 	namespace Express {
 		interface Request {
 			userData: UserData;
+		}
+	}
+
+	namespace NodeJS {
+		interface Process {
+			PRODUCTION: boolean,
+			WEB_HREF: string,
+			logger?: {
+				setted: boolean;
+				separator: string;
+				loggers: {
+					console: winston.Logger;
+					log: winston.Logger;
+					debug: winston.Logger;
+					error: winston.Logger;
+				};
+			};
 		}
 	}
 }
