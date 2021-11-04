@@ -1,10 +1,12 @@
 const RCON = require("rcon");
 const CONFIG = require("../../config");
+const logger = require("../lib/logger")
+
 
 const disabled = {
-  "default": false
+  "default": !process.PRODUCTION
 };
-const PREFIX = (id = "") => `\x1b[0;31;1m[RCON(${id})] \x1b[0m\x1b[38;5;8m`;
+const PREFIX = (id = "") => `&0;41;1 RCON(${id}) &0&38;5;8`;
 
 function wait(ms) {
   return new Promise(res => {
@@ -20,11 +22,11 @@ function wait(ms) {
 async function rconTry(rcon, PORT) {
   await rcon.connect(CONFIG.SV_HOST, PORT, CONFIG.RCON.PASS);
       
-  console.log(PREFIX(PORT) + "Is connected on", PORT, "-> \x1b[0m", rcon.authenticated && rcon.online);
+  logger.log(PREFIX(PORT), "Is connected on", PORT, "-> &0", rcon.authenticated && rcon.online);
 
   rcon.socket.on("error", async (e) => {
-    console.log(PREFIX(PORT) + `Error: \x1b[0m`, e);
-    console.log(PREFIX(PORT) + `Is reconnecting.\x1b[0m`);
+    logger.log(PREFIX(PORT), `Error: `, e);
+    logger.log(PREFIX(PORT), `Is reconnecting.`);
     await wait(1500);
     rconTry(rcon, PORT);
   });
@@ -36,10 +38,10 @@ async function rconTry(rcon, PORT) {
  */
 async function rcon(PORT) {
   const rcon = new RCON(5_000);
-  console.log(PREFIX(PORT) + "Connecting.\x1b[0m");
+  logger.log(PREFIX(PORT), "Connecting.");
 
   if(disabled[PORT.toString()] ?? disabled.default) 
-    console.log(PREFIX(PORT) + "\x1b[0;31mIs disabled!!\x1b[0m");
+    logger.log(PREFIX(PORT), "&0;31Is disabled!!");
   else 
     await rconTry(rcon, PORT);
       
