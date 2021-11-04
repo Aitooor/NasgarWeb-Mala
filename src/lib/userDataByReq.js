@@ -36,6 +36,8 @@ module.exports = function(db) {
 
     res.locals.global = {
       "const": {
+        WEB_HREF: process.WEB_HREF,
+        PRODUCTION: process.PRODUCTION,
         LEVEL: UserLevel.Level
       }
     };
