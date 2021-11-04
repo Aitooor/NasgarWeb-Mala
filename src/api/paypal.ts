@@ -1,9 +1,10 @@
 import paypal from "paypal-rest-sdk";
 import CONFIG from "../../config";
+import * as logger from "../lib/logger";
 
-const PREFIX      = "\x1b[0;32m[\x1b[1mPAYPAL\x1b[0;32m] \x1b[0m\x1b[38;5;8m";
-const red_flag    = "\x1b[0;41m   \x1b[0m\x1b[38;5;8m ";
-const green_flag  = "\x1b[0;42m   \x1b[0m\x1b[38;5;8m "
+const PREFIX      = "&0;44 &1PAYPAL&0;44 &0&38;5;8 ";
+const red_flag    = "&0;41   &0&38;5;8 ";
+const green_flag  = "&0;42   &0&38;5;8 "
 
 
 export const instance = paypal;
@@ -15,7 +16,7 @@ export function configure(sandbox: boolean = true) {
     client_secret: CONFIG.PAYPAL.SANDBOX.SECRET
   });
 
-  console.log(PREFIX + "Paypal is configured.\x1b[0m");
+  logger.log(PREFIX + "Paypal is configured.\x1b[0m");
   
 };
 
@@ -86,12 +87,12 @@ export function createPayment(options: PaymentOptions): Promise<paypal.PaymentRe
     paypal.payment.create(payment, (err, _res) => {
       if(err) {
         rej(err);
-        console.log(PREFIX + red_flag + "Payment failed.");
+        logger.log(PREFIX + red_flag + "Payment failed.");
         return;
       }
 
       res(_res);
-      console.log(PREFIX + green_flag + "Payment success.");
+      logger.log(PREFIX + green_flag + "Payment success.");
     });
   });
 }
@@ -107,8 +108,8 @@ export interface ShopPaymentOptions {
 export function createShopPayment(options: ShopPaymentOptions): Promise<paypal.PaymentResponse> {
   return createPayment({
     redirect_urls: {
-      return_url: `${process.env.WEB_HREF}/pay/return?cart=${options.cart_string}`,
-        cancel_url: `${process.env.WEB_HREF}/pay/cancel`
+      return_url: `${process.WEB_HREF}/pay/return?cart=${options.cart_string}`,
+        cancel_url: `${process.WEB_HREF}/pay/cancel`
     },
     items: options.cart,
     discount: options.discount
