@@ -24,6 +24,16 @@
 // Temporal password for staff-timings
   TIMING_PASS: "Nasgar%"
 
+// Logger data
+  LOGGER: {
+    PATHS: {
+      DIR: "./logs"
+      LOG: "log.log"
+      DEBUG: "debug.log"
+      ERROR: "error.log"
+    }
+  }
+
 // Server host ip
   SV_HOST: "142.4.215.212"
 
