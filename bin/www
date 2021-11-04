@@ -7,8 +7,12 @@
 const CONFIG = require("../config");
 const isProduction = process.env.NODE_ENV === "production" || CONFIG.ENV === "prod";
 
-if(isProduction)
+if(isProduction) {
   process.env.NODE_ENV = "production";
+  process.PRODUCTION = true;
+} else {
+  process.PRODUCTION = false;
+}
 
 /**
  * Selecting port and make it global
@@ -29,7 +33,7 @@ var port = normalizePort(
 
 // @ts-ignore
 process.env.PORT = port;
-process.env.WEB_HREF = isProduction ? "https://web.nasgar.online" : "http://localhost:"+port
+process.WEB_HREF = isProduction ? "https://web.nasgar.online" : "http://localhost:"+port
 
 /**
  * Module dependencies.
@@ -113,7 +117,7 @@ function onListening() {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  console.log(`Listening on ${bind}. ${process.env.WEB_HREF}`);
+  console.log(`Listening on ${bind}. ${process.WEB_HREF}`);
 }
 
 // vim: set ft=javascript
