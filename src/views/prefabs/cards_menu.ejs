@@ -13,9 +13,9 @@
         back === "none"? ""       :
         "window.history.back()" : "window.history.back()"; %>
 
-<%- include("../partials/head.ejs", { url: "/", title: title, styles: [ "prefabs/cards_menu" ], scripts: [] }) %>
+<%- include("../partials/head.ejs", { global, url: "/", title: title, styles: [ "prefabs/cards_menu" ], scripts: [] }) %>
 
-<%- include("../partials/body.ejs") %>
+<%- include("../partials/body.ejs", { global }) %>
 
 <div class="main">
   <% for(const card of data) { %> 
