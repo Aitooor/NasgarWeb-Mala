@@ -2,32 +2,54 @@ import winston from "winston";
 import Fs from "fs";
 import CONFIG from "../../config";
 
+/* If logger is not setted in process then 
+ * create it and set in process. */
 if (typeof process.logger === "undefined") {
+  // Remove last logs
   const PATH = `${process.cwd()}/${CONFIG.LOGGER.PATHS.DIR}/`;
   Fs.rmSync(PATH, {
     force: true,
     recursive: true,
   });
 
+  // Regular expression to colors in string, 
+  // &0;255 \x1b[0;255m
   const RegColor = /(&|\x1b\[)([0-2]?[0-9]{1,2})(;([0-2]?[0-9]{1,2}))*m?/g;
+
+  /**
+   * Format colour from `&xxx` or `\x1b[xxxm` to
+   * \x1b[xxxm.
+   * Also called Normalizer.
+   *
+   * @param str Colour before format
+   * @return Colour after format
+   */
   function formatAColor(str: string): string {
     const color = str.replace(formatAColor.reg, "");
     return "\x1b[" + color + (str.endsWith("m") ? "" : "m");
   }
   formatAColor.reg = /^\x1b\[|^&/;
 
+  /**
+   * Format a complete string searching colours.
+   */
   function formatColor(str: string): string {
     return str.replace(formatColor.reg, formatAColor) + "\x1b[0m";
   }
   formatColor.reg = RegColor;
 
+  /**
+   * Format a complete string searching colours and 
+   * deleting it.
+   */
   function formatClearColor(str: string): string {
     return str.replace(formatClearColor.reg, "");
   }
-  console.log(RegColor.source);
+  formatClearColor.reg = RegColor;
 
-  formatClearColor.reg = new RegExp(RegColor.source + "m?", "g");
-
+  /**
+   * Format info of logs.
+   */
   function formatInfo(str: string): string {
     return (
       (process.PRODUCTION
@@ -45,6 +67,9 @@ if (typeof process.logger === "undefined") {
     );
   }
 
+  /**
+   * Formatter to console (With colours)
+   */
   const formatConsole: winston.Logform.Format = winston.format.printf(
     (info) => {
       return (
@@ -53,6 +78,9 @@ if (typeof process.logger === "undefined") {
     }
   );
 
+  /**
+   * Format to files (without colours)
+   */
   const formatLog: winston.Logform.Format = winston.format.printf((info) => {
     return (
       `[${formatClearColor(formatInfo(info.level))}] ` +
@@ -89,6 +117,7 @@ if (typeof process.logger === "undefined") {
     ],
   });
 
+  /* Set logger in process */
   process.logger = {
     setted: true,
     separator: " ",
@@ -100,6 +129,7 @@ if (typeof process.logger === "undefined") {
     },
   };
 
+  /* Just a initial message  */
   _log(
     "error",
     [
@@ -112,7 +142,10 @@ if (typeof process.logger === "undefined") {
   );
 }
 
-function toLog(obj: any, tab: number = 0, depth: number = 6): string {
+/**
+ * Format types to logs
+ */
+function toLog(obj: any, tab: number = 0, depth: number = 6, isObj: boolean = false): string {
   switch (typeof obj) {
     case "object":
       break;
@@ -131,7 +164,7 @@ function toLog(obj: any, tab: number = 0, depth: number = 6): string {
       return `&34<Symbol ${obj.toString()}>&0`;
 
     case "string":
-      return `&33"${obj}"&0`;
+      return isObj ? `&33"${obj}"&0` : obj;
 
     default:
       return obj + "";
@@ -142,7 +175,7 @@ function toLog(obj: any, tab: number = 0, depth: number = 6): string {
 
   const keys = Object.keys(obj);
   const formated = keys.map((key) => {
-    return [key, toLog(obj[key], tab + 1, depth - 1)];
+    return [key, toLog(obj[key], tab + 1, depth - 1, true)];
   });
 
   const t = (n) => "  ".repeat(n);
@@ -168,41 +201,13 @@ function toLog(obj: any, tab: number = 0, depth: number = 6): string {
   );
 }
 
-function formatLog(...args: any[]): string {
+/**
+ * Format log
+ */
+function formatLog(args: any[]): string {
   const msg_: string[] = [];
   for (const arg of args) {
-    switch (typeof arg) {
-      case "function":
-        const v1: Function = arg;
-        msg_.push(
-          `&34<Function ${v1.name.length === 0 ? "anonymus" : v1.name}>&0`
-        );
-        break;
-
-      case "number":
-      case "bigint":
-        const v2: Number | BigInt = arg;
-        msg_.push(`&32${v2}&0`);
-        break;
-
-      case "boolean":
-        const v3: Boolean = arg;
-        msg_.push(`&33${v3}&0`);
-        break;
-
-      case "symbol":
-        const v4: Symbol = arg;
-        msg_.push(`&34<Symbol ${v4.toString()}>&0`);
-        break;
-
-      case "object":
-        msg_.push(toLog(arg));
-        break;
-
-      default:
-        msg_.push(arg);
-        break;
-    }
+    msg_.push(toLog(arg));
   }
 
   const msg = msg_.join(process.logger.separator);
@@ -210,14 +215,21 @@ function formatLog(...args: any[]): string {
   return msg;
 }
 
+/**
+ * Send msg to all loggers
+ */
 function _log(tag: string, msg: string) {
-  process.logger.loggers.console.log(tag, msg);
-  process.logger.loggers.log.log(tag, msg);
-  process.logger.loggers.error.log(tag, msg);
+  const { console, log, error } = process.logger.loggers;
+  console.log(tag, msg);
+  log.log(tag, msg);
+  error.log(tag, msg);
 }
 
+/**
+ * API
+ */
 export function log(...args: any[]): void {
-  const msg: string = formatLog(...args);
+  const msg: string = formatLog(args);
   _log("info", msg);
 }
 
