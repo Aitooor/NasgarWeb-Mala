@@ -48,7 +48,7 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
 						},
 						link: {
 							text: "el ingreso",
-							href: `${process.env.WEB_HREF}/login`
+							href: `${process.WEB_HREF}/login`
 						},
 						seconds: 20
 					});
@@ -64,7 +64,7 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
 						},
 						link: {
 							text: "el ingreso",
-							href: `${process.env.WEB_HREF}/login`
+							href: `${process.WEB_HREF}/login`
 						},
 						seconds: 20
 					});
@@ -79,7 +79,7 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
 					},
 					link: {
 						text: "el ingreso",
-						href: `${process.env.WEB_HREF}/login`
+						href: `${process.WEB_HREF}/login`
 					},
 					seconds: 20
 				});

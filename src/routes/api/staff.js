@@ -35,7 +35,7 @@ module.exports = require("../../lib/Routes/exports")("/staff", async (router, wa
     pool.end();
 
     res.type("json").send(query.map(_ => {
-      _.image = `${process.env.WEB_HREF}/api/staff/image?uuid=${_.uuid}`;
+      _.image = `${process.WEB_HREF}/api/staff/image?uuid=${_.uuid}`;
       return _;
     }));
   });

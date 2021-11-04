@@ -44,7 +44,7 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
 					},
 					link: {
 						text: "el registro",
-						href: `${process.env.WEB_HREF}/sigup`
+						href: `${process.WEB_HREF}/sigup`
 					},
 					seconds: 5
 				});
@@ -57,7 +57,7 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
 				},
 				link: {
 					text: "el registro",
-					href: `${process.env.WEB_HREF}/sigup`
+					href: `${process.WEB_HREF}/sigup`
 				},
 				seconds: 20
 			});
@@ -65,7 +65,7 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
 
 		try {
 			const uuid = jwt.generate(response.data);
-			const verifyUrl = `${process.env.WEB_HREF}/api/accounts/verify?uuid=${uuid}`;
+			const verifyUrl = `${process.WEB_HREF}/api/accounts/verify?uuid=${uuid}`;
 
 			await sendEmail({
 				to: email,
