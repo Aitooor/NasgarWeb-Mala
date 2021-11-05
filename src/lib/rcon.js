@@ -25,7 +25,7 @@ async function rconTry(rcon, PORT) {
   logger.log(PREFIX(PORT), "Is connected on", PORT, "-> &0", rcon.authenticated && rcon.online);
 
   rcon.socket.on("error", async (e) => {
-    logger.log(PREFIX(PORT), `Error: `, e);
+    logger.error(PREFIX(PORT), e);
     logger.log(PREFIX(PORT), `Is reconnecting.`);
     await wait(1500);
     rconTry(rcon, PORT);
@@ -41,7 +41,7 @@ async function rcon(PORT) {
   logger.log(PREFIX(PORT), "Connecting.");
 
   if(disabled[PORT.toString()] ?? disabled.default) 
-    logger.log(PREFIX(PORT), "&0;31Is disabled!!");
+    logger.warn(PREFIX(PORT), "&0;31Is disabled!!");
   else 
     await rconTry(rcon, PORT);
       

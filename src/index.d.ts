@@ -15,12 +15,7 @@ declare global {
 			logger?: {
 				setted: boolean;
 				separator: string;
-				loggers: {
-					console: winston.Logger;
-					log: winston.Logger;
-					debug: winston.Logger;
-					error: winston.Logger;
-				};
+				loggers: winston.Logger;
 			};
 		}
 	}

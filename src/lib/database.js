@@ -1,6 +1,9 @@
 const mysql = require("mysql");
 const { promisify } = require("util");
 const CONFIG = require("../../config");
+const logger = require("./logger");
+
+const PREFIX = "&43&1;30 DB &0&38;5;8";
 
 /** @typedef {{uuid: string, name: string, price: number, description: string, exec_cmd: string, exec_params: string}} product */
 /** @type {{products: product[]}} */
@@ -27,18 +30,18 @@ module.exports = async function(app) {
         pool.getConnection((err, conn) => {
             if (err) {
                 if (err.code === "PROTOCOL_CONNECTION_LOST") {
-                    console.error("DATABASE ERROR: Connection was closed");
+                    logger.error(PREFIX, "&31Connection was closed");
                 } else
                 if (err.code === "ER_CON_COUNT_ERROR") {
-                    console.error("DATABASE ERROR: Has many connections");
+                    logger.error(PREFIX, "&31Has many connections");
                 } else
                 if (err.code === "ECONNREFUSED") {
-                    console.error("DATABASE ERROR: Connection was refused");
+                    logger.error(PREFIX, "&31Connection was refused");
                 }
             }
 
             if (conn) conn.release();
-            if (isFT && !(isFT = false)) console.log("DB is connected");
+            if (isFT && !(isFT = false)) logger.log(PREFIX, "is connected");
         });
 
         pool.query = promisify(pool.query);

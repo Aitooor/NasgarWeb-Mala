@@ -52,12 +52,13 @@ app.use(
 );
 app.use(express.static(join(__dirname, "public")));
 
-logger.log("+—————————————————+");
-logger.log("| Starting Server |");
-logger.log("+—————————————————+");
+logger.log(" &42&38;5;16 ╔─═─═─═─═─═─═─═─═─╗ ");
+logger.log(" &42&38;5;16 ║ &1Starting Server&0;42&38;5;16 ║ ");
+logger.log(" &42&38;5;16 ╚─═─═─═─═─═─═─═─═─╝ ");
 logger.log("");
 
 paypal.configure();
+
 
 // Init All
 (async () => {
