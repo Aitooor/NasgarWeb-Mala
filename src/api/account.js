@@ -1,9 +1,10 @@
 const { encrypt } = require("../lib/pass");
 const { Level } = require("../@types/userLevel");
 const { ErrorCode, errorDesc } = require("../@types/errorCodes");
+const logger = require("../lib/logger");
 const uuid = require("uuid");
 
-const PREFIX = "\x1b[0;1;31m[ACCOUNTS] \x1b[0;37m";
+const PREFIX = "&1;41;37 ACCOUNTS &0&38;5;8";
 
 /** @typedef {{ status: number, code: ErrorCode, msg: string, [k: string]: any }} AccountError */
 
@@ -48,7 +49,7 @@ async function login(db, username, password) {
         }
       }
 
-      console.log(`${PREFIX} User logged: ${Level[query.rank]}:${username}`);
+      logger.log(`${PREFIX} User logged: ${Level[query.rank]}:${username}`);
 
       return {
         done: true,
@@ -113,7 +114,7 @@ async function signup(db, username, email, password) {
     const _uuid = uuid.v4();
     await pool.query("INSERT INTO web.accounts SET ?", { uuid: _uuid, name: username, email: email, password: encrypt(password), rank: Level.User });
 
-    console.log(`[ACCOUNTS] New user register: ${_uuid}:${username} `);
+    logger.log(`[ACCOUNTS] New user register: ${_uuid}:${username} `);
     pool.end();
 
     return {
