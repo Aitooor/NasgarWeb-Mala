@@ -5,12 +5,12 @@ import CONFIG from "../../config";
 /* If logger is not setted in process then 
  * create it and set in process. */
 if (typeof process.logger === "undefined") {
-  // Remove last logs
+  // Remove last logs [Disable]
   const PATH = `${process.cwd()}/${CONFIG.LOGGER.PATHS.DIR}/`;
-  Fs.rmSync(PATH, {
+  /*Fs.rmSync(PATH, {
     force: true,
     recursive: true,
-  });
+  });*/
 
   // Regular expression to colors in string, 
   // &0;255 \x1b[0;255m
@@ -88,6 +88,9 @@ if (typeof process.logger === "undefined") {
     );
   });
 
+  const now = new Date();
+  const nowF = `${now.getUTCFullYear()}-${now.getUTCMonth()}-${now.getUTCDate()}`;
+
   const loggerConsole = winston.createLogger({
     exitOnError: false,
     level: "silly",
@@ -101,7 +104,7 @@ if (typeof process.logger === "undefined") {
     format: formatLog,
     transports: [
       new winston.transports.File({
-        filename: `${PATH}${CONFIG.LOGGER.PATHS.LOG}`,
+        filename: `${PATH}${nowF}-${CONFIG.LOGGER.PATHS.LOG}`,
       }),
     ],
   });
@@ -111,7 +114,7 @@ if (typeof process.logger === "undefined") {
     format: formatLog,
     transports: [
       new winston.transports.File({
-        filename: `${PATH}${CONFIG.LOGGER.PATHS.ERROR}`,
+        filename: `${PATH}${nowF}-${CONFIG.LOGGER.PATHS.ERROR}`,
         level: "error",
       }),
     ],
