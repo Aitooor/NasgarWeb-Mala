@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.log = void 0;
+exports.error = exports.warn = exports.log = void 0;
 const winston_1 = __importDefault(require("winston"));
 const config_1 = __importDefault(require("../../config"));
 /* If logger is not setted in process then
@@ -15,7 +15,7 @@ if (typeof process.logger === "undefined") {
       force: true,
       recursive: true,
     });*/
-    // Regular expression to colors in string, 
+    // Regular expression to colors in string,
     // &0;255 \x1b[0;255m
     const RegColor = /(&|\x1b\[)([0-2]?[0-9]{1,2})(;([0-2]?[0-9]{1,2}))*m?/g;
     /**
@@ -57,17 +57,17 @@ if (typeof process.logger === "undefined") {
                 .replace(/\.[0-9]+Z$/, "")}] `
             : "") +
             (str === "error"
-                ? "&1;41&38;5;16"
+                ? "&1;41&37"
                 : str === "warn"
                     ? "&1;43&38;5;16"
-                    : "&1;42") +
-            ` ${str} &0`);
+                    : "&1;42&38;5;16") +
+            ` ${str} `);
     }
     /**
      * Formatter to console (With colours)
      */
     const formatConsole = winston_1.default.format.printf((info) => {
-        return (`${formatColor(formatInfo(info.level))} ` + formatColor(info.message));
+        return (`${formatColor(formatInfo(info.level) + "&38;5;16&48;5;16|&0")}` + formatColor(info.message));
     });
     /**
      * Format to files (without colours)
@@ -78,29 +78,22 @@ if (typeof process.logger === "undefined") {
     });
     const now = new Date();
     const nowF = `${now.getUTCFullYear()}-${now.getUTCMonth()}-${now.getUTCDate()}`;
-    const loggerConsole = winston_1.default.createLogger({
+    const logger = winston_1.default.createLogger({
         exitOnError: false,
-        level: "silly",
-        format: formatConsole,
-        transports: [new winston_1.default.transports.Console()],
-    });
-    const loggerLog = winston_1.default.createLogger({
-        exitOnError: false,
-        level: "silly",
-        format: formatLog,
+        handleExceptions: true,
         transports: [
+            new winston_1.default.transports.Console({
+                format: formatConsole,
+                level: "silly",
+            }),
             new winston_1.default.transports.File({
                 filename: `${PATH}${nowF}-${config_1.default.LOGGER.PATHS.LOG}`,
+                format: formatLog,
+                level: "silly",
             }),
-        ],
-    });
-    const loggerError = winston_1.default.createLogger({
-        exitOnError: false,
-        level: "error",
-        format: formatLog,
-        transports: [
             new winston_1.default.transports.File({
                 filename: `${PATH}${nowF}-${config_1.default.LOGGER.PATHS.ERROR}`,
+                format: formatLog,
                 level: "error",
             }),
         ],
@@ -109,19 +102,14 @@ if (typeof process.logger === "undefined") {
     process.logger = {
         setted: true,
         separator: " ",
-        loggers: {
-            console: loggerConsole,
-            log: loggerLog,
-            debug: loggerError,
-            error: loggerError,
-        },
+        loggers: logger,
     };
     /* Just a initial message  */
     _log("error", [
         "",
-        "++++++++++++++++++++++++++++++++++++",
-        "+         Logs initialized         +",
-        "++++++++++++++++++++++++++++++++++++",
+        "         ╔─═─═─═─═─═─═─═─═──═─═─═─═─═─═─═─═─╗",
+        "         ║         Logs initialized         ║",
+        "         ╚─═─═─═─═─═─═─═─═──═─═─═─═─═─═─═─═─╝",
         "",
     ].join("\n"));
 }
@@ -182,19 +170,31 @@ function formatLog(args) {
  * Send msg to all loggers
  */
 function _log(tag, msg) {
-    const { console, log, error } = process.logger.loggers;
-    console.log(tag, msg);
-    log.log(tag, msg);
-    error.log(tag, msg);
+    process.logger.loggers.log(tag, msg);
 }
 /**
  * API
+ * Format General
  */
 function log(...args) {
     const msg = formatLog(args);
     _log("info", msg);
 }
 exports.log = log;
+/**
+ * API
+ * Format General
+ */
+function warn(...args) {
+    const msg = formatLog(args);
+    _log("warn", msg);
+}
+exports.warn = warn;
+function error(...args) {
+    const msg = formatLog(args.map((_) => _ instanceof Error ? _.stack || `${_.name}: ${_.message}` : _));
+    _log("error", msg);
+}
+exports.error = error;
 if (require.main === module) {
     log(function myFunction() { }, () => { }, 0, "Hola", false, {
         name: "Yeah",

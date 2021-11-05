@@ -1,8 +1,9 @@
 import winston from "winston";
 import Fs from "fs";
 import CONFIG from "../../config";
+import { instance } from "../api/paypal";
 
-/* If logger is not setted in process then 
+/* If logger is not setted in process then
  * create it and set in process. */
 if (typeof process.logger === "undefined") {
   // Remove last logs [Disable]
@@ -12,7 +13,7 @@ if (typeof process.logger === "undefined") {
     recursive: true,
   });*/
 
-  // Regular expression to colors in string, 
+  // Regular expression to colors in string,
   // &0;255 \x1b[0;255m
   const RegColor = /(&|\x1b\[)([0-2]?[0-9]{1,2})(;([0-2]?[0-9]{1,2}))*m?/g;
 
@@ -39,7 +40,7 @@ if (typeof process.logger === "undefined") {
   formatColor.reg = RegColor;
 
   /**
-   * Format a complete string searching colours and 
+   * Format a complete string searching colours and
    * deleting it.
    */
   function formatClearColor(str: string): string {
@@ -59,11 +60,11 @@ if (typeof process.logger === "undefined") {
             .replace(/\.[0-9]+Z$/, "")}] `
         : "") +
       (str === "error"
-        ? "&1;41&38;5;16"
+        ? "&1;41&37"
         : str === "warn"
         ? "&1;43&38;5;16"
-        : "&1;42") +
-      ` ${str} &0`
+        : "&1;42&38;5;16") +
+      ` ${str} `
     );
   }
 
@@ -73,7 +74,7 @@ if (typeof process.logger === "undefined") {
   const formatConsole: winston.Logform.Format = winston.format.printf(
     (info) => {
       return (
-        `${formatColor(formatInfo(info.level))} ` + formatColor(info.message)
+        `${formatColor(formatInfo(info.level) + "&38;5;16&48;5;16|&0")}` + formatColor(info.message)
       );
     }
   );
@@ -91,30 +92,22 @@ if (typeof process.logger === "undefined") {
   const now = new Date();
   const nowF = `${now.getUTCFullYear()}-${now.getUTCMonth()}-${now.getUTCDate()}`;
 
-  const loggerConsole = winston.createLogger({
+  const logger = winston.createLogger({
     exitOnError: false,
-    level: "silly",
-    format: formatConsole,
-    transports: [new winston.transports.Console()],
-  });
-
-  const loggerLog = winston.createLogger({
-    exitOnError: false,
-    level: "silly",
-    format: formatLog,
+    handleExceptions: true,
     transports: [
+      new winston.transports.Console({
+        format: formatConsole,
+        level: "silly",
+      }),
       new winston.transports.File({
         filename: `${PATH}${nowF}-${CONFIG.LOGGER.PATHS.LOG}`,
+        format: formatLog,
+        level: "silly",
       }),
-    ],
-  });
-  const loggerError = winston.createLogger({
-    exitOnError: false,
-    level: "error",
-    format: formatLog,
-    transports: [
       new winston.transports.File({
         filename: `${PATH}${nowF}-${CONFIG.LOGGER.PATHS.ERROR}`,
+        format: formatLog,
         level: "error",
       }),
     ],
@@ -124,12 +117,7 @@ if (typeof process.logger === "undefined") {
   process.logger = {
     setted: true,
     separator: " ",
-    loggers: {
-      console: loggerConsole,
-      log: loggerLog,
-      debug: loggerError,
-      error: loggerError,
-    },
+    loggers: logger,
   };
 
   /* Just a initial message  */
@@ -137,9 +125,9 @@ if (typeof process.logger === "undefined") {
     "error",
     [
       "",
-      "++++++++++++++++++++++++++++++++++++",
-      "+         Logs initialized         +",
-      "++++++++++++++++++++++++++++++++++++",
+      "         ╔─═─═─═─═─═─═─═─═──═─═─═─═─═─═─═─═─╗",
+      "         ║         Logs initialized         ║",
+      "         ╚─═─═─═─═─═─═─═─═──═─═─═─═─═─═─═─═─╝",
       "",
     ].join("\n")
   );
@@ -148,7 +136,12 @@ if (typeof process.logger === "undefined") {
 /**
  * Format types to logs
  */
-function toLog(obj: any, tab: number = 0, depth: number = 6, isObj: boolean = false): string {
+function toLog(
+  obj: any,
+  tab: number = 0,
+  depth: number = 6,
+  isObj: boolean = false
+): string {
   switch (typeof obj) {
     case "object":
       break;
@@ -222,18 +215,48 @@ function formatLog(args: any[]): string {
  * Send msg to all loggers
  */
 function _log(tag: string, msg: string) {
-  const { console, log, error } = process.logger.loggers;
-  console.log(tag, msg);
-  log.log(tag, msg);
-  error.log(tag, msg);
+  process.logger.loggers.log(tag, msg);
+}
+
+type LogArgument = string | number | boolean | Function | Symbol | Object;
+
+/**
+ * API
+ * Format General
+ */
+export function log(...args: LogArgument[]): void {
+  const msg: string = formatLog(args);
+  _log("info", msg);
 }
 
 /**
  * API
+ * Format General
  */
-export function log(...args: any[]): void {
+export function warn(...args: LogArgument[]): void {
   const msg: string = formatLog(args);
-  _log("info", msg);
+  _log("warn", msg);
+}
+
+/**
+ * API
+ * Format Error
+ */
+export function error(error: Error): void;
+
+/**
+ * API
+ * Format General
+ */
+export function error(...args: (LogArgument | Error)[]): void;
+
+export function error(...args: Error[] | (LogArgument | Error)[]): void {
+  const msg: string = formatLog(
+    args.map((_) =>
+      _ instanceof Error ? _.stack || `${_.name}: ${_.message}` : _
+    )
+  );
+  _log("error", msg);
 }
 
 if (require.main === module) {
