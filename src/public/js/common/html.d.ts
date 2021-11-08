@@ -1,5 +1,6 @@
 export declare function query<T extends HTMLElement = HTMLElement>(str: string, parent?: Document | HTMLElement): T;
 export declare function queryAll<T extends HTMLElement = HTMLElement>(str: string, parent?: Document | HTMLElement): T[];
+export declare function createElement<T extends HTMLElement = HTMLElement>(tag: string): T;
 export interface middlewareEvents_return {
     removeAll(): void;
     add(...args: any[]): void;

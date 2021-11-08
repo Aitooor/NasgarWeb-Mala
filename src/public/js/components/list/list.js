@@ -7,15 +7,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { EventEmitter } from "../../common/events.js";
+import { EventEmitter, } from "../../common/events.js";
 import { queryAll } from "../../common/html.js";
 const DefaultElementList_Options = {
-    idTarget: "uuid"
+    idTarget: "uuid",
 };
 var Events;
 (function (Events) {
     Events["Refresh"] = "refresh";
     Events["Render"] = "render";
+    Events["TemplateClick"] = "template_click";
 })(Events || (Events = {}));
 export class ElementList {
     constructor(parent, url, options = DefaultElementList_Options) {
@@ -25,7 +26,11 @@ export class ElementList {
         this.cache = {};
         this.template = null;
         this.isLoading = false;
-        this._events = new EventEmitter([Events.Refresh, Events.Render]);
+        this._events = new EventEmitter([
+            Events.Refresh,
+            Events.Render,
+            Events.TemplateClick,
+        ]);
         this.Events = Events;
         this._options = Object.assign({}, DefaultElementList_Options, options);
         Object.values(Events);
@@ -41,9 +46,15 @@ export class ElementList {
         }
         return this;
     }
-    getTemplate() { return this.template; }
-    getData() { return this.data.slice(0); }
-    getCache() { return Object.assign({}, this.cache); }
+    getTemplate() {
+        return this.template;
+    }
+    getData() {
+        return this.data.slice(0);
+    }
+    getCache() {
+        return Object.assign({}, this.cache);
+    }
     on(name, listener) {
         this._events.on(name, listener);
         return this;
@@ -52,12 +63,17 @@ export class ElementList {
         if (this.template === null) {
             throw new ReferenceError("`template` is not defined.");
         }
-        const elm = this.template.cloneNode();
+        const elm = this.template.cloneNode(true);
         const allElementsWithSlot = queryAll("*[slot]", elm);
         for (const elmWithSlot of allElementsWithSlot) {
             const slot = elmWithSlot.getAttribute("slot");
-            elm.innerHTML = getFromProperty(data, slot);
+            elmWithSlot.innerHTML = getFromProperty(data, slot);
         }
+        const _events = this._events;
+        elm.addEventListener("click", () => {
+            console.log("GG", Events.TemplateClick, [this, elm, data]);
+            _events.emit(Events.TemplateClick, [this, elm, data]);
+        });
         return elm;
     }
     _render() {
@@ -75,7 +91,7 @@ export class ElementList {
             if (this.isLoading)
                 return this.data;
             this.isLoading = true;
-            this._events.emit(Events.Refresh, [this, true]);
+            this._events.emit(Events.Refresh, [this, true, null]);
             this.parent.classList.remove("no-data");
             this.parent.classList.add("loading");
             this.parent.innerHTML = "Loading...";
@@ -90,7 +106,7 @@ export class ElementList {
                 this.parent.append(...elements);
             }
             this.parent.classList.remove("loading");
-            this._events.emit(Events.Refresh, [this, false]);
+            this._events.emit(Events.Refresh, [this, false, null]);
             this.isLoading = false;
             return this.data;
         });
@@ -100,9 +116,9 @@ export class ElementList {
             const response = yield fetch(this.url, {
                 method: "GET",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
                 },
-                cache: "no-cache"
+                cache: "no-cache",
             });
             if (!response.ok) {
                 alert(`Error fetching data to '${this.url}'.`);

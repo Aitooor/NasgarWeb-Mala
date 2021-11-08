@@ -4,6 +4,9 @@ export function query(str, parent = document) {
 export function queryAll(str, parent = document) {
     return Array.from(parent.querySelectorAll(str));
 }
+export function createElement(tag) {
+    return document.createElement(tag);
+}
 export function middlewareEvents(element) {
     const original_a = element.addEventListener;
     const original_r = element.removeEventListener;

@@ -27,7 +27,7 @@
 		<div class="placeholder hidden" data-name="uuid">UUID: -</div>
 
 		<div class="field" data-name="image">
-			<span>Image selector (<span id="total-images">N</span> images):</span>
+			<span>Image selector:</span>
 			<button class="input primary hover-anim-ball"><span>Select images</span></button>
 		</div>
 
@@ -39,14 +39,17 @@
 		<div class="field required" data-name="display">
 			<span class="title">HTML Display</span>
 			<input class="input" placeholder="Display in html">
-			<div class="preview">
-				Hola
-			</div>
+			<div class="preview" data-name="preview">{{NAME}}</div>
 		</div>
 
 		<div class="field required" data-name="description">
 			<span class="title" >Description</span>
 			<textarea class="input" placeholder="Description" ></textarea>
+		</div>
+
+		<div class="field" data-name="show">
+			<div class="span title">Show</div>
+			<input type="checkbox" class="input" checked>
 		</div>
 
 		<div class="field required" data-name="rank">
@@ -87,18 +90,21 @@
 	<template id="category" >
 		<div class="category card primary">
 			<div class="top" >
-				<span class="name" >Normal Key x5</span>
+				<span class="name" slot="name"></span>
 			</div>
 			<div class="bottom" >
-				<span class="category" >Keys</span>
-				<span class="display" >1.50</span>
+				<span class="public" slot="public"></span>
+				<span class="total" slot="order.length"></span>
 			</div>
 		</div>
 	</template>
 
 	<template id="list-category" >
 		<div class="item" >
-			<input class="input" placeholder="Value"  >
+			<div class="input-zone blank">
+				<input type="text" placeholder="uuid">
+				<div class="name">Holaa</div>
+			</div>
 			<button class="delete" >
 				<i class="material">delete</i> 
 			</button>

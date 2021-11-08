@@ -1,7 +1,7 @@
 import Modal from "../../../components/modal.js";
 import Select from "../../../components/select.js";
 import ElementList from "../../../components/list/list.js";
-import type { json_html } from "../../../common/html.js";
+import { createElement, json_html } from "../../../common/html.js";
 import {
   monetize,
   wait,
@@ -29,9 +29,15 @@ interface Category {
   name: string;
   display: string;
   description: string;
-  order: string[];
+  public: number;
   image: string;
   min_rank: UserRank;
+  order: string[];
+}
+
+interface ItemData {
+  uuid: string;
+  name: string;
 }
 
 // const filters = {
@@ -41,6 +47,8 @@ interface Category {
 //   category: ".*",
 //   sale: 0
 // }
+
+let cacheProducts: ItemData[];
 
 const header_actions_div: HTMLDivElement = querySelector<HTMLDivElement>(
   ".app .header .actions"
@@ -56,7 +64,16 @@ const category_list = new ElementList<Category, HTMLDivElement>(
   categories_list,
   "/api/shop/categories",
   { idTarget: "uuid" }
-).setTemplate(<HTMLDivElement>category_template.content.firstChild);
+)
+  .setTemplate(<HTMLDivElement>category_template.content.firstElementChild)
+  .on(
+    ElementList.Events.TemplateClick,
+    (_, elm: HTMLDivElement, data: Category) => {
+      console.log("FF");
+      
+      OpenCategoryModal(data);
+    }
+  );
 
 const header_action = {
   refresh: querySelector<HTMLButtonElement>(".refresh", header_actions_div),
@@ -98,7 +115,7 @@ header_action.add.onclick = async () => {
   addAction_isRunning = false;
 };
 
-refreshAction_fn().catch(alert);
+refreshAction_fn();
 
 /**——————————————————**/
 /**       MODAL      **/
@@ -110,7 +127,7 @@ const modalCategory_events = {
 };
 
 const modalCategory_Vars: {
-  ctg_fn?: () => void
+  ctg_fn?: () => void;
 } = {};
 
 const modalCategory_body = querySelector<HTMLDivElement>(
@@ -147,10 +164,9 @@ const modalCategory = new Modal({
 });
 
 const rankSelect: Select = new Select({
-  dom: <HTMLSelectElement> modalCategory.getBody()._.rank._.select.dom,
-  options: Object.keys(UserRank).filter(_ => typeof UserRank[_] === "number")
+  dom: <HTMLSelectElement>modalCategory.getBody()._.rank._.select.dom,
+  options: Object.keys(UserRank).filter((_) => typeof UserRank[_] === "number"),
 });
-
 
 const tmCategoryListModal = <HTMLDivElement>(
   querySelector<HTMLTemplateElement>("template#list-category").content
@@ -164,27 +180,55 @@ const tmCategoryListModal = <HTMLDivElement>(
 // function ThrowBadRequestOnItemModal(msg, title) {
 //   alert("Bad request: " + msg);
 
-//   modalItem.getActions()._.Save.classes.remove("disabled");
-//   modalItem.getActions()._.Cancel.classes.remove("disabled");
+//   modalCategory.getActions()._.Save.classes.remove("disabled");
+//   modalCategory.getActions()._.Cancel.classes.remove("disabled");
 
-//   modalItem.setHeader(title);
+//   modalCategory.setHeader(title);
 // }
 
-function NewOrderOnItemModal(order: string, index: number, order_obj: string[]): HTMLInputElement {
+function NewOrderOnItemModal(
+  order: string,
+  index: number,
+  order_obj: string[]
+): HTMLInputElement {
   const order_list = modalCategory.getBody()._.orders._.list.dom;
   order_obj[index] = order;
 
   const elm = <HTMLDivElement>tmCategoryListModal.cloneNode(true);
-  /**
-   * @ignore
-   * @type {HTMLInputElement}
-  */
-  const inp = querySelector<HTMLInputElement>(".input", elm);
-  inp.setAttribute("list", "products_list")
+
+  const inpZone = querySelector(".input-zone", elm);
+  const name = querySelector(".name", inpZone);
+
+  const inp = querySelector<HTMLInputElement>("input", inpZone);
+  inp.setAttribute("list", "products_list");
 
   inp.value = order;
+  if (inp.value.length > 0) {
+    inpZone.classList.remove("blank");
+    if (inp.value.length !== 36) {
+      name.innerText = "Invalid";
+    } else {
+      name.innerText =
+        cacheProducts.find((_: ItemData) => _.uuid === inp.value)?.name ||
+        "Invalid";
+    }
+  } else {
+    inpZone.classList.add("blank");
+  }
   AddEvent("input", inp, () => {
     order_obj[index] = inp.value;
+    if (inp.value.length > 0) {
+      inpZone.classList.remove("blank");
+      if (inp.value.length !== 36) {
+        name.innerText = "Invalid";
+      } else {
+        name.innerText =
+          cacheProducts.find((_: ItemData) => _.uuid === inp.value)?.name ||
+          "Invalid";
+      }
+    } else {
+      inpZone.classList.add("blank");
+    }
   });
 
   AddEventChild("click", elm, ".delete", () => {
@@ -193,15 +237,15 @@ function NewOrderOnItemModal(order: string, index: number, order_obj: string[]):
   });
 
   AddEventChild("click", elm, ".up", () => {
-    if(index === 0) return;
-    const [ tmp ] = order_obj.splice(index, 1);
+    if (index === 0) return;
+    const [tmp] = order_obj.splice(index, 1);
     order_obj.splice(index - 1, 0, tmp);
     LoadProductsOnCategoryModal(order_obj);
   });
 
   AddEventChild("click", elm, ".down", () => {
-    if(index === order_obj.length - 1) return;
-    const [ tmp ] = order_obj.splice(index, 1);
+    if (index === order_obj.length - 1) return;
+    const [tmp] = order_obj.splice(index, 1);
     order_obj.splice(index + 1, 0, tmp);
     LoadProductsOnCategoryModal(order_obj);
   });
@@ -214,33 +258,34 @@ function NewOrderOnItemModal(order: string, index: number, order_obj: string[]):
 function SetOrderActions(order: string[]) {
   const order_list = modalCategory.getBody()._.orders._.list.dom;
 
-  const addBtn = modalCategory.getBody()._.orders._.header._.actions._.button.dom;
+  const addBtn =
+    modalCategory.getBody()._.orders._.header._.actions._.button.dom;
 
   // Clear orders
   order_list.innerHTML = "";
 
-  if(modalCategory_Vars.ctg_fn)
+  if (modalCategory_Vars.ctg_fn)
     RemEvent("click", addBtn, modalCategory_Vars.ctg_fn);
 
   modalCategory_Vars.ctg_fn = () => {
     NewOrderOnItemModal("", order.length, order).focus();
-  }
+  };
 
-  AddEvent("click", addBtn, modalCategory_Vars.ctg_fn)
+  AddEvent("click", addBtn, modalCategory_Vars.ctg_fn);
 }
 
 function UpdateData(
   property: [object, string],
   elm: json_html<HTMLInputElement>,
   _default: string,
-  pre?: (value: string) => any
+  pre?: (value: string, element: json_html<HTMLInputElement>) => any
 ) {
   elm.dom.value = _default;
   pre = pre || ((_) => _);
-  property[0][property[1]] = _default;
+  property[0][property[1]] = pre(_default, elm);
 
-  elm.events.add("change", () => {
-    property[0][property[1]] = pre(elm.dom.value);
+  elm.events.add("input", () => {
+    property[0][property[1]] = pre(elm.dom.value, elm);
   });
 }
 
@@ -249,7 +294,7 @@ function UpdateDataSelect(
   elm: json_html<HTMLSelectElement>,
   select: Select,
   _default: number | string,
-  pre?: (value: string) => any
+  pre?: (value: string, element: json_html<HTMLSelectElement>) => any
 ) {
   pre = pre || ((_) => _);
 
@@ -257,10 +302,10 @@ function UpdateDataSelect(
     select.select(_default);
   }
 
-  property[0][property[1]] = pre(select.selectedValue);
+  property[0][property[1]] = pre(select.selectedValue, elm);
 
   elm.events.add("change", () => {
-    property[0][property[1]] = pre(select.selectedValue);
+    property[0][property[1]] = pre(select.selectedValue, elm);
   });
 }
 
@@ -268,8 +313,9 @@ function OpenAddModal() {
   const actual_category_data: Category = {
     uuid: "",
     name: "",
-    display: "",
+    display: "{{NAME}}",
     description: "",
+    public: 1,
     image: "",
     min_rank: UserRank.Default,
     order: [],
@@ -294,13 +340,27 @@ function OpenAddModal() {
   UpdateData(
     [actual_category_data, "display"],
     <json_html<HTMLInputElement>>body._.display._.input,
-    ""
+    "{{NAME}}"
   );
+  const updateDisplay = () => {
+    body._.display._.preview.dom.innerHTML = (<HTMLInputElement>(
+      body._.display._.input.dom
+    )).value.replace(/\{\{NAME\}\}/gs, actual_category_data.name);
+  };
+  body._.display._.input.events.add("input", updateDisplay);
+  body._.name._.input.events.add("input", updateDisplay);
 
   UpdateData(
     [actual_category_data, "description"],
     <json_html<HTMLInputElement>>body._.description._.textarea,
     ""
+  );
+
+  UpdateData(
+    [actual_category_data, "public"],
+    <json_html<HTMLInputElement>>body._.show._.input,
+    "",
+    (_, elm) => (elm.dom.checked ? 1 : 0)
   );
 
   UpdateDataSelect(
@@ -309,7 +369,7 @@ function OpenAddModal() {
     rankSelect,
     0,
     (value: string) => UserRank[value]
-  )
+  );
 
   SetOrderActions(actual_order);
 
@@ -318,16 +378,16 @@ function OpenAddModal() {
     modal.setHeader("New category [SAVING]");
 
     try {
-      console.log(actual_category_data);
-      alert("Not implemented")
-      // await AddCategory({
-      //   uuid: "",
-      //   name: actual_category_data.name,
-      //   description: actual_category_data.description,
-      //   price: actual_category_data.price,
-      //   category: actual_category_data.category,
-      //   created: actual_category_data.created
-      // });
+      await AddCategory({
+        uuid: "",
+        name: actual_category_data.name,
+        display: actual_category_data.display,
+        description: actual_category_data.description,
+        image: actual_category_data.image,
+        min_rank: actual_category_data.min_rank,
+        order: actual_category_data.order,
+        public: actual_category_data.public,
+      });
     } catch (err) {
       alert(err);
       console.error(err);
@@ -344,91 +404,114 @@ function OpenAddModal() {
   modalCategory.open();
 }
 
-// function OpenCategoryModal(data) {
-//   /* @type {CategoryData} */
-//   const actual_item_data = JSON.parse(JSON.stringify(data));
-//   const actual_cmds = [];
+function OpenCategoryModal(data: Category) {
+  const actual_category_data: Category = JSON.parse(JSON.stringify(data));
+  const actual_order: string[] = actual_category_data.order;
 
-//   const body = modalCategory.getBody();
+  const body = modalCategory.getBody();
 
-//   // Title of modal
-//   modalItem.setHeader(data.name);
-//   const uuid_s = body._.uuid;
-//   uuid_s.dom.innerHTML = "UUID: " + data.uuid;
-//   uuid_s.classes.remove("hidden")
-//   modalItem.getActions()._.Delete.classes.remove("hidden");
+  // Title of modal
+  modalCategory.setHeader(data.name);
+  const uuid_s = body._.uuid;
+  uuid_s.dom.innerHTML = "UUID: " + data.uuid;
+  uuid_s.classes.remove("hidden");
+  modalCategory.getActions()._.Delete.classes.remove("hidden");
 
-//   // Fields of modal
-//   let image_selector_waiting = false;
+  // Fields of modal
+  let image_selector_waiting = false;
 
-//   body._.image._.button.events.add("click", async () => {
-//     if(image_selector_waiting) return;
-//     image_selector_waiting = true;
-//     actual_item_data.images = await OpenImageModal(actual_item_data.images);
-//     image_selector_waiting = false;
-//   });
+  body._.image._.button.events.add("click", async () => {
+    if (image_selector_waiting) return;
+    image_selector_waiting = true;
+    // actual_item_data.images = await OpenImageModal(actual_item_data.images);
+    image_selector_waiting = false;
+  });
 
-//   // @ts-ignore
-//   UpdateDataSelect([actual_item_data, "category"], body._.category._.select, categorySelect, data.category);
+  UpdateData(
+    [actual_category_data, "name"],
+    <json_html<HTMLInputElement>>body._.name._.input,
+    ""
+  );
 
-//   // @ts-ignore
-//   UpdateData([actual_item_data, "name"], body._.name._.input, data.name);
+  UpdateData(
+    [actual_category_data, "display"],
+    <json_html<HTMLInputElement>>body._.display._.input,
+    "{{NAME}}"
+  );
+  const updateDisplay = () => {
+    body._.display._.preview.dom.innerHTML = (<HTMLInputElement>(
+      body._.display._.input.dom
+    )).value.replace(/\{\{NAME\}\}/gs, actual_category_data.name);
+  };
+  body._.display._.input.events.add("input", updateDisplay);
+  body._.name._.input.events.add("input", updateDisplay);
 
-//   // @ts-ignore
-//   UpdateData([actual_item_data, "price"], body._.price._.input, data.price.toString(), parseFloat);
+  UpdateData(
+    [actual_category_data, "description"],
+    <json_html<HTMLInputElement>>body._.description._.textarea,
+    ""
+  );
 
-//   // @ts-ignore
-//   UpdateData([actual_item_data, "description"], body._.description._.textarea, data.description);
+  UpdateData(
+    [actual_category_data, "public"],
+    <json_html<HTMLInputElement>>body._.show._.input,
+    "",
+    (_, elm) => (elm.dom.checked ? 1 : 0)
+  );
 
-//   SetCommandActions(actual_cmds);
-//   LoadCommandsOnItemModal(data, actual_cmds);
+  UpdateDataSelect(
+    [actual_category_data, "min_rank"],
+    <json_html<HTMLSelectElement>>body._.rank._.select,
+    rankSelect,
+    0,
+    (value: string) => UserRank[value]
+  );
 
-//   /** @param {Modal} modal */
-//   modalItem_events._save = async (modal) => {
-//     modal.disableActions();
+  SetOrderActions(actual_order);
+  LoadProductsOnCategoryModal(actual_order);
 
-//     modal.setHeader(data.name + " [SAVING]");
+  /** @param {Modal} modal */
+  modalCategory_events._save = async (modal) => {
+    modal.disableActions();
 
-//     const [ success, [ exec_cmd, exec_params ] ] = EncodeCommands(actual_cmds, data.name);
+    modal.setHeader(data.name + " [SAVING]");
 
-//     if(!success) return;
+    try {
+      // await UpdateItem({
+      //   uuid: data.uuid,
+      //   name: actual_item_data.name,
+      //   description: actual_item_data.description,
+      //   price: actual_item_data.price,
+      //   exec_cmd: exec_cmd,
+      //   exec_params: exec_params,
+      //   images: actual_item_data.images,
+      //   category: actual_item_data.category,
+      //   created: 0,
+      // });
+    } catch (err) {
+      alert(err);
+      return;
+    }
 
-//     try {
-//       await UpdateItem({
-//         uuid: data.uuid,
-//         name: actual_item_data.name,
-//         description: actual_item_data.description,
-//         price: actual_item_data.price,
-//         exec_cmd: exec_cmd,
-//         exec_params: exec_params,
-//         images: actual_item_data.images,
-//         category: actual_item_data.category,
-//         created: 0
-//       });
-//     } catch(err) {
-//       alert(err);
-//       return;
-//     }
+    await refreshAction_fn();
 
-//     await refreshItems();
+    modal.undisableActions();
+    modal.drainEvents();
+    modal.close();
+  };
 
-//     modal.undisableActions();
-//     modal.drainEvents();
-//     modal.close();
-//   };
+  /** @param {Modal} modal */
+  modalCategory_events._delete = async (modal) => {
+    if (confirm("Are you sure?")) {
+      // if (await RemItem(data.uuid, prompt('Write: "DELETE"'))) {
+      //   modal.close();
+      //   refreshAction_fn();
+      // }
+    }
+  };
 
-//   /** @param {Modal} modal */
-//   modalItem_events._delete = async (modal) => {
-//     if(confirm("Are you sure?")) {
-//       if(await RemItem(data.uuid, prompt("Write: \"DELETE\""))) {
-//         modal.close();
-//         refreshItems();
-//       }
-//     }
-//   }
-
-//   modalItem.open();
-// }
+  modalCategory.open();
+}
 
 // /**
 //  * @param {string} ev
@@ -469,21 +552,22 @@ function RemEvent(ev: string, elm: HTMLElement, fn: (e?: Event) => void) {
 
 /**
  * AddEvent(#ev, #parent.querySelector(#selector), fn);
-*/
-function AddEventChild(ev: string, parent: HTMLElement, selector: string, fn: (e?: Event) => void) {
-  AddEvent(
-    ev, 
-    parent.querySelector(selector), 
-    fn
-  );
+ */
+function AddEventChild(
+  ev: string,
+  parent: HTMLElement,
+  selector: string,
+  fn: (e?: Event) => void
+) {
+  AddEvent(ev, parent.querySelector(selector), fn);
 }
 
 function AddEvent(ev: string, elm: HTMLElement, fn: (e?: Event) => void) {
-  elm.addEventListener(ev, fn)
+  elm.addEventListener(ev, fn);
 }
 
 function LoadProductsOnCategoryModal(actual: string[]) {
-  for(let [product, i] of ArrayIndex<string>(actual)) {
+  for (let [product, i] of ArrayIndex<string>(actual)) {
     NewOrderOnItemModal(product, i, actual);
   }
 }
@@ -495,15 +579,9 @@ function* ArrayIndex<T extends any = any>(arr: T[]): Generator<[T, number]> {
   }
 }
 
-// /**
-//  * @param {ItemData} data
-// */
-// function PrePostItem(data) {
-//   if(data.name.length > 30)
-//     throw new RangeError("Name is very long. Max 30.");
-//   if(data.price < 0)
-//     throw new RangeError("Price is negative. only accept positive");
-// }
+function PrePostItem(data: Category) {
+  if (data.name.length > 20) throw new RangeError("Name is very long. Max 30.");
+}
 
 // /**
 //  * @returns {Promise<imageData[]>}
@@ -542,26 +620,21 @@ function* ArrayIndex<T extends any = any>(arr: T[]): Generator<[T, number]> {
 //   return true;
 // }
 
-// /**
-//  * @param {ItemData} data,
-//  * @returns {Promise<boolean>}
-//  */
-// async function AddItem(data) {
-//   PrePostItem(data);
-//   const res = await fetch("/api/shop/category", {
-//     method: "POST",
-//     credentials: "same-origin",
-//     headers: {
-//       "Content-Type": "application/json"
-//     },
-//     body: JSON.stringify(data)
-//   });
+async function AddCategory(data: Category) {
+  PrePostItem(data);
+  const res = await fetch("/api/shop/category", {
+    method: "POST",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
 
-//   if(!res.ok)
-//     return alert("Error adding item."), false;
+  if (!res.ok) return alert("Error adding item."), false;
 
-//   return true;
-// }
+  return true;
+}
 
 // /**
 //  * @param {string} uuid
@@ -592,3 +665,29 @@ function* ArrayIndex<T extends any = any>(arr: T[]): Generator<[T, number]> {
 
 //   return true;
 // }
+
+/**************************/
+/***    Product List    ***/
+/**************************/
+
+(async () => {
+  const list = querySelector<HTMLDataListElement>("#products_list");
+  const res = await fetch("/api/get/products", {
+    headers: {
+      accept: "application/json",
+    },
+    credentials: "same-origin",
+  });
+
+  if (!res.ok) return;
+  cacheProducts = await res.json();
+
+  list.innerHTML = "";
+
+  for (const product of cacheProducts) {
+    const elm = createElement<HTMLOptionElement>("option");
+    elm.value = product.uuid;
+    elm.text = product.name;
+    list.append(elm);
+  }
+})();

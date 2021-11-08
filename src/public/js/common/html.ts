@@ -7,6 +7,10 @@ export function queryAll<T extends HTMLElement = HTMLElement>(str: string, paren
 	return Array.from<T>(parent.querySelectorAll<T>(str));
 }
 
+export function createElement<T extends HTMLElement = HTMLElement>(tag: string): T {
+	return <T>document.createElement(tag);
+}
+
 export interface middlewareEvents_return {
 	removeAll(): void;
 	add(...args: any[]): void;

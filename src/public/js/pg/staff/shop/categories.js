@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import Modal from "../../../components/modal.js";
 import Select from "../../../components/select.js";
 import ElementList from "../../../components/list/list.js";
+import { createElement } from "../../../common/html.js";
 import { wait, } from "../../../common/shop.js";
 import { query as querySelector } from "../../../common/html.js";
 var UserRank;
@@ -25,10 +26,16 @@ var UserRank;
     UserRank[UserRank["Admin"] = 9] = "Admin";
     UserRank[UserRank["Owner"] = 10] = "Owner";
 })(UserRank || (UserRank = {}));
+let cacheProducts;
 const header_actions_div = querySelector(".app .header .actions");
 const categories_list = querySelector(".app .categories");
 const category_template = querySelector("template#category");
-const category_list = new ElementList(categories_list, "/api/shop/categories", { idTarget: "uuid" }).setTemplate(category_template.content.firstChild);
+const category_list = new ElementList(categories_list, "/api/shop/categories", { idTarget: "uuid" })
+    .setTemplate(category_template.content.firstElementChild)
+    .on(ElementList.Events.TemplateClick, (_, elm, data) => {
+    console.log("FF");
+    OpenCategoryModal(data);
+});
 const header_action = {
     refresh: querySelector(".refresh", header_actions_div),
     filter: querySelector(".filter", header_actions_div),
@@ -64,7 +71,7 @@ header_action.add.onclick = () => __awaiter(void 0, void 0, void 0, function* ()
     header_action.add.classList.remove("anim");
     addAction_isRunning = false;
 });
-refreshAction_fn().catch(alert);
+refreshAction_fn();
 const modalCategory_events = {
     _delete: (_) => { },
     _save: (_) => { },
@@ -101,19 +108,51 @@ const modalCategory = new Modal({
 });
 const rankSelect = new Select({
     dom: modalCategory.getBody()._.rank._.select.dom,
-    options: Object.keys(UserRank).filter(_ => typeof UserRank[_] === "number")
+    options: Object.keys(UserRank).filter((_) => typeof UserRank[_] === "number"),
 });
 const tmCategoryListModal = (querySelector("template#list-category").content
     .firstElementChild);
 function NewOrderOnItemModal(order, index, order_obj) {
+    var _a;
     const order_list = modalCategory.getBody()._.orders._.list.dom;
     order_obj[index] = order;
     const elm = tmCategoryListModal.cloneNode(true);
-    const inp = querySelector(".input", elm);
+    const inpZone = querySelector(".input-zone", elm);
+    const name = querySelector(".name", inpZone);
+    const inp = querySelector("input", inpZone);
     inp.setAttribute("list", "products_list");
     inp.value = order;
+    if (inp.value.length > 0) {
+        inpZone.classList.remove("blank");
+        if (inp.value.length !== 36) {
+            name.innerText = "Invalid";
+        }
+        else {
+            name.innerText =
+                ((_a = cacheProducts.find((_) => _.uuid === inp.value)) === null || _a === void 0 ? void 0 : _a.name) ||
+                    "Invalid";
+        }
+    }
+    else {
+        inpZone.classList.add("blank");
+    }
     AddEvent("input", inp, () => {
+        var _a;
         order_obj[index] = inp.value;
+        if (inp.value.length > 0) {
+            inpZone.classList.remove("blank");
+            if (inp.value.length !== 36) {
+                name.innerText = "Invalid";
+            }
+            else {
+                name.innerText =
+                    ((_a = cacheProducts.find((_) => _.uuid === inp.value)) === null || _a === void 0 ? void 0 : _a.name) ||
+                        "Invalid";
+            }
+        }
+        else {
+            inpZone.classList.add("blank");
+        }
     });
     AddEventChild("click", elm, ".delete", () => {
         order_obj.splice(index, 1);
@@ -150,9 +189,9 @@ function SetOrderActions(order) {
 function UpdateData(property, elm, _default, pre) {
     elm.dom.value = _default;
     pre = pre || ((_) => _);
-    property[0][property[1]] = _default;
-    elm.events.add("change", () => {
-        property[0][property[1]] = pre(elm.dom.value);
+    property[0][property[1]] = pre(_default, elm);
+    elm.events.add("input", () => {
+        property[0][property[1]] = pre(elm.dom.value, elm);
     });
 }
 function UpdateDataSelect(property, elm, select, _default, pre) {
@@ -160,17 +199,18 @@ function UpdateDataSelect(property, elm, select, _default, pre) {
     if (typeof _default !== "undefined") {
         select.select(_default);
     }
-    property[0][property[1]] = pre(select.selectedValue);
+    property[0][property[1]] = pre(select.selectedValue, elm);
     elm.events.add("change", () => {
-        property[0][property[1]] = pre(select.selectedValue);
+        property[0][property[1]] = pre(select.selectedValue, elm);
     });
 }
 function OpenAddModal() {
     const actual_category_data = {
         uuid: "",
         name: "",
-        display: "",
+        display: "{{NAME}}",
         description: "",
+        public: 1,
         image: "",
         min_rank: UserRank.Default,
         order: [],
@@ -181,16 +221,30 @@ function OpenAddModal() {
     body._.uuid.classes.add("hidden");
     modalCategory.getActions()._.Delete.classes.add("hidden");
     UpdateData([actual_category_data, "name"], body._.name._.input, "");
-    UpdateData([actual_category_data, "display"], body._.display._.input, "");
+    UpdateData([actual_category_data, "display"], body._.display._.input, "{{NAME}}");
+    const updateDisplay = () => {
+        body._.display._.preview.dom.innerHTML = (body._.display._.input.dom).value.replace(/\{\{NAME\}\}/gs, actual_category_data.name);
+    };
+    body._.display._.input.events.add("input", updateDisplay);
+    body._.name._.input.events.add("input", updateDisplay);
     UpdateData([actual_category_data, "description"], body._.description._.textarea, "");
+    UpdateData([actual_category_data, "public"], body._.show._.input, "", (_, elm) => (elm.dom.checked ? 1 : 0));
     UpdateDataSelect([actual_category_data, "min_rank"], body._.rank._.select, rankSelect, 0, (value) => UserRank[value]);
     SetOrderActions(actual_order);
     modalCategory_events._save = (modal) => __awaiter(this, void 0, void 0, function* () {
         modal.disableActions();
         modal.setHeader("New category [SAVING]");
         try {
-            console.log(actual_category_data);
-            alert("Not implemented");
+            yield AddCategory({
+                uuid: "",
+                name: actual_category_data.name,
+                display: actual_category_data.display,
+                description: actual_category_data.description,
+                image: actual_category_data.image,
+                min_rank: actual_category_data.min_rank,
+                order: actual_category_data.order,
+                public: actual_category_data.public,
+            });
         }
         catch (err) {
             alert(err);
@@ -201,6 +255,54 @@ function OpenAddModal() {
         modal.undisableActions();
         modal.close();
         modal.drainEvents();
+    });
+    modalCategory.open();
+}
+function OpenCategoryModal(data) {
+    const actual_category_data = JSON.parse(JSON.stringify(data));
+    const actual_order = actual_category_data.order;
+    const body = modalCategory.getBody();
+    modalCategory.setHeader(data.name);
+    const uuid_s = body._.uuid;
+    uuid_s.dom.innerHTML = "UUID: " + data.uuid;
+    uuid_s.classes.remove("hidden");
+    modalCategory.getActions()._.Delete.classes.remove("hidden");
+    let image_selector_waiting = false;
+    body._.image._.button.events.add("click", () => __awaiter(this, void 0, void 0, function* () {
+        if (image_selector_waiting)
+            return;
+        image_selector_waiting = true;
+        image_selector_waiting = false;
+    }));
+    UpdateData([actual_category_data, "name"], body._.name._.input, "");
+    UpdateData([actual_category_data, "display"], body._.display._.input, "{{NAME}}");
+    const updateDisplay = () => {
+        body._.display._.preview.dom.innerHTML = (body._.display._.input.dom).value.replace(/\{\{NAME\}\}/gs, actual_category_data.name);
+    };
+    body._.display._.input.events.add("input", updateDisplay);
+    body._.name._.input.events.add("input", updateDisplay);
+    UpdateData([actual_category_data, "description"], body._.description._.textarea, "");
+    UpdateData([actual_category_data, "public"], body._.show._.input, "", (_, elm) => (elm.dom.checked ? 1 : 0));
+    UpdateDataSelect([actual_category_data, "min_rank"], body._.rank._.select, rankSelect, 0, (value) => UserRank[value]);
+    SetOrderActions(actual_order);
+    LoadProductsOnCategoryModal(actual_order);
+    modalCategory_events._save = (modal) => __awaiter(this, void 0, void 0, function* () {
+        modal.disableActions();
+        modal.setHeader(data.name + " [SAVING]");
+        try {
+        }
+        catch (err) {
+            alert(err);
+            return;
+        }
+        yield refreshAction_fn();
+        modal.undisableActions();
+        modal.drainEvents();
+        modal.close();
+    });
+    modalCategory_events._delete = (modal) => __awaiter(this, void 0, void 0, function* () {
+        if (confirm("Are you sure?")) {
+        }
     });
     modalCategory.open();
 }
@@ -224,4 +326,43 @@ function* ArrayIndex(arr) {
         yield [arr[i], i];
     }
 }
+function PrePostItem(data) {
+    if (data.name.length > 20)
+        throw new RangeError("Name is very long. Max 30.");
+}
+function AddCategory(data) {
+    return __awaiter(this, void 0, void 0, function* () {
+        PrePostItem(data);
+        const res = yield fetch("/api/shop/category", {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+        if (!res.ok)
+            return alert("Error adding item."), false;
+        return true;
+    });
+}
+(() => __awaiter(void 0, void 0, void 0, function* () {
+    const list = querySelector("#products_list");
+    const res = yield fetch("/api/get/products", {
+        headers: {
+            accept: "application/json",
+        },
+        credentials: "same-origin",
+    });
+    if (!res.ok)
+        return;
+    cacheProducts = yield res.json();
+    list.innerHTML = "";
+    for (const product of cacheProducts) {
+        const elm = createElement("option");
+        elm.value = product.uuid;
+        elm.text = product.name;
+        list.append(elm);
+    }
+}))();
 //# sourceMappingURL=categories.js.map

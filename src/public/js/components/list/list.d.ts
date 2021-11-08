@@ -1,4 +1,3 @@
-import { _listener as EventListener } from "../../common/events.js";
 export interface ElementList_Options {
     idTarget?: string;
 }
@@ -7,9 +6,11 @@ export interface ElementList_Cache<T extends any> {
 }
 declare enum Events {
     Refresh = "refresh",
-    Render = "render"
+    Render = "render",
+    TemplateClick = "template_click"
 }
-declare type Events_type = "refresh" | "render";
+declare type Events_type = "refresh" | "render" | "template_click";
+declare type Listener<G, T, K> = ((_this: G) => void) | ((_this: G, r: boolean) => void) | ((_this: G, element: K, data: T) => void);
 export declare class ElementList<T extends any, K extends HTMLElement = HTMLDivElement> {
     private parent;
     private url;
@@ -26,7 +27,7 @@ export declare class ElementList<T extends any, K extends HTMLElement = HTMLDivE
     getTemplate(): K;
     getData(): T[];
     getCache(): ElementList_Cache<T>;
-    on(name: Events_type, listener: EventListener): this;
+    on(name: Events_type, listener: Listener<this, T, K>): this;
     private _renderElement;
     private _render;
     refresh(): Promise<T[]>;
