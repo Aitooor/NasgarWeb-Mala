@@ -19,8 +19,9 @@
       <div class="tab">
         <div class="title"><%= global.lang.menu.shop.title %></div>
         <div class="options">
-          <a href="/shop" class="option"><%= global.lang.menu.shop.ranks %></a>
-          <a href="/shop" class="option"><%= global.lang.menu.shop.keys %></a>
+          <% for(const category of global.categories) { %>
+            <a href="/shop/category/<%= category.uuid %>" class="option"><%= global.lang.menu.shop[category.name] || category.name %></a>
+          <% } %>
         </div>
       </div>
       <a href="/bans" class="tab"><%= global.lang.menu.bans %></a>
@@ -82,8 +83,9 @@
       <div class="tab">
         <div class="title"><%= global.lang.menu.shop.title %></div>
         <div class="options">
-          <a href="/shop" class="option"><%= global.lang.menu.shop.ranks %></a>
-          <a href="/shop" class="option"><%= global.lang.menu.shop.keys %></a>
+          <% for(const category of global.categories) { %>
+            <a href="/shop/category/<%= category.uuid %>" class="option"><%= global.lang.menu.shop[category.name] || category.name %></a>
+          <% } %>
         </div>
       </div>
       <a href="/bans" class="tab"><%= global.lang.menu.bans %></a>
