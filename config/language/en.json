@@ -14,8 +14,8 @@
         "login": "Login",
         "shop": {
             "title": "Shop",
-            "keys": "Keys",
-            "ranks": "Ranks"
+            "Keys": "Keys",
+            "Ranks": "Ranks"
         }
     },
 

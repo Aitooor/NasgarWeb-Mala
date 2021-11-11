@@ -14,8 +14,8 @@
         "login": "Ingresar",
         "shop": {
             "title": "Tienda",
-            "ranks": "Rangos",
-            "keys": "Llaves"
+            "Ranks": "Rangos",
+            "Keys": "Llaves"
         }
     },
 
