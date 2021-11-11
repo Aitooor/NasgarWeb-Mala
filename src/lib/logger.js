@@ -67,7 +67,8 @@ if (typeof process.logger === "undefined") {
      * Formatter to console (With colours)
      */
     const formatConsole = winston_1.default.format.printf((info) => {
-        return (`${formatColor(formatInfo(info.level) + "&38;5;16&48;5;16|&0")}` + formatColor(info.message));
+        return (`${formatColor(formatInfo(info.level) + "&38;5;16&48;5;16|&0")}` +
+            formatColor(info.message));
     });
     /**
      * Format to files (without colours)

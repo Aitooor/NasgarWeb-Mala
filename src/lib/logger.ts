@@ -74,7 +74,8 @@ if (typeof process.logger === "undefined") {
   const formatConsole: winston.Logform.Format = winston.format.printf(
     (info) => {
       return (
-        `${formatColor(formatInfo(info.level) + "&38;5;16&48;5;16|&0")}` + formatColor(info.message)
+        `${formatColor(formatInfo(info.level) + "&38;5;16&48;5;16|&0")}` +
+        formatColor(info.message)
       );
     }
   );
@@ -174,7 +175,7 @@ function toLog(
     return [key, toLog(obj[key], tab + 1, depth - 1, true)];
   });
 
-  const t = (n) => "  ".repeat(n);
+  const t = (n: number) => "  ".repeat(n);
 
   const keyRegString = /^[a-zA-Z][a-zA-Z0-9]+$/;
 
