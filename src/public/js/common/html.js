@@ -61,6 +61,16 @@ export function structureCopy(element) {
         _: {},
         addChild() { }
     };
+    me.setAttr = function (name, value = "true") {
+        me.attrs[name] = value;
+        me.dom.setAttribute(name, value);
+        return me;
+    };
+    me.remAttr = function (name) {
+        delete me.attrs[name];
+        me.dom.removeAttribute(name);
+        return me;
+    };
     me.addChild = function (child) {
         if (child.nodeName === "#text") {
             throw new TypeError("Child is a text");

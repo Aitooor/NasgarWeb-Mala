@@ -25,5 +25,7 @@ export interface json_html<T extends HTMLElement = HTMLElement> {
         [element: string]: json_html<HTMLElement>;
     };
     addChild<T extends HTMLElement = HTMLElement>(child: T): json_html<T>;
+    setAttr(name: string, value?: string): json_html<T>;
+    remAttr(name: string): json_html<T>;
 }
 export declare function structureCopy<T extends HTMLElement>(element: T): json_html<T>;

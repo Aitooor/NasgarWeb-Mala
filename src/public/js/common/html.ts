@@ -90,6 +90,8 @@ export interface json_html<T extends HTMLElement = HTMLElement> {
 	};
 
 	addChild<T extends HTMLElement = HTMLElement>(child: T): json_html<T>;
+	setAttr(name: string, value?: string): json_html<T>;
+	remAttr(name: string): json_html<T>;
 }
 
 export function structureCopy<T extends HTMLElement>(element: T): json_html<T> {
@@ -104,6 +106,18 @@ export function structureCopy<T extends HTMLElement>(element: T): json_html<T> {
 		_: {},
 		// @ts-ignore
 		addChild() {}
+	};
+
+	me.setAttr = function(name: string, value: string = "true") {
+		me.attrs[name] = value;
+		me.dom.setAttribute(name, value);
+		return me;
+	};
+
+	me.remAttr = function(name: string) {
+		delete me.attrs[name];
+		me.dom.removeAttribute(name);
+		return me;
 	};
 
 	me.addChild = function<T extends HTMLElement = HTMLElement>(child: T): json_html<T> {
