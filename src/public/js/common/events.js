@@ -14,7 +14,7 @@ export class EventEmitter {
     }
     on(name, listener) {
         if (!this._eventNames.includes(name))
-            return;
+            throw new TypeError("That event doesn't exists. " + name);
         const ev = this._events[name];
         if (typeof ev === "undefined") {
             this._events[name] = [];

@@ -29,7 +29,8 @@ export class EventEmitter<T extends any[] = Array<any>> {
 	}
 
 	on(name: string, listener: _listener<T>) {
-		if(!this._eventNames.includes(name)) return;
+		if(!this._eventNames.includes(name)) 
+			throw new TypeError("That event doesn't exists. " + name)
 
 		const ev = this._events[name];
 
