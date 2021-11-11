@@ -452,14 +452,14 @@ function OpenCategoryModal(data: Category) {
     actual_category_data.description
   );
 
-  if(actual_category_data.public === 0) body._.show._.input.remAttr("checked");
-  else body._.show._.input.setAttr("checked");
+  if(actual_category_data.public === 0) (<HTMLInputElement>body._.show._.input.dom).checked = false;
+  else body._.show._.input.setAttr("checked", "true");
 
   UpdateData(
     [actual_category_data, "public"],
     <json_html<HTMLInputElement>>body._.show._.input,
     "",
-    (_, elm) => (elm.attrs.checked ? 1 : 0)
+    (_, elm) => (elm.dom.checked ? 1 : 0)
   );
 
   UpdateDataSelect(
