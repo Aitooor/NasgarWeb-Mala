@@ -138,4 +138,31 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
 			res.sendStatus(500);
 		}
 	});
+
+	router.put("/shop/category", async (req, res) => {
+		try {
+			if(await shop.updateCategory(db, req.body, req.body.uuid))
+				res.sendStatus(200);
+			else
+				res.sendStatus(400);
+		} catch {
+			res.sendStatus(500);
+		}
+	})
+
+	router.delete("/shop/category", async (req, res) => {
+		if(req.body.confirmation !== "DELETE") {
+			res.status(400).send("Invalid confirmation.")
+			return;
+		}
+		
+		try {
+			if(await shop.delCategory(db, req.body.uuid))
+				res.sendStatus(200);
+			else
+				res.sendStatus(400);
+		} catch {
+			res.sendStatus(500);
+		}
+	})
 })

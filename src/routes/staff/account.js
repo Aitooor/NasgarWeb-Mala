@@ -8,8 +8,8 @@ const adminMidd = userLevelMidd(Level.Admin, {
 });
 
 module.exports = require("../../lib/Routes/exports")("/staff", (router, waRedirect, db, rcons) => {		
-	router.get("/shop/panel", adminMidd, (_req, res) => {
-		res.render("pags/staff/shopPanel");
+	router.get("/shop/products", adminMidd, (_req, res) => {
+		res.render("pags/staff/shop/products");
 	});
 	
 	router.get("/staff-timings", adminMidd, (_req, res) => {

@@ -42,13 +42,13 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
       title: "Shop Menu",
       data: [
         {
-          url: "/staff/shop/panel",
+          url: "/staff/shop/products",
           title: "Products",
           icon: "inventory_2/v9"
         },
         {
           url: "/staff/shop/categories",
-          title: "Catergories",
+          title: "Categories",
           icon: "reorder/v15"
         }
       ],
@@ -197,6 +197,24 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
       others: []
     });
 	});
+
+
+  router.get("/shop/category/:uuid", async (req, res, next) => {
+    const uuid = req.params.uuid;
+    if(uuid.length !== 36) return next();
+    const data = await shop.getCategory(db, uuid);
+    if(data === null) return next();
+    const products = await data.order.reduce(async (promise, uuid) => {
+      return [
+        ...(await promise),
+        await shop.getProduct(db, uuid) ?? undefined
+      ].filter(v => v)
+    }, Promise.resolve([]));
+
+    console.log(products)
+
+    res.render("pags/shop/index", { category: data, products })
+  })
 
   router.get("/shop/cart", (req, res) => {
     res.render("pags/shop/cart");
