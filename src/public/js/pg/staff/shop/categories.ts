@@ -66,14 +66,12 @@ const category_list = new ElementList<Category, HTMLDivElement>(
   { idTarget: "uuid" }
 )
   .setTemplate(<HTMLDivElement>category_template.content.firstElementChild)
-  .on(
-    ElementList.Events.TemplateClick,
+  .setOnClick(
     (_, elm: HTMLDivElement, data: Category) => {
-      console.log("FF");
-      
       OpenCategoryModal(data);
     }
   );
+
 
 const header_action = {
   refresh: querySelector<HTMLButtonElement>(".refresh", header_actions_div),
@@ -349,6 +347,7 @@ function OpenAddModal() {
   };
   body._.display._.input.events.add("input", updateDisplay);
   body._.name._.input.events.add("input", updateDisplay);
+  updateDisplay();
 
   UpdateData(
     [actual_category_data, "description"],
@@ -430,13 +429,13 @@ function OpenCategoryModal(data: Category) {
   UpdateData(
     [actual_category_data, "name"],
     <json_html<HTMLInputElement>>body._.name._.input,
-    ""
+    actual_category_data.name
   );
 
   UpdateData(
     [actual_category_data, "display"],
     <json_html<HTMLInputElement>>body._.display._.input,
-    "{{NAME}}"
+    actual_category_data.display
   );
   const updateDisplay = () => {
     body._.display._.preview.dom.innerHTML = (<HTMLInputElement>(
@@ -445,25 +444,29 @@ function OpenCategoryModal(data: Category) {
   };
   body._.display._.input.events.add("input", updateDisplay);
   body._.name._.input.events.add("input", updateDisplay);
+  updateDisplay();
 
   UpdateData(
     [actual_category_data, "description"],
     <json_html<HTMLInputElement>>body._.description._.textarea,
-    ""
+    actual_category_data.description
   );
+
+  if(actual_category_data.public === 0) body._.show._.input.remAttr("checked");
+  else body._.show._.input.setAttr("checked");
 
   UpdateData(
     [actual_category_data, "public"],
     <json_html<HTMLInputElement>>body._.show._.input,
     "",
-    (_, elm) => (elm.dom.checked ? 1 : 0)
+    (_, elm) => (elm.attrs.checked ? 1 : 0)
   );
 
   UpdateDataSelect(
     [actual_category_data, "min_rank"],
     <json_html<HTMLSelectElement>>body._.rank._.select,
     rankSelect,
-    0,
+    actual_category_data.min_rank - 1,
     (value: string) => UserRank[value]
   );
 
@@ -477,17 +480,16 @@ function OpenCategoryModal(data: Category) {
     modal.setHeader(data.name + " [SAVING]");
 
     try {
-      // await UpdateItem({
-      //   uuid: data.uuid,
-      //   name: actual_item_data.name,
-      //   description: actual_item_data.description,
-      //   price: actual_item_data.price,
-      //   exec_cmd: exec_cmd,
-      //   exec_params: exec_params,
-      //   images: actual_item_data.images,
-      //   category: actual_item_data.category,
-      //   created: 0,
-      // });
+      await UpdateItem({
+        uuid: actual_category_data.uuid,
+        name: actual_category_data.name,
+        display: actual_category_data.display,
+        description: actual_category_data.description,
+        image: actual_category_data.image,
+        min_rank: actual_category_data.min_rank,
+        order: actual_category_data.order,
+        public: actual_category_data.public,
+      });
     } catch (err) {
       alert(err);
       return;
@@ -503,10 +505,10 @@ function OpenCategoryModal(data: Category) {
   /** @param {Modal} modal */
   modalCategory_events._delete = async (modal) => {
     if (confirm("Are you sure?")) {
-      // if (await RemItem(data.uuid, prompt('Write: "DELETE"'))) {
-      //   modal.close();
-      //   refreshAction_fn();
-      // }
+      if (await RemItem(data.uuid, prompt('Write: "DELETE"'))) {
+        modal.close();
+        refreshAction_fn();
+      }
     }
   };
 
@@ -600,25 +602,21 @@ function PrePostItem(data: Category) {
 //   return await res.json();
 // }
 
-// /**
-//  * @param {ItemData} data
-//  * @returns {Promise<boolean>}
-//  */
-// async function UpdateItem(data) {
-//   PrePostItem(data);
-//   const res = await fetch("/api/update/product", {
-//     method: "POST",
-//     credentials: "same-origin",
-//     headers: {
-//       "Content-Type": "application/json"
-//     },
-//     body: JSON.stringify(data)
-//   });
+async function UpdateItem(data: Category): Promise<Boolean> {
+  PrePostItem(data);
+  const res = await fetch("/api/shop/category", {
+    method: "PUT",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  });
 
-//   if(res.status === 500)
-//     return (alert("Error updating product: " + (await res.json())?.error), true), false;
-//   return true;
-// }
+  if(res.status === 500)
+    return (alert("Error updating product: " + (await res.json())?.error), true), false;
+  return true;
+}
 
 async function AddCategory(data: Category) {
   PrePostItem(data);
@@ -636,35 +634,31 @@ async function AddCategory(data: Category) {
   return true;
 }
 
-// /**
-//  * @param {string} uuid
-//  * @param {string} confirmation
-// */
-// async function RemItem(uuid, confirmation) {
-//   const res = await fetch("/api/delete/product",{
-//     method: "POST",
-//     credentials: "same-origin",
-//     headers: {
-//       "Content-Type": "application/json"
-//     },
-//     body: JSON.stringify({
-//       uuid,
-//       confirmation
-//     })
-//   });
+async function RemItem(uuid: string, confirmation: string) {
+  const res = await fetch("/api/shop/category",{
+    method: "DELETE",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      uuid,
+      confirmation
+    })
+  });
 
-//   if(res.status === 400) {
-//     alert("Invalid confirmation.");
-//     return false;
-//   }
+  if(res.status === 400) {
+    alert("Invalid confirmation.");
+    return false;
+  }
 
-//   if(!res.ok) {
-//     alert("Error deleting item.");
-//     return false;
-//   }
+  if(!res.ok) {
+    alert("Error deleting item.");
+    return false;
+  }
 
-//   return true;
-// }
+  return true;
+}
 
 /**************************/
 /***    Product List    ***/

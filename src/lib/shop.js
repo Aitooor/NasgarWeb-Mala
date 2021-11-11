@@ -261,6 +261,69 @@ async function addCategory(db, data) {
   }
 }
 
+/**
+ * @param {()=>import('mysql').Pool} db
+ * @param {Category} data
+ * @param {string} uuid
+ * @returns {Promise<boolean>}
+ */
+async function updateCategory(db, data, uuid) {
+  const pool = db();
+  try {
+    await pool.query(`UPDATE web.categories SET ?  WHERE uuid = ?`, [
+      stringifyCategory(data),
+      uuid,
+    ]);
+    pool.end();
+
+    return true;
+  } catch (e) {
+    pool.end();
+    console.error(e);
+
+    return false;
+  }
+}
+
+/**
+ * @param {()=>import('mysql').Pool} db
+ * @param {string} uuid
+ * @returns {Promise<boolean>}
+ */
+async function delCategory(db, uuid) {
+  const pool = db();
+  try {
+    await pool.query(`DELETE FROM web.categories WHERE uuid = ?`, [uuid]);
+    pool.end();
+
+    return true;
+  } catch (e) {
+    pool.end();
+    console.error(e);
+
+    return false;
+  }
+}
+
+/**
+ * @param {()=>import('mysql').Pool} db
+ * @returns {Promise<Category>}
+ */
+ async function getCategoryVisible(db) {
+  const pool = db();
+  try {
+    const res = await pool.query(`SELECT * FROM web.categories WHERE public = 1`);
+    pool.end();
+
+    return res.map(parseCategory);
+  } catch (e) {
+    pool.end();
+    console.error(e);
+
+    return null;
+  }
+}
+
 module.exports = {
   getAllProducts,
   getAllProductsFrom,
@@ -271,6 +334,9 @@ module.exports = {
   delProduct,
 
   getAllCategories,
+  getCategoryVisible,
   getCategory,
   addCategory,
+  updateCategory,
+  delCategory,
 };

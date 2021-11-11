@@ -32,8 +32,7 @@ const categories_list = querySelector(".app .categories");
 const category_template = querySelector("template#category");
 const category_list = new ElementList(categories_list, "/api/shop/categories", { idTarget: "uuid" })
     .setTemplate(category_template.content.firstElementChild)
-    .on(ElementList.Events.TemplateClick, (_, elm, data) => {
-    console.log("FF");
+    .setOnClick((_, elm, data) => {
     OpenCategoryModal(data);
 });
 const header_action = {
@@ -227,6 +226,7 @@ function OpenAddModal() {
     };
     body._.display._.input.events.add("input", updateDisplay);
     body._.name._.input.events.add("input", updateDisplay);
+    updateDisplay();
     UpdateData([actual_category_data, "description"], body._.description._.textarea, "");
     UpdateData([actual_category_data, "public"], body._.show._.input, "", (_, elm) => (elm.dom.checked ? 1 : 0));
     UpdateDataSelect([actual_category_data, "min_rank"], body._.rank._.select, rankSelect, 0, (value) => UserRank[value]);
@@ -274,22 +274,37 @@ function OpenCategoryModal(data) {
         image_selector_waiting = true;
         image_selector_waiting = false;
     }));
-    UpdateData([actual_category_data, "name"], body._.name._.input, "");
-    UpdateData([actual_category_data, "display"], body._.display._.input, "{{NAME}}");
+    UpdateData([actual_category_data, "name"], body._.name._.input, actual_category_data.name);
+    UpdateData([actual_category_data, "display"], body._.display._.input, actual_category_data.display);
     const updateDisplay = () => {
         body._.display._.preview.dom.innerHTML = (body._.display._.input.dom).value.replace(/\{\{NAME\}\}/gs, actual_category_data.name);
     };
     body._.display._.input.events.add("input", updateDisplay);
     body._.name._.input.events.add("input", updateDisplay);
-    UpdateData([actual_category_data, "description"], body._.description._.textarea, "");
-    UpdateData([actual_category_data, "public"], body._.show._.input, "", (_, elm) => (elm.dom.checked ? 1 : 0));
-    UpdateDataSelect([actual_category_data, "min_rank"], body._.rank._.select, rankSelect, 0, (value) => UserRank[value]);
+    updateDisplay();
+    UpdateData([actual_category_data, "description"], body._.description._.textarea, actual_category_data.description);
+    if (actual_category_data.public === 0)
+        body._.show._.input.remAttr("checked");
+    else
+        body._.show._.input.setAttr("checked");
+    UpdateData([actual_category_data, "public"], body._.show._.input, "", (_, elm) => (elm.attrs.checked ? 1 : 0));
+    UpdateDataSelect([actual_category_data, "min_rank"], body._.rank._.select, rankSelect, actual_category_data.min_rank - 1, (value) => UserRank[value]);
     SetOrderActions(actual_order);
     LoadProductsOnCategoryModal(actual_order);
     modalCategory_events._save = (modal) => __awaiter(this, void 0, void 0, function* () {
         modal.disableActions();
         modal.setHeader(data.name + " [SAVING]");
         try {
+            yield UpdateItem({
+                uuid: actual_category_data.uuid,
+                name: actual_category_data.name,
+                display: actual_category_data.display,
+                description: actual_category_data.description,
+                image: actual_category_data.image,
+                min_rank: actual_category_data.min_rank,
+                order: actual_category_data.order,
+                public: actual_category_data.public,
+            });
         }
         catch (err) {
             alert(err);
@@ -302,6 +317,10 @@ function OpenCategoryModal(data) {
     });
     modalCategory_events._delete = (modal) => __awaiter(this, void 0, void 0, function* () {
         if (confirm("Are you sure?")) {
+            if (yield RemItem(data.uuid, prompt('Write: "DELETE"'))) {
+                modal.close();
+                refreshAction_fn();
+            }
         }
     });
     modalCategory.open();
@@ -330,6 +349,23 @@ function PrePostItem(data) {
     if (data.name.length > 20)
         throw new RangeError("Name is very long. Max 30.");
 }
+function UpdateItem(data) {
+    var _a;
+    return __awaiter(this, void 0, void 0, function* () {
+        PrePostItem(data);
+        const res = yield fetch("/api/shop/category", {
+            method: "PUT",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+        if (res.status === 500)
+            return (alert("Error updating product: " + ((_a = (yield res.json())) === null || _a === void 0 ? void 0 : _a.error)), true), false;
+        return true;
+    });
+}
 function AddCategory(data) {
     return __awaiter(this, void 0, void 0, function* () {
         PrePostItem(data);
@@ -343,6 +379,30 @@ function AddCategory(data) {
         });
         if (!res.ok)
             return alert("Error adding item."), false;
+        return true;
+    });
+}
+function RemItem(uuid, confirmation) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const res = yield fetch("/api/shop/category", {
+            method: "DELETE",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                uuid,
+                confirmation
+            })
+        });
+        if (res.status === 400) {
+            alert("Invalid confirmation.");
+            return false;
+        }
+        if (!res.ok) {
+            alert("Error deleting item.");
+            return false;
+        }
         return true;
     });
 }

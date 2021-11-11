@@ -1,10 +1,10 @@
 const express = require("express");
 const jwt = require("./jwt");
 const Account = require("../api/account");
-const UserLevel = require("../@types/userLevel")
+const UserLevel = require("../@types/userLevel");
+const shop = require("./shop");
 
-
-module.exports = function(db) {
+module.exports = function (db) {
   /**
    * @param {express.Request<RouteParameters<string>, any, any, qs.ParsedQs, Record<string, any>>} req
    * @param {express.Response<any, Record<string, any>, number>} res
@@ -38,8 +38,9 @@ module.exports = function(db) {
       "const": {
         WEB_HREF: process.WEB_HREF,
         PRODUCTION: process.PRODUCTION,
-        LEVEL: UserLevel.Level
-      }
+        LEVEL: UserLevel.Level,
+      },
+      categories: await shop.getCategoryVisible(db),
     };
 
     const userId = jwt.get(req)?.uuid;
@@ -49,5 +50,5 @@ module.exports = function(db) {
     next();
   }
 
-  return { middleware }
-}
+  return { middleware };
+};
