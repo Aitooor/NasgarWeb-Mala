@@ -29,6 +29,8 @@ type Listener<G, T, K> =
   | ((_this: G, r: boolean) => void)
   | ((_this: G, element: K, data: T) => void);
 
+type ClickEvent<G, T, K> = ((_this: G, element: K, data: T) => void);
+
 export class ElementList<
   T extends any,
   K extends HTMLElement = HTMLDivElement
@@ -52,6 +54,8 @@ export class ElementList<
 
   static Events: typeof Events = Events;
   public Events: typeof Events = Events;
+
+  private _onclickEvent: ClickEvent<this, T, K> = null;
 
   constructor(
     private parent: HTMLDivElement,
@@ -94,6 +98,11 @@ export class ElementList<
     return this;
   }
 
+  setOnClick(listener: ClickEvent<this, T, K>): this {
+    this._onclickEvent = listener;
+    return this;
+  }
+
   private _renderElement(data: T): K {
     if (this.template === null) {
       throw new ReferenceError("`template` is not defined.");
@@ -111,9 +120,7 @@ export class ElementList<
     const _events = this._events;
 
     elm.addEventListener("click", () => {
-      console.log("GG", Events.TemplateClick, [this, elm, data]);
-
-      _events.emit(Events.TemplateClick, [this, elm, data]);
+      this._onclickEvent(this, elm, data);
     });
 
     return elm;
@@ -183,8 +190,6 @@ export class ElementList<
       prev[acc[this._options.idTarget]] = acc;
       return prev;
     }, {});
-
-    console.log(this.data, this.cache);
 
     return this.data;
   }

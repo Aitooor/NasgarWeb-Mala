@@ -11,6 +11,7 @@ declare enum Events {
 }
 declare type Events_type = "refresh" | "render" | "template_click";
 declare type Listener<G, T, K> = ((_this: G) => void) | ((_this: G, r: boolean) => void) | ((_this: G, element: K, data: T) => void);
+declare type ClickEvent<G, T, K> = ((_this: G, element: K, data: T) => void);
 export declare class ElementList<T extends any, K extends HTMLElement = HTMLDivElement> {
     private parent;
     private url;
@@ -22,12 +23,14 @@ export declare class ElementList<T extends any, K extends HTMLElement = HTMLDivE
     private _events;
     static Events: typeof Events;
     Events: typeof Events;
+    private _onclickEvent;
     constructor(parent: HTMLDivElement, url: string, options?: ElementList_Options);
     setTemplate(template: string | K): this;
     getTemplate(): K;
     getData(): T[];
     getCache(): ElementList_Cache<T>;
     on(name: Events_type, listener: Listener<this, T, K>): this;
+    setOnClick(listener: ClickEvent<this, T, K>): this;
     private _renderElement;
     private _render;
     refresh(): Promise<T[]>;

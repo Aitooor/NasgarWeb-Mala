@@ -32,6 +32,7 @@ export class ElementList {
             Events.TemplateClick,
         ]);
         this.Events = Events;
+        this._onclickEvent = null;
         this._options = Object.assign({}, DefaultElementList_Options, options);
         Object.values(Events);
     }
@@ -59,6 +60,10 @@ export class ElementList {
         this._events.on(name, listener);
         return this;
     }
+    setOnClick(listener) {
+        this._onclickEvent = listener;
+        return this;
+    }
     _renderElement(data) {
         if (this.template === null) {
             throw new ReferenceError("`template` is not defined.");
@@ -71,8 +76,7 @@ export class ElementList {
         }
         const _events = this._events;
         elm.addEventListener("click", () => {
-            console.log("GG", Events.TemplateClick, [this, elm, data]);
-            _events.emit(Events.TemplateClick, [this, elm, data]);
+            this._onclickEvent(this, elm, data);
         });
         return elm;
     }
@@ -130,7 +134,6 @@ export class ElementList {
                 prev[acc[this._options.idTarget]] = acc;
                 return prev;
             }, {});
-            console.log(this.data, this.cache);
             return this.data;
         });
     }
