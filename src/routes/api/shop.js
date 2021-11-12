@@ -1,6 +1,7 @@
 const { StaffMiddleware } = require("../../middlewares/staff");
 const { timeago } = require("../../utils");
 const shop = require("../../lib/shop");
+const cacheCategory = require("../../lib/cacheCategory")
 
 /**
  * 
@@ -130,9 +131,10 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
 
 	router.post("/shop/category", async (req, res) => {
 		try {
-			if(await shop.addCategory(db, req.body))
+			if(await shop.addCategory(db, req.body)){
 				res.sendStatus(200);
-			else
+				await updateCategoryCache();
+			} else
 				res.sendStatus(400);
 		} catch {
 			res.sendStatus(500);
@@ -141,9 +143,10 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
 
 	router.put("/shop/category", async (req, res) => {
 		try {
-			if(await shop.updateCategory(db, req.body, req.body.uuid))
+			if(await shop.updateCategory(db, req.body, req.body.uuid)){
 				res.sendStatus(200);
-			else
+				await updateCategoryCache();
+			} else
 				res.sendStatus(400);
 		} catch {
 			res.sendStatus(500);
@@ -157,12 +160,20 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
 		}
 		
 		try {
-			if(await shop.delCategory(db, req.body.uuid))
+			if(await shop.delCategory(db, req.body.uuid)) {
 				res.sendStatus(200);
-			else
+				await updateCategoryCache();
+			} else
 				res.sendStatus(400);
 		} catch {
 			res.sendStatus(500);
 		}
-	})
+	});
+
+	async function updateCategoryCache() {
+		const categories = await shop.getCategoryVisible(db);
+		cacheCategory.save({
+			categories
+		})
+	}
 })

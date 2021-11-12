@@ -25,7 +25,7 @@ const Path = __importStar(require("path"));
 const file = Path.join(Utils.cacheDir, "category.json");
 Utils.touchIf(file, JSON.stringify({
     lastUpdate: 0,
-    categories: {},
+    categories: [],
 }, undefined, 2));
 function save(json) {
     Utils.writeFile(file, process.env.NODE_ENV === "production"
@@ -41,10 +41,7 @@ exports.read = read;
 function set(...categories) {
     const oldJson = read();
     const newJson = {
-        categories: Object.assign(Object.assign({}, oldJson.categories), (categories.reduce((c, v) => {
-            c[v.uuid] = v;
-            return c;
-        }, {}))),
+        categories: Object.assign(Object.assign({}, oldJson.categories), categories),
     };
     save(newJson);
     return newJson;

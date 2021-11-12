@@ -5,7 +5,7 @@ const file: string = Path.join(Utils.cacheDir, "category.json");
 
 Utils.touchIf(file, JSON.stringify(<CategoriesCache>{
   lastUpdate: 0,
-  categories: {},
+  categories: [],
 }, undefined, 2))
 
 export interface CategoryCache {
@@ -19,9 +19,7 @@ export interface CategoryCache {
   order: string[];
 }
 
-export type CategoriesMap = {
-  [key: string]: CategoryCache
-};
+export type CategoriesMap = CategoryCache[];
 
 export interface CategoriesCache {
   categories: CategoriesMap;
@@ -46,10 +44,7 @@ export function set(...categories: CategoryCache[]): CategoriesCache {
   const newJson: CategoriesCache = {
     categories: {
       ...oldJson.categories, 
-      ...(categories.reduce<CategoriesMap>((c, v) => {
-        c[v.uuid] = v;
-        return c;
-      }, {}))
+      ...categories
     },
   };
 

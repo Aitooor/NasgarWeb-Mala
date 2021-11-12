@@ -8,9 +8,7 @@ export interface CategoryCache {
     public: boolean;
     order: string[];
 }
-export declare type CategoriesMap = {
-    [key: string]: CategoryCache;
-};
+export declare type CategoriesMap = CategoryCache[];
 export interface CategoriesCache {
     categories: CategoriesMap;
 }
