@@ -37,51 +37,6 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
   router.get("/bans",     (_req, res) => { res.status(501).render("prefabs/soon") });
   router.get("/settings", (_req, res) => { res.status(501).render("prefabs/soon") });
   router.get("/profile",  (_req, res) => { res.status(501).render("prefabs/soon") });
-  router.get("/staff/shop",    (_req, res) => { 
-    res.render("prefabs/cards_menu", {
-      title: "Shop Menu",
-      data: [
-        {
-          url: "/staff/shop/products",
-          title: "Products",
-          icon: "inventory_2/v9"
-        },
-        {
-          url: "/staff/shop/categories",
-          title: "Categories",
-          icon: "reorder/v15"
-        }
-      ],
-      back: "url",
-      back_url: "/staff"
-    }) 
-  });
-
-  router.get("/staff/shop/categories",  (_req, res) => { res.render("pags/staff/shop/categories") });
-    
-  router.get("/staff",    (_req, res) => { 
-    res.render("prefabs/cards_menu", {
-      title: "Staff Menu",
-      data: [
-        {
-          url: "/staff/staff-timings",
-          title: "Timings",
-          icon: "schedule/v16"
-        },
-        {
-          url: "/staff/shop",
-          title: "Shop",
-          icon: "store/v11"
-        },
-        {
-          url: "#",
-          title: "Test_Empty",
-          icon: "block/v15"
-        }
-      ],
-      back: false
-    }) 
-  });
     
   router.get("/", async (req, res) => {
     if(Date.now() - lastRequestTime >= 1000) {
