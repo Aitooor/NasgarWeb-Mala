@@ -209,7 +209,6 @@ function OpenAddModal() {
         name: "",
         display: "{{NAME}}",
         description: "",
-        public: 1,
         image: "",
         min_rank: UserRank.Default,
         order: [],
@@ -228,7 +227,6 @@ function OpenAddModal() {
     body._.name._.input.events.add("input", updateDisplay);
     updateDisplay();
     UpdateData([actual_category_data, "description"], body._.description._.textarea, "");
-    UpdateData([actual_category_data, "public"], body._.show._.input, "", (_, elm) => (elm.dom.checked ? 1 : 0));
     UpdateDataSelect([actual_category_data, "min_rank"], body._.rank._.select, rankSelect, 0, (value) => UserRank[value]);
     SetOrderActions(actual_order);
     modalCategory_events._save = (modal) => __awaiter(this, void 0, void 0, function* () {
@@ -242,8 +240,7 @@ function OpenAddModal() {
                 description: actual_category_data.description,
                 image: actual_category_data.image,
                 min_rank: actual_category_data.min_rank,
-                order: actual_category_data.order,
-                public: actual_category_data.public,
+                order: actual_category_data.order
             });
         }
         catch (err) {
@@ -283,11 +280,6 @@ function OpenCategoryModal(data) {
     body._.name._.input.events.add("input", updateDisplay);
     updateDisplay();
     UpdateData([actual_category_data, "description"], body._.description._.textarea, actual_category_data.description);
-    if (actual_category_data.public === 0)
-        body._.show._.input.dom.checked = false;
-    else
-        body._.show._.input.setAttr("checked", "true");
-    UpdateData([actual_category_data, "public"], body._.show._.input, "", (_, elm) => (elm.dom.checked ? 1 : 0));
     UpdateDataSelect([actual_category_data, "min_rank"], body._.rank._.select, rankSelect, actual_category_data.min_rank - 1, (value) => UserRank[value]);
     SetOrderActions(actual_order);
     LoadProductsOnCategoryModal(actual_order);
@@ -302,8 +294,7 @@ function OpenCategoryModal(data) {
                 description: actual_category_data.description,
                 image: actual_category_data.image,
                 min_rank: actual_category_data.min_rank,
-                order: actual_category_data.order,
-                public: actual_category_data.public,
+                order: actual_category_data.order
             });
         }
         catch (err) {

@@ -54,7 +54,8 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
 
   router.get("/shop", async (req, res) => {
     res.render("pags/shop/index", {
-      products: await shop.getAllProducts(db)
+      category: { name: "MAIN", display: "{{NAME}}" },
+      products: []
     });
   });
 
@@ -157,8 +158,10 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
   router.get("/shop/category/:uuid", async (req, res, next) => {
     const uuid = req.params.uuid;
     if(uuid.length !== 36) return next();
+    
     const data = await shop.getCategory(db, uuid);
     if(data === null) return next();
+
     const products = await data.order.reduce(async (promise, uuid) => {
       return [
         ...(await promise),

@@ -47,15 +47,27 @@
 			<textarea class="input" placeholder="Description" ></textarea>
 		</div>
 
-		<div class="field" data-name="show">
-			<div class="span title">Show</div>
-			<input type="checkbox" class="input" checked>
-		</div>
-
 		<div class="field required" data-name="rank">
 			<span class="title" >Min Rank</span>
 			<select class="input" >
 			</select>
+		</div>
+
+		<div class="field list" data-name="categories">
+			<div class="title" data-name="header">
+				<span class="title" >Categories</span>
+				<div class="actions" data-name="actions">
+					<button>
+						<i class="material" >add_circle_outline</i>
+					</button>
+				</div>
+			</div>
+			<div class="list" data-name="list"></div>
+			<datalist id="categories_list">
+				<option value="46578913215649138755316">Lorem ipsum dolor sit amet.</option>
+				<option value="01231957682401256794315">Lorem, ipsum dolor.</option>
+				<option value="12461975834689567678402">Lorem ipsum dolor sit amet consectetur.</option>
+			</datalist>
 		</div>
 
 		<div class="field list" data-name="orders">
@@ -93,7 +105,6 @@
 				<span class="name" slot="name"></span>
 			</div>
 			<div class="bottom" >
-				<span class="public" slot="public"></span>
 				<span class="total" slot="order.length"></span>
 			</div>
 		</div>

@@ -35,16 +35,16 @@ export class ElementList<
   T extends any,
   K extends HTMLElement = HTMLDivElement
 > {
-  private data: T[] = [];
-  private cache: ElementList_Cache<T> = {};
+  protected data: T[] = [];
+  protected cache: ElementList_Cache<T> = {};
 
-  private _options: ElementList_Options;
+  protected _options: ElementList_Options;
 
-  private template: K = null;
+  protected template: K = null;
 
   public isLoading: boolean = false;
 
-  private _events: EventEmitter<
+  protected _events: EventEmitter<
     [ElementList<T, K>, boolean | K, T | undefined]
   > = new EventEmitter<[ElementList<T, K>, boolean | K, T | undefined]>([
     Events.Refresh,
@@ -55,11 +55,11 @@ export class ElementList<
   static Events: typeof Events = Events;
   public Events: typeof Events = Events;
 
-  private _onclickEvent: ClickEvent<this, T, K> = null;
+  protected _onclickEvent: ClickEvent<this, T, K> = null;
 
   constructor(
-    private parent: HTMLDivElement,
-    private url: string,
+    protected parent: HTMLDivElement,
+    protected url: string,
     options: ElementList_Options = DefaultElementList_Options
   ) {
     this._options = Object.assign({}, DefaultElementList_Options, options);
@@ -103,7 +103,7 @@ export class ElementList<
     return this;
   }
 
-  private _renderElement(data: T): K {
+  protected _renderElement(data: T): K {
     if (this.template === null) {
       throw new ReferenceError("`template` is not defined.");
     }
@@ -126,7 +126,7 @@ export class ElementList<
     return elm;
   }
 
-  private _render(): K[] {
+  protected _render(): K[] {
     if (this.template === null) {
       throw new ReferenceError("`template` is not defined.");
     }
@@ -169,7 +169,7 @@ export class ElementList<
     return this.data;
   }
 
-  async refreshData(): Promise<T[] | null> {
+  protected async refreshData(): Promise<T[] | null> {
     const response = await fetch(this.url, {
       method: "GET",
       headers: {

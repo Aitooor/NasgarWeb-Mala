@@ -16,14 +16,7 @@
     <div class="tabs">
       <a href="/" class="tab selected"><%= global.lang.menu.home %></a>
       <a href="/updates" class="tab"><%= global.lang.menu.updates %></a>
-      <div class="tab">
-        <div class="title"><%= global.lang.menu.shop.title %></div>
-        <div class="options">
-          <% for(const category of global.categories) { %>
-            <a href="/shop/category/<%= category.uuid %>" class="option"><%= global.lang.menu.shop[category.name] || category.name %></a>
-          <% } %>
-        </div>
-      </div>
+      <a href="/shop" class="tab"><%= global.lang.menu.shop.title %></a>
       <a href="/bans" class="tab"><%= global.lang.menu.bans %></a>
       <a href="/vote" target="_blank" class="tab"><%= global.lang.menu.vote %></a>
       <% if (global.user !== null) { %>
@@ -80,14 +73,7 @@
     <div class="tabs">
       <a href="/" class="tab selected"><%= global.lang.menu.home %></a>
       <a href="/updates" class="tab"><%= global.lang.menu.updates %></a>
-      <div class="tab">
-        <div class="title"><%= global.lang.menu.shop.title %></div>
-        <div class="options">
-          <% for(const category of global.categories) { %>
-            <a href="/shop/category/<%= category.uuid %>" class="option"><%= global.lang.menu.shop[category.name] || category.name %></a>
-          <% } %>
-        </div>
-      </div>
+      <a href="/shop" class="tab"><%= global.lang.menu.shop.title %></a>
       <a href="/bans" class="tab"><%= global.lang.menu.bans %></a>
       <a href="/vote" class="tab"><%= global.lang.menu.vote %></a>
       <% if (global.user !== null) { %>

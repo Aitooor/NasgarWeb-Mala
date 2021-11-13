@@ -29,7 +29,6 @@ interface Category {
   name: string;
   display: string;
   description: string;
-  public: number;
   image: string;
   min_rank: UserRank;
   order: string[];
@@ -313,7 +312,6 @@ function OpenAddModal() {
     name: "",
     display: "{{NAME}}",
     description: "",
-    public: 1,
     image: "",
     min_rank: UserRank.Default,
     order: [],
@@ -355,13 +353,6 @@ function OpenAddModal() {
     ""
   );
 
-  UpdateData(
-    [actual_category_data, "public"],
-    <json_html<HTMLInputElement>>body._.show._.input,
-    "",
-    (_, elm) => (elm.dom.checked ? 1 : 0)
-  );
-
   UpdateDataSelect(
     [actual_category_data, "min_rank"],
     <json_html<HTMLSelectElement>>body._.rank._.select,
@@ -384,8 +375,7 @@ function OpenAddModal() {
         description: actual_category_data.description,
         image: actual_category_data.image,
         min_rank: actual_category_data.min_rank,
-        order: actual_category_data.order,
-        public: actual_category_data.public,
+        order: actual_category_data.order
       });
     } catch (err) {
       alert(err);
@@ -452,16 +442,6 @@ function OpenCategoryModal(data: Category) {
     actual_category_data.description
   );
 
-  if(actual_category_data.public === 0) (<HTMLInputElement>body._.show._.input.dom).checked = false;
-  else body._.show._.input.setAttr("checked", "true");
-
-  UpdateData(
-    [actual_category_data, "public"],
-    <json_html<HTMLInputElement>>body._.show._.input,
-    "",
-    (_, elm) => (elm.dom.checked ? 1 : 0)
-  );
-
   UpdateDataSelect(
     [actual_category_data, "min_rank"],
     <json_html<HTMLSelectElement>>body._.rank._.select,
@@ -487,8 +467,7 @@ function OpenCategoryModal(data: Category) {
         description: actual_category_data.description,
         image: actual_category_data.image,
         min_rank: actual_category_data.min_rank,
-        order: actual_category_data.order,
-        public: actual_category_data.public,
+        order: actual_category_data.order
       });
     } catch (err) {
       alert(err);

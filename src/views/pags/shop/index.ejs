@@ -9,9 +9,19 @@
 	<script src="/js/pg/shop/index.js" type="module"></script>
 </head>
 <body>
-	<%- include("../../partials/nav_modern.ejs", { global, solid: true }) %>
+	<%- include("../../partials/nav_modern.ejs", { global, solid: true, transparent_height: 3 }) %>
 	 
-	<div class="body body-100 centered">
+	<div class="body centered">
+		<aside>
+			<div class="categories">
+				<% for(const category of global.categories) { %>
+					<% if (category.subcategories?.length > 0) { %>
+						<div class="category">Hola</div>
+					<% } %>
+				<a href="/shop/category/<%= category.uuid %>" class="category"><%= global.lang.menu.shop[category.name] || category.name %></a>
+				<% } %>
+			</div>
+		</aside>
 		<div class="mainbox">
 			<main>
 				<div class="title">
