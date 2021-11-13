@@ -35,7 +35,7 @@ module.exports = function (db) {
 
     req.session.showAlert = false;
 
-    if(JSON.stringify(cacheCategory.read().categories) === "{}") {
+    if(JSON.stringify(cacheCategory.read()?.categories ?? []) === "[]") {
       const categories = await shop.getCategoryVisible(db);
       cacheCategory.save({
         categories
