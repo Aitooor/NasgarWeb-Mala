@@ -174,8 +174,8 @@ async function getCupon(_db, cupon) {
 /***            Categories            ***/
 /****************************************/
 
-/** @typedef {{ uuid: string, name: string, display: string, description: string, order: string[], show: number, image: string, min_rank: number }} Category */
-/** @typedef {{ uuid: string, name: string, display: string, description: string, order: string,   show: number, image: string, min_rank: number }} CategoryCrude */
+/** @typedef {{ uuid: string, name: string, display: string, description: string, order: string[], subcategories: string[], image: string, min_rank: number }} Category */
+/** @typedef {{ uuid: string, name: string, display: string, description: string, order: string,   subcategories: string, image: string, min_rank: number }} CategoryCrude */
 
 /**
  *
@@ -185,6 +185,7 @@ async function getCupon(_db, cupon) {
 function parseCategory(category) {
   return {
     ...category,
+    subcategories: JSON.parse(category.subcategories),
     order: JSON.parse(category.order),
   };
 }
@@ -197,6 +198,7 @@ function parseCategory(category) {
 function stringifyCategory(category) {
   return {
     ...category,
+    subcategories: JSON.stringify(category.subcategories),
     order: JSON.stringify(category.order),
   };
 }
@@ -312,7 +314,8 @@ async function delCategory(db, uuid) {
  async function getCategoryVisible(db) {
   const pool = db();
   try {
-    const res = await pool.query(`SELECT * FROM web.categories WHERE public = 1`);
+    const main = await pool.query(`SELECT uuid, name, subcategories FROM web.categories WHERE name = "MAIN"`);
+    const res = await pool.query(`SELECT * FROM web.categories`);
     pool.end();
 
     return res.map(parseCategory);
