@@ -36,6 +36,7 @@ export function save(json: CategoriesCache) {
 
 export function read(): CategoriesCache {
   const json = Utils.readFile(file);
+  if(json.length === 0) return null;
   return JSON.parse(json)
 }
 

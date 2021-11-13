@@ -35,6 +35,8 @@ function save(json) {
 exports.save = save;
 function read() {
     const json = Utils.readFile(file);
+    if (json.length === 0)
+        return null;
     return JSON.parse(json);
 }
 exports.read = read;
