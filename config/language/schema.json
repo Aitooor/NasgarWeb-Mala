@@ -40,11 +40,11 @@
               "type": "string",
               "default": "Shop"
             },
-            "ranks": {
+            "Ranks": {
               "type": "string",
               "default": "Ranks"
             },
-            "keys": {
+            "Keys": {
               "type": "string",
               "default": "Keys"
             }
