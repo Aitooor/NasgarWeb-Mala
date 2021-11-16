@@ -10,6 +10,7 @@ import {
 } from "../../../common/shop.js";
 
 import { query as querySelector } from "../../../common/html.js";
+import { OrdenedElementList } from "../../../components/list/order.js";
 
 enum UserRank {
   "Default" = 1,
@@ -65,12 +66,9 @@ const category_list = new ElementList<Category, HTMLDivElement>(
   { idTarget: "uuid" }
 )
   .setTemplate(<HTMLDivElement>category_template.content.firstElementChild)
-  .setOnClick(
-    (_, elm: HTMLDivElement, data: Category) => {
-      OpenCategoryModal(data);
-    }
-  );
-
+  .setOnClick((_, elm: HTMLDivElement, data: Category) => {
+    OpenCategoryModal(data);
+  });
 
 const header_action = {
   refresh: querySelector<HTMLButtonElement>(".refresh", header_actions_div),
@@ -183,92 +181,98 @@ const tmCategoryListModal = <HTMLDivElement>(
 //   modalCategory.setHeader(title);
 // }
 
-function NewOrderOnItemModal(
-  order: string,
-  index: number,
-  order_obj: string[]
-): HTMLInputElement {
-  const order_list = modalCategory.getBody()._.orders._.list.dom;
-  order_obj[index] = order;
+interface Product {
+  uuid: string;
+  name: string;
+}
 
-  const elm = <HTMLDivElement>tmCategoryListModal.cloneNode(true);
-
-  const inpZone = querySelector(".input-zone", elm);
-  const name = querySelector(".name", inpZone);
-
-  const inp = querySelector<HTMLInputElement>("input", inpZone);
-  inp.setAttribute("list", "products_list");
-
-  inp.value = order;
-  if (inp.value.length > 0) {
-    inpZone.classList.remove("blank");
-    if (inp.value.length !== 36) {
-      name.innerText = "Invalid";
-    } else {
-      name.innerText =
-        cacheProducts.find((_: ItemData) => _.uuid === inp.value)?.name ||
-        "Invalid";
-    }
-  } else {
-    inpZone.classList.add("blank");
+const productsList = new OrdenedElementList<Product>(
+  document.querySelector("#product_list"),
+  OrdenedElementList.NO_URL,
+  {
+    autoRefresh: true,
+    idTarget: "uuid",
   }
-  AddEvent("input", inp, () => {
-    order_obj[index] = inp.value;
-    if (inp.value.length > 0) {
+).setCustomFunctions({
+  inputFn: (ctx: any) => {
+    const inpZone = querySelector(".input-zone", ctx.template);
+    const name = querySelector(".name", inpZone);
+
+    const value: string = ctx.element.value;
+    if (value.length > 0) {
       inpZone.classList.remove("blank");
-      if (inp.value.length !== 36) {
+      if (value.length !== 36) {
         name.innerText = "Invalid";
       } else {
         name.innerText =
-          cacheProducts.find((_: ItemData) => _.uuid === inp.value)?.name ||
+          cacheProducts.find((_: ItemData) => _.uuid === value)?.name ||
           "Invalid";
       }
     } else {
       inpZone.classList.add("blank");
     }
-  });
 
-  AddEventChild("click", elm, ".delete", () => {
-    order_obj.splice(index, 1);
-    elm.remove();
-  });
+    ctx.data[ctx.list.getIndex(ctx.data)] = { uuid: value, name: name.innerText };
+    ctx.usePipe("custom:change");
+  },
+}).setTemplate(`
+<div class="item" >
+  <div class="input-zone">
+    <input type="text" data-slot-events="input" data-oninput="this.custom.inputFn(this);" slot="uuid" placeholder="uuid">
+    <div class="name" slot="name"></div>
+  </div>
+  <button class="delete" >
+    <i class="material" data-slot-events="click" data-onclick="this.fn.delete(); this.usePipe('custom:change');">delete</i> 
+  </button>
+  <div class="ord-btns">
+    <button class="up" data-slot-events="click" data-onclick="this.fn.goUp(); this.usePipe('custom:change');"><i class="material">keyboard_arrow_up</i></button>
+    <button class="down" data-slot-events="click" data-onclick="this.fn.goDown(); this.usePipe('custom:change');"><i class="material">keyboard_arrow_down</i></button>
+  </div>
+</div>
+`);
 
-  AddEventChild("click", elm, ".up", () => {
-    if (index === 0) return;
-    const [tmp] = order_obj.splice(index, 1);
-    order_obj.splice(index - 1, 0, tmp);
-    LoadProductsOnCategoryModal(order_obj);
-  });
+// function NewOrderOnItemModal(
+//   order: string,
+//   index: number,
+//   order_obj: string[]
+// ): HTMLInputElement {
+//   // const order_list = modalCategory.getBody()._.orders._.list.dom;
+//   // order_obj[index] = order;
 
-  AddEventChild("click", elm, ".down", () => {
-    if (index === order_obj.length - 1) return;
-    const [tmp] = order_obj.splice(index, 1);
-    order_obj.splice(index + 1, 0, tmp);
-    LoadProductsOnCategoryModal(order_obj);
-  });
+//   // const inp = querySelector<HTMLInputElement>("input", inpZone);
+//   // inp.setAttribute("list", "products_list");
 
-  order_list.append(elm);
+//   // inp.value = order;
+//   // if (inp.value.length > 0) {
+//   //   inpZone.classList.remove("blank");
+//   //   if (inp.value.length !== 36) {
+//   //     name.innerText = "Invalid";
+//   //   } else {
+//   //     name.innerText =
+//   //       cacheProducts.find((_: ItemData) => _.uuid === inp.value)?.name ||
+//   //       "Invalid";
+//   //   }
+//   // } else {
+//   //   inpZone.classList.add("blank");
+//   // }
+//   // AddEvent("input", inp, () => {
+//   // });
 
-  return inp;
-}
+//   // return inp;
+// }
 
 function SetOrderActions(order: string[]) {
-  const order_list = modalCategory.getBody()._.orders._.list.dom;
-
   const addBtn =
     modalCategory.getBody()._.orders._.header._.actions._.button.dom;
 
-  // Clear orders
-  order_list.innerHTML = "";
-
-  if (modalCategory_Vars.ctg_fn)
-    RemEvent("click", addBtn, modalCategory_Vars.ctg_fn);
-
-  modalCategory_Vars.ctg_fn = () => {
-    NewOrderOnItemModal("", order.length, order).focus();
-  };
-
-  AddEvent("click", addBtn, modalCategory_Vars.ctg_fn);
+  AddEvent("click", addBtn, () => productsList.add({ uuid: "", name: "" }));
+  productsList.clearPipes();
+  productsList.pipe((method: string) => {
+    if(method !== "custom:change") return;
+    order.splice(0, order.length);
+    order.push(...productsList.getData().map(v => v.uuid))
+    console.log(order);
+  });
 }
 
 function UpdateData(
@@ -375,7 +379,7 @@ function OpenAddModal() {
         description: actual_category_data.description,
         image: actual_category_data.image,
         min_rank: actual_category_data.min_rank,
-        order: actual_category_data.order
+        order: actual_category_data.order,
       });
     } catch (err) {
       alert(err);
@@ -467,7 +471,7 @@ function OpenCategoryModal(data: Category) {
         description: actual_category_data.description,
         image: actual_category_data.image,
         min_rank: actual_category_data.min_rank,
-        order: actual_category_data.order
+        order: actual_category_data.order,
       });
     } catch (err) {
       alert(err);
@@ -494,62 +498,18 @@ function OpenCategoryModal(data: Category) {
   modalCategory.open();
 }
 
-// /**
-//  * @param {string} ev
-//  * @param {Element} elm
-//  * @param {(event?: Event) => void} fn
-// */
-// function RemEvent(ev, elm, fn) {
-//   elm.removeEventListener(ev, fn);
-// }
-
-// /**
-//  * AddEvent(#ev, #parent.querySelector(#selector), fn);
-//  * @param {string} ev
-//  * @param {Element} parent
-//  * @param {string} selector
-//  * @param {(event?: Event) => void} fn
-// */
-// function AddEventChild(ev, parent, selector, fn) {
-//   AddEvent(
-//     ev,
-//     parent.querySelector(selector),
-//     fn
-//   );
-// }
-
-// /**
-//  * @param {string} ev
-//  * @param {Element} elm
-//  * @param {(event?: Event) => void} fn
-// */
-// function AddEvent(ev, elm, fn) {
-//   elm.addEventListener(ev, fn)
-// }
-
-function RemEvent(ev: string, elm: HTMLElement, fn: (e?: Event) => void) {
-  elm.removeEventListener(ev, fn);
-}
-
-/**
- * AddEvent(#ev, #parent.querySelector(#selector), fn);
- */
-function AddEventChild(
-  ev: string,
-  parent: HTMLElement,
-  selector: string,
-  fn: (e?: Event) => void
-) {
-  AddEvent(ev, parent.querySelector(selector), fn);
-}
-
 function AddEvent(ev: string, elm: HTMLElement, fn: (e?: Event) => void) {
   elm.addEventListener(ev, fn);
 }
 
 function LoadProductsOnCategoryModal(actual: string[]) {
+  productsList.deleteAll();
   for (let [product, i] of ArrayIndex<string>(actual)) {
-    NewOrderOnItemModal(product, i, actual);
+    // NewOrderOnItemModal(product, i, actual);
+    const name =
+      cacheProducts.find((_: ItemData) => _.uuid === product)?.name ||
+      "Invalid";
+    productsList.add({ uuid: product, name: name });
   }
 }
 
@@ -587,13 +547,16 @@ async function UpdateItem(data: Category): Promise<Boolean> {
     method: "PUT",
     credentials: "same-origin",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   });
 
-  if(res.status === 500)
-    return (alert("Error updating product: " + (await res.json())?.error), true), false;
+  if (res.status === 500)
+    return (
+      (alert("Error updating product: " + (await res.json())?.error), true),
+      false
+    );
   return true;
 }
 
@@ -614,24 +577,24 @@ async function AddCategory(data: Category) {
 }
 
 async function RemItem(uuid: string, confirmation: string) {
-  const res = await fetch("/api/shop/category",{
+  const res = await fetch("/api/shop/category", {
     method: "DELETE",
     credentials: "same-origin",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
       uuid,
-      confirmation
-    })
+      confirmation,
+    }),
   });
 
-  if(res.status === 400) {
+  if (res.status === 400) {
     alert("Invalid confirmation.");
     return false;
   }
 
-  if(!res.ok) {
+  if (!res.ok) {
     alert("Error deleting item.");
     return false;
   }

@@ -13,6 +13,7 @@ import ElementList from "../../../components/list/list.js";
 import { createElement } from "../../../common/html.js";
 import { wait, } from "../../../common/shop.js";
 import { query as querySelector } from "../../../common/html.js";
+import { OrdenedElementList } from "../../../components/list/order.js";
 var UserRank;
 (function (UserRank) {
     UserRank[UserRank["Default"] = 1] = "Default";
@@ -111,79 +112,58 @@ const rankSelect = new Select({
 });
 const tmCategoryListModal = (querySelector("template#list-category").content
     .firstElementChild);
-function NewOrderOnItemModal(order, index, order_obj) {
-    var _a;
-    const order_list = modalCategory.getBody()._.orders._.list.dom;
-    order_obj[index] = order;
-    const elm = tmCategoryListModal.cloneNode(true);
-    const inpZone = querySelector(".input-zone", elm);
-    const name = querySelector(".name", inpZone);
-    const inp = querySelector("input", inpZone);
-    inp.setAttribute("list", "products_list");
-    inp.value = order;
-    if (inp.value.length > 0) {
-        inpZone.classList.remove("blank");
-        if (inp.value.length !== 36) {
-            name.innerText = "Invalid";
-        }
-        else {
-            name.innerText =
-                ((_a = cacheProducts.find((_) => _.uuid === inp.value)) === null || _a === void 0 ? void 0 : _a.name) ||
-                    "Invalid";
-        }
-    }
-    else {
-        inpZone.classList.add("blank");
-    }
-    AddEvent("input", inp, () => {
+const productsList = new OrdenedElementList(document.querySelector("#product_list"), OrdenedElementList.NO_URL, {
+    autoRefresh: true,
+    idTarget: "uuid",
+}).setCustomFunctions({
+    inputFn: (ctx) => {
         var _a;
-        order_obj[index] = inp.value;
-        if (inp.value.length > 0) {
+        const inpZone = querySelector(".input-zone", ctx.template);
+        const name = querySelector(".name", inpZone);
+        const value = ctx.element.value;
+        if (value.length > 0) {
             inpZone.classList.remove("blank");
-            if (inp.value.length !== 36) {
+            if (value.length !== 36) {
                 name.innerText = "Invalid";
             }
             else {
                 name.innerText =
-                    ((_a = cacheProducts.find((_) => _.uuid === inp.value)) === null || _a === void 0 ? void 0 : _a.name) ||
+                    ((_a = cacheProducts.find((_) => _.uuid === value)) === null || _a === void 0 ? void 0 : _a.name) ||
                         "Invalid";
             }
         }
         else {
             inpZone.classList.add("blank");
         }
-    });
-    AddEventChild("click", elm, ".delete", () => {
-        order_obj.splice(index, 1);
-        elm.remove();
-    });
-    AddEventChild("click", elm, ".up", () => {
-        if (index === 0)
-            return;
-        const [tmp] = order_obj.splice(index, 1);
-        order_obj.splice(index - 1, 0, tmp);
-        LoadProductsOnCategoryModal(order_obj);
-    });
-    AddEventChild("click", elm, ".down", () => {
-        if (index === order_obj.length - 1)
-            return;
-        const [tmp] = order_obj.splice(index, 1);
-        order_obj.splice(index + 1, 0, tmp);
-        LoadProductsOnCategoryModal(order_obj);
-    });
-    order_list.append(elm);
-    return inp;
-}
+        ctx.data[ctx.list.getIndex(ctx.data)] = { uuid: value, name: name.innerText };
+        ctx.usePipe("custom:change");
+    },
+}).setTemplate(`
+<div class="item" >
+  <div class="input-zone">
+    <input type="text" data-slot-events="input" data-oninput="this.custom.inputFn(this);" slot="uuid" placeholder="uuid">
+    <div class="name" slot="name"></div>
+  </div>
+  <button class="delete" >
+    <i class="material" data-slot-events="click" data-onclick="this.fn.delete(); this.usePipe('custom:change');">delete</i> 
+  </button>
+  <div class="ord-btns">
+    <button class="up" data-slot-events="click" data-onclick="this.fn.goUp(); this.usePipe('custom:change');"><i class="material">keyboard_arrow_up</i></button>
+    <button class="down" data-slot-events="click" data-onclick="this.fn.goDown(); this.usePipe('custom:change');"><i class="material">keyboard_arrow_down</i></button>
+  </div>
+</div>
+`);
 function SetOrderActions(order) {
-    const order_list = modalCategory.getBody()._.orders._.list.dom;
     const addBtn = modalCategory.getBody()._.orders._.header._.actions._.button.dom;
-    order_list.innerHTML = "";
-    if (modalCategory_Vars.ctg_fn)
-        RemEvent("click", addBtn, modalCategory_Vars.ctg_fn);
-    modalCategory_Vars.ctg_fn = () => {
-        NewOrderOnItemModal("", order.length, order).focus();
-    };
-    AddEvent("click", addBtn, modalCategory_Vars.ctg_fn);
+    AddEvent("click", addBtn, () => productsList.add({ uuid: "", name: "" }));
+    productsList.clearPipes();
+    productsList.pipe((method) => {
+        if (method !== "custom:change")
+            return;
+        order.splice(0, order.length);
+        order.push(...productsList.getData().map(v => v.uuid));
+        console.log(order);
+    });
 }
 function UpdateData(property, elm, _default, pre) {
     elm.dom.value = _default;
@@ -240,7 +220,7 @@ function OpenAddModal() {
                 description: actual_category_data.description,
                 image: actual_category_data.image,
                 min_rank: actual_category_data.min_rank,
-                order: actual_category_data.order
+                order: actual_category_data.order,
             });
         }
         catch (err) {
@@ -294,7 +274,7 @@ function OpenCategoryModal(data) {
                 description: actual_category_data.description,
                 image: actual_category_data.image,
                 min_rank: actual_category_data.min_rank,
-                order: actual_category_data.order
+                order: actual_category_data.order,
             });
         }
         catch (err) {
@@ -316,18 +296,16 @@ function OpenCategoryModal(data) {
     });
     modalCategory.open();
 }
-function RemEvent(ev, elm, fn) {
-    elm.removeEventListener(ev, fn);
-}
-function AddEventChild(ev, parent, selector, fn) {
-    AddEvent(ev, parent.querySelector(selector), fn);
-}
 function AddEvent(ev, elm, fn) {
     elm.addEventListener(ev, fn);
 }
 function LoadProductsOnCategoryModal(actual) {
+    var _a;
+    productsList.deleteAll();
     for (let [product, i] of ArrayIndex(actual)) {
-        NewOrderOnItemModal(product, i, actual);
+        const name = ((_a = cacheProducts.find((_) => _.uuid === product)) === null || _a === void 0 ? void 0 : _a.name) ||
+            "Invalid";
+        productsList.add({ uuid: product, name: name });
     }
 }
 function* ArrayIndex(arr) {
@@ -348,12 +326,13 @@ function UpdateItem(data) {
             method: "PUT",
             credentials: "same-origin",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(data),
         });
         if (res.status === 500)
-            return (alert("Error updating product: " + ((_a = (yield res.json())) === null || _a === void 0 ? void 0 : _a.error)), true), false;
+            return ((alert("Error updating product: " + ((_a = (yield res.json())) === null || _a === void 0 ? void 0 : _a.error)), true),
+                false);
         return true;
     });
 }
@@ -379,12 +358,12 @@ function RemItem(uuid, confirmation) {
             method: "DELETE",
             credentials: "same-origin",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
             body: JSON.stringify({
                 uuid,
-                confirmation
-            })
+                confirmation,
+            }),
         });
         if (res.status === 400) {
             alert("Invalid confirmation.");

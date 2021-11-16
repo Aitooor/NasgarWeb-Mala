@@ -223,7 +223,7 @@ function updateProductDom(product, response, i) {
 	/** @type {HTMLDivElement} */
 	const me = createProductDom({ product, i });
   products_ul.append(me);
-	me.querySelector(".product-icon").append(img(response?.images?.[0] || "/img/defaultKey.png"));
+	me.querySelector(".product-icon").append(img("/api/img/" + response?.images?.[0]));
 	me.querySelector(".product-name").innerHTML = response.name;
 	const total_span = me.querySelector(".product-total");
 
