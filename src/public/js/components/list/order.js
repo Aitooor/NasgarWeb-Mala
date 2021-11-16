@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import ElementList from "./list";
+import ElementList from "./list.js";
 const Events = ElementList.Events;
 const DefaultOptions = {
     idTarget: "uuid",
@@ -17,14 +17,32 @@ export class OrdenedElementList extends ElementList {
     constructor(parent, url = OrdenedElementList.NO_URL, options) {
         super(parent, url, options);
         this._options = Object.assign({}, DefaultOptions, options);
-        if (url === OrdenedElementList.NO_URL) {
+        if (typeof url === "undefined" || url === OrdenedElementList.NO_URL) {
             this.refresh = this.__refresh;
         }
+    }
+    _generateCtx(data, elm, template) {
+        const _this = this;
+        return {
+            data,
+            template,
+            element: elm,
+            list: this,
+            parent: this.parent,
+            fn: {
+                delete: _this.delete.bind(_this, data),
+                goUp: _this.goUp.bind(_this, data),
+                goDown: _this.goDown.bind(_this, data)
+            },
+            custom: this._customFunctions,
+            usePipe: this.__usePipe.bind(this)
+        };
     }
     __refresh() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.isLoading)
                 return this.data;
+            this._execPipes("refresh:start");
             this.isLoading = true;
             this.parent.classList.remove("no-data");
             this.parent.classList.add("loading");
@@ -40,39 +58,47 @@ export class OrdenedElementList extends ElementList {
             }
             this.parent.classList.remove("loading");
             this.isLoading = false;
+            this._execPipes("refresh:end");
             return this.data;
         });
     }
-    _getIndex(elm) {
+    getIndex(elm) {
         if (typeof elm === "number")
             return elm;
         return this.data.indexOf(elm);
     }
     goUp(elm) {
-        const elmIndex = this._getIndex(elm);
-        if (elmIndex >= 0)
+        const elmIndex = this.getIndex(elm);
+        if (elmIndex < 0)
             return this.data;
         const [tmp] = this.data.splice(elmIndex, 1);
         this.data.splice(elmIndex - 1, 0, tmp);
-        if (this._options.autoRefresh)
-            this.refresh();
-        return this.data;
+        return this._returnDataAndRefresh();
     }
     goDown(elm) {
-        const elmIndex = this._getIndex(elm);
-        if (elmIndex >= 0)
+        const elmIndex = this.getIndex(elm);
+        if (elmIndex < 0)
             return this.data;
         const [tmp] = this.data.splice(elmIndex, 1);
         this.data.splice(elmIndex + 1, 0, tmp);
-        if (this._options.autoRefresh)
-            this.refresh();
-        return this.data;
+        return this._returnDataAndRefresh();
+    }
+    add(elm) {
+        this.data.push(elm);
+        return this._returnDataAndRefresh();
     }
     delete(elm) {
-        const elmIndex = this._getIndex(elm);
-        if (elmIndex >= 0)
+        const elmIndex = this.getIndex(elm);
+        if (elmIndex < 0)
             return this.data;
-        const [tmp] = this.data.splice(elmIndex, 1);
+        this.data.splice(elmIndex, 1);
+        return this._returnDataAndRefresh();
+    }
+    deleteAll() {
+        this.data = [];
+        return this._returnDataAndRefresh();
+    }
+    _returnDataAndRefresh() {
         if (this._options.autoRefresh)
             this.refresh();
         return this.data;

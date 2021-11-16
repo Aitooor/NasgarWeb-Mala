@@ -1,4 +1,4 @@
-import ElementList, { ElementList_Options } from "./list";
+import ElementList, { ElementList_Options } from "./list.js";
 
 const Events: typeof ElementList.Events = ElementList.Events;
 
@@ -27,13 +27,32 @@ export class OrdenedElementList<
     super(parent, url, options);
     this._options = Object.assign({}, DefaultOptions, options);
 
-    if (url === OrdenedElementList.NO_URL) {
+    if (typeof url === "undefined" || url === OrdenedElementList.NO_URL) {
       this.refresh = this.__refresh;
     }
   }
 
+  protected _generateCtx(data: T, elm: HTMLElement, template: HTMLElement): Object {
+    const _this: this = this;
+    return {
+      data, 
+      template,
+      element: elm,
+      list: this,
+      parent: this.parent,
+      fn: {
+        delete: _this.delete.bind(_this, data),
+        goUp: _this.goUp.bind(_this, data),
+        goDown: _this.goDown.bind(_this, data)
+      },
+      custom: this._customFunctions,
+      usePipe: this.__usePipe.bind(this)
+    };
+  }
+
   private async __refresh(): Promise<T[]> {
     if (this.isLoading) return this.data;
+    this._execPipes("refresh:start");
     this.isLoading = true;
 
     this.parent.classList.remove("no-data");
@@ -53,13 +72,14 @@ export class OrdenedElementList<
     this.parent.classList.remove("loading");
 
     this.isLoading = false;
-
+    this._execPipes("refresh:end");
     return this.data;
   }
 
-  private _getIndex(elm: T | number): number {
+  getIndex(elm: T | number): number {
     if (typeof elm === "number") return elm;
     return this.data.indexOf(elm);
+
   }
 
   /**
@@ -74,30 +94,58 @@ export class OrdenedElementList<
    */
   goUp(elm: number): T[];
   goUp(elm: T | number): T[] {
-    const elmIndex = this._getIndex(elm);
-    if(elmIndex >= 0) return this.data;
+    const elmIndex = this.getIndex(elm);
+    if (elmIndex < 0) return this.data;
     const [tmp] = this.data.splice(elmIndex, 1);
     this.data.splice(elmIndex - 1, 0, tmp);
 
-    if (this._options.autoRefresh) this.refresh();
-    return this.data;
+    return this._returnDataAndRefresh();
   }
 
+  /**
+   * Search index of Target and send it one index to down.
+   * @param elm Target
+   */
+  goDown(elm: T): T[];
+
+  /**
+    * Send Target one index to down.
+    * @param elm Target
+    */
+  goDown(elm: number): T[];
   goDown(elm: T | number): T[] {
-    const elmIndex = this._getIndex(elm);
-    if(elmIndex >= 0) return this.data;
+    const elmIndex = this.getIndex(elm);
+    if (elmIndex < 0) return this.data;
     const [tmp] = this.data.splice(elmIndex, 1);
     this.data.splice(elmIndex + 1, 0, tmp);
-
-    if (this._options.autoRefresh) this.refresh();
-    return this.data;
+    
+    return this._returnDataAndRefresh();
   }
 
-  delete(elm: T | number): T[] {
-    const elmIndex = this._getIndex(elm);
-    if(elmIndex >= 0) return this.data;
-    const [tmp] = this.data.splice(elmIndex, 1);
+  add(elm: T): T[] {
+    this.data.push(elm);
 
+    return this._returnDataAndRefresh();
+  }
+
+  /**
+   * Delete target from data
+   * @param elm Target
+   */
+  delete(elm: T | number): T[] {
+    const elmIndex = this.getIndex(elm);
+    if (elmIndex < 0) return this.data;
+    this.data.splice(elmIndex, 1);
+
+    return this._returnDataAndRefresh();
+  }
+
+  deleteAll(): T[] {
+    this.data = [];
+    return this._returnDataAndRefresh();
+  }
+
+  private _returnDataAndRefresh() {
     if (this._options.autoRefresh) this.refresh();
     return this.data;
   }
