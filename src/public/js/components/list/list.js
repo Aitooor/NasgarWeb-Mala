@@ -7,7 +7,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { EventEmitter, } from "../../common/events.js";
 import { queryAll } from "../../common/html.js";
 const DefaultElementList_Options = {
     idTarget: "uuid",
@@ -26,21 +25,22 @@ export class ElementList {
         this.cache = {};
         this.template = null;
         this.isLoading = false;
-        this._events = new EventEmitter([
-            Events.Refresh,
-            Events.Render,
-            Events.TemplateClick,
-        ]);
+        this._customFunctions = {};
         this.Events = Events;
+        this._pipes = [];
         this._onclickEvent = null;
+        this._execPipes = (method, ...args) => {
+            for (const pipe of this._pipes) {
+                pipe(method, ...args);
+            }
+        };
         this._options = Object.assign({}, DefaultElementList_Options, options);
-        Object.values(Events);
     }
     setTemplate(template) {
         if (typeof template === "string") {
             const temp = document.createElement("div");
             temp.innerHTML = template;
-            this.template = temp.firstChild;
+            this.template = temp.firstElementChild;
         }
         else {
             this.template = template.cloneNode(true);
@@ -56,13 +56,47 @@ export class ElementList {
     getCache() {
         return Object.assign({}, this.cache);
     }
+    setCustomFunctions(fn) {
+        this._customFunctions = fn;
+        return this;
+    }
     on(name, listener) {
-        this._events.on(name, listener);
         return this;
     }
     setOnClick(listener) {
         this._onclickEvent = listener;
         return this;
+    }
+    _generateCtx(data, elm, template) {
+        return {
+            data,
+            template: template,
+            element: elm,
+            list: this,
+            parent: this.parent,
+            custom: this._customFunctions,
+            usePipe: this.__usePipe.bind(this)
+        };
+    }
+    _setEventsOnElement(elm, data) {
+        const selectedElements = queryAll("*[data-slot-events]", elm);
+        for (const element of selectedElements) {
+            const events = element.dataset.slotEvents.split(/\s*,\s*/);
+            element.removeAttribute("data-slot-events");
+            const ctx = this._generateCtx(data, element, elm);
+            for (const fn in ctx.custom) {
+                ctx.custom[fn] = ctx.custom[fn].bind(ctx);
+            }
+            for (const event of events) {
+                const fn_ = element.dataset[`on${event}`];
+                if (typeof fn_ === "string") {
+                    element.removeAttribute(`data-on${event}`);
+                    const fn = new Function(fn_).bind(ctx, ctx);
+                    element.addEventListener(event, () => fn());
+                }
+            }
+        }
+        return elm;
     }
     _renderElement(data) {
         if (this.template === null) {
@@ -72,11 +106,18 @@ export class ElementList {
         const allElementsWithSlot = queryAll("*[slot]", elm);
         for (const elmWithSlot of allElementsWithSlot) {
             const slot = elmWithSlot.getAttribute("slot");
-            elmWithSlot.innerHTML = getFromProperty(data, slot);
+            elmWithSlot.removeAttribute("slot");
+            if (elmWithSlot instanceof HTMLInputElement) {
+                elmWithSlot.value = getFromProperty(data, slot);
+            }
+            else {
+                elmWithSlot.innerHTML = getFromProperty(data, slot);
+            }
         }
-        const _events = this._events;
+        this._setEventsOnElement(elm, data);
         elm.addEventListener("click", () => {
-            this._onclickEvent(this, elm, data);
+            if (this._onclickEvent !== null)
+                this._onclickEvent(this, elm, data);
         });
         return elm;
     }
@@ -95,7 +136,6 @@ export class ElementList {
             if (this.isLoading)
                 return this.data;
             this.isLoading = true;
-            this._events.emit(Events.Refresh, [this, true, null]);
             this.parent.classList.remove("no-data");
             this.parent.classList.add("loading");
             this.parent.innerHTML = "Loading...";
@@ -110,7 +150,6 @@ export class ElementList {
                 this.parent.append(...elements);
             }
             this.parent.classList.remove("loading");
-            this._events.emit(Events.Refresh, [this, false, null]);
             this.isLoading = false;
             return this.data;
         });
@@ -136,6 +175,18 @@ export class ElementList {
             }, {});
             return this.data;
         });
+    }
+    __usePipe(method, ...args) {
+        if (!method.startsWith("custom:") && method.length < 8)
+            return;
+        this._execPipes(method, ...args);
+    }
+    clearPipes() {
+        this._pipes = [];
+    }
+    pipe(fn) {
+        this._pipes.push(fn);
+        return this;
     }
 }
 ElementList.Events = Events;

@@ -29,7 +29,12 @@ type Listener<G, T, K> =
   | ((_this: G, r: boolean) => void)
   | ((_this: G, element: K, data: T) => void);
 
-type ClickEvent<G, T, K> = ((_this: G, element: K, data: T) => void);
+type ClickEvent<G, T, K> = (_this: G, element: K, data: T) => void;
+
+type CustomFunctions = { [key: string]: Function };
+
+type PipeFunction = (method: string, ...args: any[]) => void;
+// | ((method: string, nn: any, ...args: any[]) => void);
 
 export class ElementList<
   T extends any,
@@ -44,16 +49,12 @@ export class ElementList<
 
   public isLoading: boolean = false;
 
-  protected _events: EventEmitter<
-    [ElementList<T, K>, boolean | K, T | undefined]
-  > = new EventEmitter<[ElementList<T, K>, boolean | K, T | undefined]>([
-    Events.Refresh,
-    Events.Render,
-    Events.TemplateClick,
-  ]);
+  protected _customFunctions: CustomFunctions = {};
 
   static Events: typeof Events = Events;
   public Events: typeof Events = Events;
+
+  protected _pipes: PipeFunction[] = [];
 
   protected _onclickEvent: ClickEvent<this, T, K> = null;
 
@@ -63,14 +64,13 @@ export class ElementList<
     options: ElementList_Options = DefaultElementList_Options
   ) {
     this._options = Object.assign({}, DefaultElementList_Options, options);
-    Object.values(Events);
   }
 
   setTemplate(template: string | K): this {
     if (typeof template === "string") {
       const temp = document.createElement("div");
       temp.innerHTML = template;
-      this.template = <K>temp.firstChild;
+      this.template = <K>temp.firstElementChild;
     } else {
       this.template = <K>template.cloneNode(true);
     }
@@ -89,18 +89,67 @@ export class ElementList<
     return Object.assign({}, this.cache);
   }
 
+  setCustomFunctions(fn: CustomFunctions): this {
+    this._customFunctions = fn;
+    return this;
+  }
+
   /*******************************/
   /***         Methods         ***/
   /*******************************/
 
   on(name: Events_type, listener: Listener<this, T, K>): this {
-    this._events.on(name, <EventListener<[]>>listener);
     return this;
   }
 
   setOnClick(listener: ClickEvent<this, T, K>): this {
     this._onclickEvent = listener;
     return this;
+  }
+
+  protected _generateCtx(
+    data: T,
+    elm: HTMLElement,
+    template: HTMLElement
+  ): any {
+    return {
+      data,
+      template: template,
+      element: elm,
+      list: this,
+      parent: this.parent,
+      custom: this._customFunctions,
+      usePipe: this.__usePipe.bind(this)
+    };
+  }
+
+  protected _setEventsOnElement(elm: HTMLElement, data: T): HTMLElement {
+    const selectedElements: HTMLElement[] = queryAll(
+      "*[data-slot-events]",
+      elm
+    );
+
+    for (const element of selectedElements) {
+      const events: string[] = element.dataset.slotEvents.split(/\s*,\s*/);
+      element.removeAttribute("data-slot-events");
+      const ctx = this._generateCtx(data, element, elm);
+
+      for (const fn in ctx.custom) {
+        ctx.custom[fn] = ctx.custom[fn].bind(ctx);
+      }
+
+      for (const event of events) {
+        const fn_ = element.dataset[`on${event}`];
+        if (typeof fn_ === "string") {
+          element.removeAttribute(`data-on${event}`);
+          const fn = new Function(fn_).bind(ctx, ctx);
+
+          element.addEventListener(event, () => fn());
+        }
+      }
+    }
+
+    return elm;
   }
 
   protected _renderElement(data: T): K {
@@ -113,14 +162,19 @@ export class ElementList<
 
     for (const elmWithSlot of allElementsWithSlot) {
       const slot = elmWithSlot.getAttribute("slot");
+      elmWithSlot.removeAttribute("slot");
 
-      elmWithSlot.innerHTML = getFromProperty<T, string>(data, slot);
+      if (elmWithSlot instanceof HTMLInputElement) {
+        elmWithSlot.value = getFromProperty<T, string>(data, slot);
+      } else {
+        elmWithSlot.innerHTML = getFromProperty<T, string>(data, slot);
+      }
     }
 
-    const _events = this._events;
+    this._setEventsOnElement(elm, data);
 
     elm.addEventListener("click", () => {
-      this._onclickEvent(this, elm, data);
+      if (this._onclickEvent !== null) this._onclickEvent(this, elm, data);
     });
 
     return elm;
@@ -143,7 +197,6 @@ export class ElementList<
   async refresh(): Promise<T[]> {
     if (this.isLoading) return this.data;
     this.isLoading = true;
-    this._events.emit(Events.Refresh, [this, true, null]);
 
     this.parent.classList.remove("no-data");
     this.parent.classList.add("loading");
@@ -163,7 +216,6 @@ export class ElementList<
 
     this.parent.classList.remove("loading");
 
-    this._events.emit(Events.Refresh, [this, false, null]);
     this.isLoading = false;
 
     return this.data;
@@ -192,6 +244,29 @@ export class ElementList<
     }, {});
 
     return this.data;
+  }
+
+  protected _execPipes: PipeFunction = (method: string, ...args: any[]) => {
+    for (const pipe of this._pipes) {
+      pipe(method, ...args);
+    }
+  }
+
+  /**
+   * Execute a custom pipe, should be starts with "custom:"
+   */
+  protected __usePipe(method: string, ...args: any[]): void {
+    if(!method.startsWith("custom:") && method.length < 8) return;
+    this._execPipes(method, ...args);
+  }
+
+  clearPipes() {
+    this._pipes = [];
+  }
+
+  pipe(fn: PipeFunction): this {
+    this._pipes.push(fn);
+    return this;
   }
 }
 export default ElementList;
