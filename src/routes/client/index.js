@@ -33,6 +33,8 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
     res.redirect("https://www.40servidoresmc.es/nasgar-network-votar");
   });
 
+  router.get("/test", (req, res) => { res.status(200).render("Tests"); });
+
   router.get("/updates",  (_req, res) => { res.status(501).render("prefabs/soon") });
   router.get("/bans",     (_req, res) => { res.status(501).render("prefabs/soon") });
   router.get("/settings", (_req, res) => { res.status(501).render("prefabs/soon") });

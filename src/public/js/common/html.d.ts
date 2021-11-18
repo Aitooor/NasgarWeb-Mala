@@ -11,7 +11,15 @@ export interface middlewareEvents_return {
     };
 }
 export declare function middlewareEvents(element: HTMLElement): middlewareEvents_return;
-export interface json_html<T extends HTMLElement = HTMLElement> {
+export interface htmlElementStruct {
+    elm?: string;
+    classes?: string[];
+    attrs?: {
+        [attribute: string]: string;
+    };
+    childs?: (htmlElementStruct | string)[];
+}
+export interface jsonHtml<T extends HTMLElement = HTMLElement> {
     readonly dom: T;
     readonly elm: string;
     readonly classes: DOMTokenList;
@@ -20,12 +28,14 @@ export interface json_html<T extends HTMLElement = HTMLElement> {
     };
     readonly events: middlewareEvents_return;
     readonly hasChilds: boolean;
-    readonly childs: json_html<HTMLElement>[];
+    readonly childs: jsonHtml<HTMLElement>[];
     readonly _: {
-        [element: string]: json_html<HTMLElement>;
+        [element: string]: jsonHtml<HTMLElement>;
     };
-    addChild<T extends HTMLElement = HTMLElement>(child: T): json_html<T>;
-    setAttr(name: string, value?: string): json_html<T>;
-    remAttr(name: string): json_html<T>;
+    addChild<T extends HTMLElement = HTMLElement>(child: T): jsonHtml<T>;
+    setAttr(name: string, value?: string): jsonHtml<T>;
+    remAttr(name: string): jsonHtml<T>;
 }
-export declare function structureCopy<T extends HTMLElement>(element: T): json_html<T>;
+export declare function structureCopy<T extends HTMLElement>(element: T): jsonHtml<T>;
+export declare function getElementFromString<T extends HTMLElement = HTMLElement>(str: string): T;
+export declare function getElementFromJSON<T extends HTMLElement = HTMLElement>(json: htmlElementStruct): jsonHtml<T>;

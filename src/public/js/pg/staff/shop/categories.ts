@@ -1,7 +1,7 @@
 import Modal from "../../../components/modal.js";
 import Select from "../../../components/select.js";
 import ElementList from "../../../components/list/list.js";
-import { createElement, json_html } from "../../../common/html.js";
+import { createElement, jsonHtml } from "../../../common/html.js";
 import {
   monetize,
   wait,
@@ -212,7 +212,16 @@ const productsList = new OrdenedElementList<Product>(
       inpZone.classList.add("blank");
     }
 
-    ctx.data[ctx.list.getIndex(ctx.data)] = { uuid: value, name: name.innerText };
+    const index = ctx.list.getIndex(ctx.data);
+    if (
+      index !== -1 &&
+      cacheProducts.find((_: ItemData) => _.uuid === value) !== undefined
+    ) {
+      ctx.data.uuid = value;
+    } else {
+      ctx.data.uuid = "";
+    }
+
     ctx.usePipe("custom:change");
   },
 }).setTemplate(`
@@ -231,35 +240,64 @@ const productsList = new OrdenedElementList<Product>(
 </div>
 `);
 
-// function NewOrderOnItemModal(
-//   order: string,
-//   index: number,
-//   order_obj: string[]
-// ): HTMLInputElement {
-//   // const order_list = modalCategory.getBody()._.orders._.list.dom;
-//   // order_obj[index] = order;
+interface SubCategory {
+  uuid: string;
+  name: string;
+}
 
-//   // const inp = querySelector<HTMLInputElement>("input", inpZone);
-//   // inp.setAttribute("list", "products_list");
+const subcategoriesList = new OrdenedElementList<SubCategory>(
+  document.querySelector("#categories_list"),
+  OrdenedElementList.NO_URL,
+  {
+    autoRefresh: true,
+    idTarget: "uuid",
+  }
+).setCustomFunctions({
+  inputFn: (ctx: any) => {
+    const inpZone = querySelector(".input-zone", ctx.template);
+    const name = querySelector(".name", inpZone);
 
-//   // inp.value = order;
-//   // if (inp.value.length > 0) {
-//   //   inpZone.classList.remove("blank");
-//   //   if (inp.value.length !== 36) {
-//   //     name.innerText = "Invalid";
-//   //   } else {
-//   //     name.innerText =
-//   //       cacheProducts.find((_: ItemData) => _.uuid === inp.value)?.name ||
-//   //       "Invalid";
-//   //   }
-//   // } else {
-//   //   inpZone.classList.add("blank");
-//   // }
-//   // AddEvent("input", inp, () => {
-//   // });
+    const value: string = ctx.element.value;
+    if (value.length > 0) {
+      inpZone.classList.remove("blank");
+      if (value.length !== 36) {
+        name.innerText = "Invalid";
+      } else {
+        name.innerText =
+          cacheProducts.find((_: ItemData) => _.uuid === value)?.name ||
+          "Invalid";
+      }
+    } else {
+      inpZone.classList.add("blank");
+    }
 
-//   // return inp;
-// }
+    const index = ctx.list.getIndex(ctx.data);
+    if (
+      index !== -1 &&
+      cacheProducts.find((_: ItemData) => _.uuid === value) !== undefined
+    ) {
+      ctx.data.uuid = value;
+    } else {
+      ctx.data.uuid = "";
+    }
+
+    ctx.usePipe("custom:change");
+  },
+}).setTemplate(`
+<div class="item" >
+  <div class="input-zone">
+    <input type="text" data-slot-events="input" data-oninput="this.custom.inputFn(this);" slot="uuid" placeholder="uuid">
+    <div class="name" slot="name"></div>
+  </div>
+  <button class="delete" >
+    <i class="material" data-slot-events="click" data-onclick="this.fn.delete(); this.usePipe('custom:change');">delete</i> 
+  </button>
+  <div class="ord-btns">
+    <button class="up" data-slot-events="click" data-onclick="this.fn.goUp(); this.usePipe('custom:change');"><i class="material">keyboard_arrow_up</i></button>
+    <button class="down" data-slot-events="click" data-onclick="this.fn.goDown(); this.usePipe('custom:change');"><i class="material">keyboard_arrow_down</i></button>
+  </div>
+</div>
+`);
 
 function SetOrderActions(order: string[]) {
   const addBtn =
@@ -268,18 +306,52 @@ function SetOrderActions(order: string[]) {
   AddEvent("click", addBtn, () => productsList.add({ uuid: "", name: "" }));
   productsList.clearPipes();
   productsList.pipe((method: string) => {
-    if(method !== "custom:change") return;
+    if (method !== "custom:change") return;
     order.splice(0, order.length);
-    order.push(...productsList.getData().map(v => v.uuid))
+    order.push(...productsList.getData().map((v) => v.uuid));
     console.log(order);
   });
 }
 
+function LoadProductsOnCategoryModal(actual: string[]) {
+  productsList.deleteAll();
+  for (let [product, i] of ArrayIndex<string>(actual)) {
+    const name =
+      cacheProducts.find((_: ItemData) => _.uuid === product)?.name ||
+      "Invalid";
+    productsList.add({ uuid: product, name: name });
+  }
+}
+
+function SetSubcategoriesActions(order: string[]) {
+  const addBtn =
+    modalCategory.getBody()._.categories._.header._.actions._.button.dom;
+
+  AddEvent("click", addBtn, () => productsList.add({ uuid: "", name: "" }));
+  productsList.clearPipes();
+  productsList.pipe((method: string) => {
+    if (method !== "custom:change") return;
+    order.splice(0, order.length);
+    order.push(...productsList.getData().map((v) => v.uuid));
+    console.log(order);
+  });
+}
+
+function LoadSubcategoriesOnCategoryModal(actual: string[]) {
+  productsList.deleteAll();
+  for (let [product, i] of ArrayIndex<string>(actual)) {
+    const name =
+      cacheProducts.find((_: ItemData) => _.uuid === product)?.name ||
+      "Invalid";
+    productsList.add({ uuid: product, name: name });
+  }
+}
+
 function UpdateData(
   property: [object, string],
-  elm: json_html<HTMLInputElement>,
+  elm: jsonHtml<HTMLInputElement>,
   _default: string,
-  pre?: (value: string, element: json_html<HTMLInputElement>) => any
+  pre?: (value: string, element: jsonHtml<HTMLInputElement>) => any
 ) {
   elm.dom.value = _default;
   pre = pre || ((_) => _);
@@ -292,10 +364,10 @@ function UpdateData(
 
 function UpdateDataSelect(
   property: [object, string],
-  elm: json_html<HTMLSelectElement>,
+  elm: jsonHtml<HTMLSelectElement>,
   select: Select,
   _default: number | string,
-  pre?: (value: string, element: json_html<HTMLSelectElement>) => any
+  pre?: (value: string, element: jsonHtml<HTMLSelectElement>) => any
 ) {
   pre = pre || ((_) => _);
 
@@ -333,13 +405,13 @@ function OpenAddModal() {
 
   UpdateData(
     [actual_category_data, "name"],
-    <json_html<HTMLInputElement>>body._.name._.input,
+    <jsonHtml<HTMLInputElement>>body._.name._.input,
     ""
   );
 
   UpdateData(
     [actual_category_data, "display"],
-    <json_html<HTMLInputElement>>body._.display._.input,
+    <jsonHtml<HTMLInputElement>>body._.display._.input,
     "{{NAME}}"
   );
   const updateDisplay = () => {
@@ -353,13 +425,13 @@ function OpenAddModal() {
 
   UpdateData(
     [actual_category_data, "description"],
-    <json_html<HTMLInputElement>>body._.description._.textarea,
+    <jsonHtml<HTMLInputElement>>body._.description._.textarea,
     ""
   );
 
   UpdateDataSelect(
     [actual_category_data, "min_rank"],
-    <json_html<HTMLSelectElement>>body._.rank._.select,
+    <jsonHtml<HTMLSelectElement>>body._.rank._.select,
     rankSelect,
     0,
     (value: string) => UserRank[value]
@@ -422,13 +494,13 @@ function OpenCategoryModal(data: Category) {
 
   UpdateData(
     [actual_category_data, "name"],
-    <json_html<HTMLInputElement>>body._.name._.input,
+    <jsonHtml<HTMLInputElement>>body._.name._.input,
     actual_category_data.name
   );
 
   UpdateData(
     [actual_category_data, "display"],
-    <json_html<HTMLInputElement>>body._.display._.input,
+    <jsonHtml<HTMLInputElement>>body._.display._.input,
     actual_category_data.display
   );
   const updateDisplay = () => {
@@ -442,13 +514,13 @@ function OpenCategoryModal(data: Category) {
 
   UpdateData(
     [actual_category_data, "description"],
-    <json_html<HTMLInputElement>>body._.description._.textarea,
+    <jsonHtml<HTMLInputElement>>body._.description._.textarea,
     actual_category_data.description
   );
 
   UpdateDataSelect(
     [actual_category_data, "min_rank"],
-    <json_html<HTMLSelectElement>>body._.rank._.select,
+    <jsonHtml<HTMLSelectElement>>body._.rank._.select,
     rankSelect,
     actual_category_data.min_rank - 1,
     (value: string) => UserRank[value]
@@ -500,17 +572,6 @@ function OpenCategoryModal(data: Category) {
 
 function AddEvent(ev: string, elm: HTMLElement, fn: (e?: Event) => void) {
   elm.addEventListener(ev, fn);
-}
-
-function LoadProductsOnCategoryModal(actual: string[]) {
-  productsList.deleteAll();
-  for (let [product, i] of ArrayIndex<string>(actual)) {
-    // NewOrderOnItemModal(product, i, actual);
-    const name =
-      cacheProducts.find((_: ItemData) => _.uuid === product)?.name ||
-      "Invalid";
-    productsList.add({ uuid: product, name: name });
-  }
 }
 
 function* ArrayIndex<T extends any = any>(arr: T[]): Generator<[T, number]> {
@@ -607,7 +668,6 @@ async function RemItem(uuid: string, confirmation: string) {
 /**************************/
 
 (async () => {
-  const list = querySelector<HTMLDataListElement>("#products_list");
   const res = await fetch("/api/get/products", {
     headers: {
       accept: "application/json",
@@ -617,13 +677,4 @@ async function RemItem(uuid: string, confirmation: string) {
 
   if (!res.ok) return;
   cacheProducts = await res.json();
-
-  list.innerHTML = "";
-
-  for (const product of cacheProducts) {
-    const elm = createElement<HTMLOptionElement>("option");
-    elm.value = product.uuid;
-    elm.text = product.name;
-    list.append(elm);
-  }
 })();

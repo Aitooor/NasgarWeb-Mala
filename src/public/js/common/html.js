@@ -27,7 +27,7 @@ export function middlewareEvents(element) {
         const listener = args[1];
         if (events[name] == null)
             events[name] = [];
-        events[name].filter(_ => _ !== listener);
+        events[name].filter((_) => _ !== listener);
         if (events[name].length === 0)
             events[name] = undefined;
         eventNames = Object.keys(events);
@@ -46,7 +46,7 @@ export function middlewareEvents(element) {
         },
         get events() {
             return events;
-        }
+        },
     };
 }
 export function structureCopy(element) {
@@ -59,7 +59,7 @@ export function structureCopy(element) {
         hasChilds: element.hasChildNodes(),
         childs: [],
         _: {},
-        addChild() { }
+        addChild() { },
     };
     me.setAttr = function (name, value = "true") {
         me.attrs[name] = value;
@@ -78,10 +78,11 @@ export function structureCopy(element) {
         const tag = child.nodeName.toLowerCase();
         const name = child.dataset.name || null;
         const prop = name || tag;
-        const sameTags = Object.keys(me._).filter(_ => _.match(new RegExp(`^${prop}\d*$`)) !== null);
+        const sameTags = Object.keys(me._).filter((_) => _.match(new RegExp(`^${prop}\d*$`)) !== null);
         const structure = structureCopy(child);
         me._[prop + (sameTags.length || "")] = structure;
         me.childs.push(structure);
+        me.dom.appendChild(structure.dom);
         return structure;
     };
     const attributeNames = element.getAttributeNames();
@@ -98,5 +99,32 @@ export function structureCopy(element) {
         }
     }
     return me;
+}
+export function getElementFromString(str) {
+    const element = document.createElement("div");
+    element.innerHTML = str;
+    return element.firstElementChild;
+}
+export function getElementFromJSON(json) {
+    const element = createElement(json.elm);
+    if (json.classes) {
+        for (const cls of json.classes)
+            element.classList.add(cls);
+    }
+    if (json.attrs) {
+        for (const attr in json.attrs)
+            element.setAttribute(attr, json.attrs[attr]);
+    }
+    if (json.childs) {
+        for (const child of json.childs) {
+            if (typeof child === "string") {
+                element.appendChild(document.createTextNode(child));
+            }
+            else {
+                element.appendChild(getElementFromJSON(child).dom);
+            }
+        }
+    }
+    return structureCopy(element);
 }
 //# sourceMappingURL=html.js.map

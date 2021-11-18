@@ -1,128 +1,120 @@
-<%- include("../../../partials/head.ejs", { global, url: "/staff/shop/categories", title: "Shop categories" }) %> 
-<%- include("../../../partials/body.ejs", { global }) %>
-	
-	<div class="app" >
-		<div class="header" >
-			<span class="title" > 
-				<span class="text" > Categories </span> 
-				<span class="modifiers" >All</span> 
-			</span>
-			<div class="actions" >
-				<button class="action refresh" >
-					<i class="material" >refresh</i>
-				</button>
-				<button class="action filter" >
-					<i class="material" >filter_list</i>
-				</button>
-				<button class="action add" >
-					<i class="material" >add_circle_outline</i>
-				</button>
-			</div>
-		</div>
-		<div class="categories" ></div>
-	</div>
-	
-	<div id="category-editor-body" hidden >
-		<div class="placeholder hidden" data-name="uuid">UUID: -</div>
+<%- include("../../../partials/head.ejs", { global, url:
+"/staff/shop/categories", title: "Shop categories" }) %> <%-
+include("../../../partials/body.ejs", { global }) %>
 
-		<div class="field" data-name="image">
-			<span>Image selector:</span>
-			<button class="input primary hover-anim-ball"><span>Select images</span></button>
-		</div>
+<div class="app">
+  <div class="header">
+    <span class="title">
+      <span class="text"> Categories </span>
+      <span class="modifiers">All</span>
+    </span>
+    <div class="actions">
+      <button class="action refresh">
+        <i class="material">refresh</i>
+      </button>
+      <button class="action filter">
+        <i class="material">filter_list</i>
+      </button>
+      <button class="action add">
+        <i class="material">add_circle_outline</i>
+      </button>
+    </div>
+  </div>
+  <div class="categories"></div>
+</div>
 
-		<div class="field required" data-name="name">
-			<span class="title" >Name</span>
-			<input class="input" placeholder="Name of category"  >
-		</div>
+<div id="category-editor-body" hidden>
+  <div class="placeholder hidden" data-name="uuid">UUID: -</div>
 
-		<div class="field required" data-name="display">
-			<span class="title">HTML Display</span>
-			<input class="input" placeholder="Display in html">
-			<div class="preview" data-name="preview">{{NAME}}</div>
-		</div>
+  <div class="field" data-name="image">
+    <span>Image selector:</span>
+    <button class="input primary hover-anim-ball">
+      <span>Select images</span>
+    </button>
+  </div>
 
-		<div class="field required" data-name="description">
-			<span class="title" >Description</span>
-			<textarea class="input" placeholder="Description" ></textarea>
-		</div>
+  <div class="field required" data-name="name">
+    <span class="title">Name</span>
+    <input class="input" placeholder="Name of category" />
+  </div>
 
-		<div class="field required" data-name="rank">
-			<span class="title" >Min Rank</span>
-			<select class="input" >
-			</select>
-		</div>
+  <div class="field required" data-name="display">
+    <span class="title">HTML Display</span>
+    <input class="input" placeholder="Display in html" />
+    <div class="preview" data-name="preview">{{ NAME }}</div>
+  </div>
 
-		<div class="field list" data-name="categories">
-			<div class="title" data-name="header">
-				<span class="title" >Categories</span>
-				<div class="actions" data-name="actions">
-					<button>
-						<i class="material" >add_circle_outline</i>
-					</button>
-				</div>
-			</div>
-			<div class="list" data-name="list"></div>
-			<datalist id="categories_list">
-				<option value="46578913215649138755316">Lorem ipsum dolor sit amet.</option>
-				<option value="01231957682401256794315">Lorem, ipsum dolor.</option>
-				<option value="12461975834689567678402">Lorem ipsum dolor sit amet consectetur.</option>
-			</datalist>
-		</div>
+  <div class="field required" data-name="description">
+    <span class="title">Description</span>
+    <textarea class="input" placeholder="Description"></textarea>
+  </div>
 
-		<div class="field list" data-name="orders">
-			<div class="title" data-name="header">
-				<span class="title" >Products</span>
-				<div class="actions" data-name="actions">
-					<button>
-						<i class="material" >add_circle_outline</i>
-					</button>
-				</div>
-			</div>
-			<div id="product_list" class="list" data-name="list"></div>
-			<datalist id="products_list">
-				<option value="46578913215649138755316">Lorem ipsum dolor sit amet.</option>
-				<option value="01231957682401256794315">Lorem, ipsum dolor.</option>
-				<option value="12461975834689567678402">Lorem ipsum dolor sit amet consectetur.</option>
-			</datalist>
-		</div>
-	</div>
-	
-	<div id="image-selector" class="hidden image-select" >
-		<div class="upload-zone" data-name="upload">
-			<span class="total" ><span>-</span> images</span>
-			<button class="upload" >Upload images</button>
-			<input hidden multiple type="file" name="images" accept="image/*" />
-		</div>
-		<div class="images" data-name="images">
-			<div class="image selected" ><img src="/img/logo-128x.png" ></div>
-		</div>
-	</div>
+  <div class="field required" data-name="rank">
+    <span class="title">Min Rank</span>
+    <select class="input"></select>
+  </div>
 
-	<template id="category" >
-		<div class="category card primary">
-			<div class="top" >
-				<span class="name" slot="name"></span>
-			</div>
-			<div class="bottom" >
-				<span class="total" slot="order.length"></span>
-			</div>
-		</div>
-	</template>
+  <div class="field list" data-name="categories">
+    <div class="title" data-name="header">
+      <span class="title">Categories</span>
+      <div class="actions" data-name="actions">
+        <button>
+          <i class="material">add_circle_outline</i>
+        </button>
+      </div>
+    </div>
+    <div class="list" data-name="list" id="categories_list"></div>
+  </div>
 
-	<template id="list-category" >
-		<div class="item" >
-			<div class="input-zone blank">
-				<input type="text" placeholder="uuid">
-				<div class="name">Holaa</div>
-			</div>
-			<button class="delete" >
-				<i class="material">delete</i> 
-			</button>
-			<div class="ord-btns">
-				<button class="up"><i class="material">keyboard_arrow_up</i></button>
-				<button class="down"><i class="material">keyboard_arrow_down</i></button>
-			</div>
-		</div>
-	</template>
+  <div class="field list" data-name="orders">
+    <div class="title" data-name="header">
+      <span class="title">Products</span>
+      <div class="actions" data-name="actions">
+        <button>
+          <i class="material">add_circle_outline</i>
+        </button>
+      </div>
+    </div>
+    <div id="product_list" class="list" data-name="list"></div>
+  </div>
+</div>
+
+<div id="image-selector" class="hidden image-select">
+  <div class="upload-zone" data-name="upload">
+    <span class="total"><span>-</span> images</span>
+    <button class="upload">Upload images</button>
+    <input hidden multiple type="file" name="images" accept="image/*" />
+  </div>
+  <div class="images" data-name="images">
+    <div class="image selected"><img src="/img/logo-128x.png" /></div>
+  </div>
+</div>
+
+<template id="category">
+  <div class="category card primary">
+    <div class="top">
+      <span class="name" slot="name"></span>
+    </div>
+    <div class="bottom">
+      <span class="total" slot="order.length"></span>
+    </div>
+  </div>
+</template>
+
+<template id="list-category">
+  <div class="item">
+    <div class="input-zone blank">
+      <input type="text" placeholder="uuid" />
+      <div class="name">Holaa</div>
+    </div>
+    <button class="delete">
+      <i class="material">delete</i>
+    </button>
+    <div class="ord-btns">
+      <button class="up"><i class="material">keyboard_arrow_up</i></button>
+      <button class="down"><i class="material">keyboard_arrow_down</i></button>
+    </div>
+  </div>
+</template>
 
 <%- include("../../../partials/body_end.ejs") %>

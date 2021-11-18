@@ -1,5 +1,5 @@
 import * as cache from "../common/cache.js";
-import { structureCopy, json_html } from "../common/html.js";
+import { structureCopy, jsonHtml } from "../common/html.js";
 import { EventEmitter, _listener as event_listener } from "../common/events.js";
 
 const c_pre = "modal_";
@@ -97,9 +97,9 @@ export default class Modal {
 
   private _header: HTMLDivElement;
   private _body: HTMLDivElement;
-  private _body_json: json_html<HTMLDivElement> = null;
+  private _body_json: jsonHtml<HTMLDivElement> = null;
   private _actions: HTMLDivElement;
-  private _actions_json: json_html;
+  private _actions_json: jsonHtml;
   
   constructor(config: _Modal.Config) {
     this.element  = document.createElement("div");
@@ -153,7 +153,7 @@ export default class Modal {
   drainEvents() {
     if(!this.config.cloneBody) return;
 
-    function deep(elm: json_html) {
+    function deep(elm: jsonHtml) {
       elm.events.removeAll();
       for(const child of elm.childs)
         deep(child);
@@ -217,7 +217,7 @@ export default class Modal {
 
   /*-********* Get Modal parts *********-*/
 
-  getActions(): json_html {
+  getActions(): jsonHtml {
     return this._actions_json;
   }
 
@@ -229,7 +229,7 @@ export default class Modal {
     return this._body;
   }
 
-  getBody(): json_html<HTMLDivElement> {
+  getBody(): jsonHtml<HTMLDivElement> {
     return this._body_json;
   }
 

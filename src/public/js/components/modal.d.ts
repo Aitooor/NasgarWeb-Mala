@@ -1,4 +1,4 @@
-import { json_html } from "../common/html.js";
+import { jsonHtml } from "../common/html.js";
 import { _listener as event_listener } from "../common/events.js";
 export declare namespace _Modal {
     interface Action {
@@ -56,10 +56,10 @@ export default class Modal {
     on(ev: string, listener: event_listener): void;
     off(ev: string, listener: event_listener): void;
     addAction(action: _Modal.Action): void;
-    getActions(): json_html;
+    getActions(): jsonHtml;
     getActionsConfig(): _Modal.Action[];
     getBodyDom(): HTMLDivElement;
-    getBody(): json_html<HTMLDivElement>;
+    getBody(): jsonHtml<HTMLDivElement>;
     getHeader(): {
         dom: HTMLDivElement;
         title: string;

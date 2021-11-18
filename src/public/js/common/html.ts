@@ -1,160 +1,213 @@
-
-export function query<T extends HTMLElement = HTMLElement>(str: string, parent: Document | HTMLElement = document): T {
-	return parent.querySelector<T>(str);
+export function query<T extends HTMLElement = HTMLElement>(
+  str: string,
+  parent: Document | HTMLElement = document
+): T {
+  return parent.querySelector<T>(str);
 }
 
-export function queryAll<T extends HTMLElement = HTMLElement>(str: string, parent: Document | HTMLElement = document): T[] {
-	return Array.from<T>(parent.querySelectorAll<T>(str));
+export function queryAll<T extends HTMLElement = HTMLElement>(
+  str: string,
+  parent: Document | HTMLElement = document
+): T[] {
+  return Array.from<T>(parent.querySelectorAll<T>(str));
 }
 
-export function createElement<T extends HTMLElement = HTMLElement>(tag: string): T {
-	return <T>document.createElement(tag);
+export function createElement<T extends HTMLElement = HTMLElement>(
+  tag: string
+): T {
+  return <T>document.createElement(tag);
 }
 
 export interface middlewareEvents_return {
-	removeAll(): void;
-	add(...args: any[]): void;
-	rem(...args: any[]): void;
-	eventNames: string[];
-	events: {
-		[event: string]: Function[];
-	};
+  removeAll(): void;
+  add(...args: any[]): void;
+  rem(...args: any[]): void;
+  eventNames: string[];
+  events: {
+    [event: string]: Function[];
+  };
 }
 
-export function middlewareEvents(element: HTMLElement): middlewareEvents_return {
-	const original_a = element.addEventListener;
-	const original_r = element.removeEventListener;
-	let eventNames: string[] = [];
-	const events: {[k: string]: Function[]; } = {};
+export function middlewareEvents(
+  element: HTMLElement
+): middlewareEvents_return {
+  const original_a = element.addEventListener;
+  const original_r = element.removeEventListener;
+  let eventNames: string[] = [];
+  const events: { [k: string]: Function[] } = {};
 
-	element.addEventListener = function(...args: any[]) {
-		const name: string = args[0];
-		const listener: Function = args[1];
+  element.addEventListener = function (...args: any[]) {
+    const name: string = args[0];
+    const listener: Function = args[1];
 
-		if(events[name] == null) events[name] = [];
-		if(!events[name].includes(listener))
-			events[name].push(listener);
+    if (events[name] == null) events[name] = [];
+    if (!events[name].includes(listener)) events[name].push(listener);
 
-		eventNames = Object.keys(events);
+    eventNames = Object.keys(events);
 
-		original_a.call(element, ...args);
-	};
-	
-	element.removeEventListener = function(...args: any[]) {
-		const name: string = args[0];
-		const listener: Function = args[1];
+    original_a.call(element, ...args);
+  };
 
-		if(events[name] == null) events[name] = [];
-		events[name].filter(_ => _ !== listener);
-		if(events[name].length === 0)
-			events[name] = undefined;
+  element.removeEventListener = function (...args: any[]) {
+    const name: string = args[0];
+    const listener: Function = args[1];
 
-		eventNames = Object.keys(events);
+    if (events[name] == null) events[name] = [];
+    events[name].filter((_) => _ !== listener);
+    if (events[name].length === 0) events[name] = undefined;
 
-		original_r.call(element, ...args);
-	}
+    eventNames = Object.keys(events);
 
-	return {
-		removeAll() {
-			for(const ev of eventNames)
-				for(const fn of events[ev])
-					// @ts-ignore
-					element.removeEventListener(ev, fn);
-		},
+    original_r.call(element, ...args);
+  };
 
-		add: element.addEventListener,
-		rem: element.removeEventListener,
+  return {
+    removeAll() {
+      for (const ev of eventNames)
+        // @ts-ignore
+        for (const fn of events[ev]) element.removeEventListener(ev, fn);
+    },
 
-		get eventNames() {
-			return eventNames.slice(0);
-		},
+    add: element.addEventListener,
+    rem: element.removeEventListener,
 
-		get events() {
-			return events;
-		}
-	};
+    get eventNames() {
+      return eventNames.slice(0);
+    },
+
+    get events() {
+      return events;
+    },
+  };
 }
 
-export interface json_html<T extends HTMLElement = HTMLElement> {
-	readonly dom: T;
-	readonly elm: string;
-	readonly classes: DOMTokenList;
-	readonly attrs: {
-		[attribute: string]: string;
-	};
-	readonly events: middlewareEvents_return;
-	readonly hasChilds: boolean;
-	readonly childs: json_html<HTMLElement>[];
-	readonly _: {
-		[element: string]: json_html<HTMLElement>;
-	};
-
-	addChild<T extends HTMLElement = HTMLElement>(child: T): json_html<T>;
-	setAttr(name: string, value?: string): json_html<T>;
-	remAttr(name: string): json_html<T>;
+export interface htmlElementStruct {
+  elm?: string;
+  classes?: string[];
+  attrs?: {
+    [attribute: string]: string;
+  };
+  childs?: (htmlElementStruct | string)[];
 }
 
-export function structureCopy<T extends HTMLElement>(element: T): json_html<T> {
-	const me: json_html<T> = {
-		dom: element,
-		elm: element.nodeName.toLowerCase(),
-		classes: element.classList,
-		attrs: {},
-		events: middlewareEvents(element),
-		hasChilds: element.hasChildNodes(),
-		childs: [],
-		_: {},
-		// @ts-ignore
-		addChild() {}
-	};
+export interface jsonHtml<T extends HTMLElement = HTMLElement> {
+  readonly dom: T;
+  readonly elm: string;
+  readonly classes: DOMTokenList;
+  readonly attrs: {
+    [attribute: string]: string;
+  };
+  readonly events: middlewareEvents_return;
+  readonly hasChilds: boolean;
+  readonly childs: jsonHtml<HTMLElement>[];
+  readonly _: {
+    [element: string]: jsonHtml<HTMLElement>;
+  };
 
-	me.setAttr = function(name: string, value: string = "true") {
-		me.attrs[name] = value;
-		me.dom.setAttribute(name, value);
-		return me;
-	};
+  addChild<T extends HTMLElement = HTMLElement>(child: T): jsonHtml<T>;
+  setAttr(name: string, value?: string): jsonHtml<T>;
+  remAttr(name: string): jsonHtml<T>;
+}
 
-	me.remAttr = function(name: string) {
-		delete me.attrs[name];
-		me.dom.removeAttribute(name);
-		return me;
-	};
+export function structureCopy<T extends HTMLElement>(element: T): jsonHtml<T> {
+  const me: jsonHtml<T> = {
+    dom: element,
+    elm: element.nodeName.toLowerCase(),
+    classes: element.classList,
+    attrs: {},
+    events: middlewareEvents(element),
+    hasChilds: element.hasChildNodes(),
+    childs: [],
+    _: {},
+    // @ts-ignore
+    addChild() {},
+  };
 
-	me.addChild = function<T extends HTMLElement = HTMLElement>(child: T): json_html<T> {
-		if(child.nodeName === "#text") {
-			throw new TypeError("Child is a text");
-		}
+  me.setAttr = function (name: string, value: string = "true") {
+    me.attrs[name] = value;
+    me.dom.setAttribute(name, value);
+    return me;
+  };
 
-		const tag = child.nodeName.toLowerCase();
-		const name = child.dataset.name || null;
-		const prop = name || tag;
-		const sameTags = Object.keys(me._).filter(_ => _.match(new RegExp(`^${prop}\d*$`)) !== null);
+  me.remAttr = function (name: string) {
+    delete me.attrs[name];
+    me.dom.removeAttribute(name);
+    return me;
+  };
 
-		const structure = structureCopy<T>(child);
+  me.addChild = function <T extends HTMLElement = HTMLElement>(
+    child: T
+  ): jsonHtml<T> {
+    if (child.nodeName === "#text") {
+      throw new TypeError("Child is a text");
+    }
 
-		me._[prop + (sameTags.length || "")] = structure;
+    const tag = child.nodeName.toLowerCase();
+    const name = child.dataset.name || null;
+    const prop = name || tag;
+    const sameTags = Object.keys(me._).filter(
+      (_) => _.match(new RegExp(`^${prop}\d*$`)) !== null
+    );
 
+    const structure = structureCopy<T>(child);
 
-		me.childs.push(structure);
+    me._[prop + (sameTags.length || "")] = structure;
 
-		return structure;
-	}
+    me.childs.push(structure);
+    me.dom.appendChild(structure.dom);
 
-	/*—————— Attributes ——————*/
-	const attributeNames = element.getAttributeNames();
-	for(const attr of attributeNames) {
-		me.attrs[attr] = element.getAttribute(attr);
-	}
-	
-	/*—————— Childs ——————*/
-	if(me.hasChilds) {
-		const childs = <HTMLElement[]>Array.from(element.childNodes);
-		
-		for(const child of childs) {
-			try { me.addChild(child) } catch{}
-		}
-		
-	}
+    return structure;
+  };
 
-	return me;
+  /*—————— Attributes ——————*/
+  const attributeNames = element.getAttributeNames();
+  for (const attr of attributeNames) {
+    me.attrs[attr] = element.getAttribute(attr);
+  }
+
+  /*—————— Childs ——————*/
+  if (me.hasChilds) {
+    const childs = <HTMLElement[]>Array.from(element.childNodes);
+
+    for (const child of childs) {
+      try {
+        me.addChild(child);
+      } catch {}
+    }
+  }
+
+  return me;
+}
+
+export function getElementFromString<T extends HTMLElement = HTMLElement>(
+  str: string
+): T {
+  const element = document.createElement("div");
+  element.innerHTML = str;
+  return <T>element.firstElementChild;
+}
+
+export function getElementFromJSON<T extends HTMLElement = HTMLElement>(
+  json: htmlElementStruct
+): jsonHtml<T> {
+  const element = createElement<T>(json.elm);
+  if (json.classes) {
+    for (const cls of json.classes) element.classList.add(cls);
+  }
+
+  if (json.attrs) {
+    for (const attr in json.attrs) element.setAttribute(attr, json.attrs[attr]);
+  }
+
+  if (json.childs) {
+    for (const child of json.childs) {
+      if (typeof child === "string") {
+        element.appendChild(document.createTextNode(child));
+      } else {
+        element.appendChild(getElementFromJSON(child).dom);
+      }
+    }
+  }
+
+  return structureCopy<T>(element);
 }
