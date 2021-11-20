@@ -1,21 +1,7 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-	<%- include("./partials/header.ejs") %> 
-	<title> Tests - Nasgar Network </title>
-
-	<!-- CSS -->
-	<link rel="stylesheet/less" href="less/tests.less">
-
-	<%- include("./partials/less.ejs") %> 
-</head>
-<body>
-	<%- include("./partials/nav.ejs", { userData }) -%> 
+<%- include("./partials/head.ejs", { global, url: "/", title: "Tests", styles: [ "tests" ], scripts: ["script"] }) %>
+<%- include("./partials/body.ejs", { global }) %>
   <div class="header-separator"></div>
 	<div class="">
     <input type="text" id="Hola">
   </div>
-
-  <script type="module" src="js/script.js"></script>
-</body>
-</html>
+<%- include("./partials/body_end.ejs", { global }) %>
