@@ -223,7 +223,7 @@ export class RecomendedSelectorList<T = any> {
       });
     });
     this.refresh();
-  } 
+  }
 
   setTarget(_target: HTMLElement | HTMLElement[]) {
     let targets: HTMLElement[] = Array.isArray(_target) ? _target : [_target];
