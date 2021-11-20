@@ -1,27 +1,41 @@
-import { RecomendedSelectorList } from './components/selector_list/selectorList.js';
-;
+import { RecomendedSelectorList, } from "./components/selector_list/selectorList.js";
 (() => {
     const list = [
-        ...Array.from({ length: Math.floor(Math.random() * 10) + 1 }).map(() => ({
+        ...Array.from({ length: Math.floor(Math.random() * 8) + 3 }).map(() => ({
             name: `Item ${Math.floor(Math.random() * 100)}`,
-            category: `Category ${Math.floor(Math.random() * 10)}`,
-        }))
+            category: `@${Math.floor(Math.random() * 10)}`,
+        })),
     ];
     const options = {
         list,
-        properties: [{
+        properties: [
+            {
+                text: "",
+                target: "id",
+                style: "small",
+                visible: false,
+            },
+            {
                 text: "Name",
                 target: "name",
                 style: "large",
-            }, {
+            },
+            {
                 text: "Category",
                 target: "category",
                 style: "medium",
-            }],
-        hint: "",
+                regex: /^@\d+/,
+            },
+        ],
+        hint: `
+    Use <span class="text-style-code"><span class="code-comment">NAME</span></span> to name, 
+    and <span class="text-style-code"><span class="code-active">@</span><span class="code-comment">CATEGORY</span></span> 
+    to categories.`,
         target: document.querySelector("#Hola"),
         useOnInput: true,
-        onSelect: (item) => { console.log(item); },
+        onSelect: (item) => {
+            console.log(item);
+        },
         onClose: () => { },
     };
     const selectorList = new RecomendedSelectorList(options);
