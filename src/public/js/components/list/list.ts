@@ -34,7 +34,6 @@ type ClickEvent<G, T, K> = (_this: G, element: K, data: T) => void;
 type CustomFunctions = { [key: string]: Function };
 
 type PipeFunction = (method: string, ...args: any[]) => void;
-// | ((method: string, nn: any, ...args: any[]) => void);
 
 export class ElementList<
   T extends any,
@@ -59,7 +58,7 @@ export class ElementList<
   protected _onclickEvent: ClickEvent<this, T, K> = null;
 
   constructor(
-    protected parent: HTMLDivElement,
+    public parent: HTMLDivElement,
     protected url: string,
     options: ElementList_Options = DefaultElementList_Options
   ) {

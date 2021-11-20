@@ -1,13 +1,17 @@
 import Modal from "../../../components/modal.js";
 import Select from "../../../components/select.js";
 import ElementList from "../../../components/list/list.js";
-import { createElement, jsonHtml } from "../../../common/html.js";
+import { createElement, jsonHtml, queryAll } from "../../../common/html.js";
 import {
   monetize,
   wait,
   capitalize,
   applyFilter,
 } from "../../../common/shop.js";
+import {
+  RecomendedSelectorList,
+  RecomendedSelectorListOptions,
+} from "../../../components/selector_list/selectorList.js";
 
 import { query as querySelector } from "../../../common/html.js";
 import { OrdenedElementList } from "../../../components/list/order.js";
@@ -35,9 +39,10 @@ interface Category {
   order: string[];
 }
 
-interface ItemData {
+interface Product {
   uuid: string;
   name: string;
+  category: string;
 }
 
 // const filters = {
@@ -48,12 +53,13 @@ interface ItemData {
 //   sale: 0
 // }
 
-let cacheProducts: ItemData[];
+let cacheProducts: Product[];
 
 const header_actions_div: HTMLDivElement = querySelector<HTMLDivElement>(
   ".app .header .actions"
 );
 
+//#region Categories list
 const categories_list: HTMLDivElement =
   querySelector<HTMLDivElement>(".app .categories");
 
@@ -69,7 +75,9 @@ const category_list = new ElementList<Category, HTMLDivElement>(
   .setOnClick((_, elm: HTMLDivElement, data: Category) => {
     OpenCategoryModal(data);
   });
+//#endregion
 
+//#region Header actions
 const header_action = {
   refresh: querySelector<HTMLButtonElement>(".refresh", header_actions_div),
   filter: querySelector<HTMLButtonElement>(".filter", header_actions_div),
@@ -111,6 +119,7 @@ header_action.add.onclick = async () => {
 };
 
 refreshAction_fn();
+//#endregion
 
 /**——————————————————**/
 /**       MODAL      **/
@@ -181,11 +190,7 @@ const tmCategoryListModal = <HTMLDivElement>(
 //   modalCategory.setHeader(title);
 // }
 
-interface Product {
-  uuid: string;
-  name: string;
-}
-
+//#region Product list
 const productsList = new OrdenedElementList<Product>(
   document.querySelector("#product_list"),
   OrdenedElementList.NO_URL,
@@ -205,7 +210,7 @@ const productsList = new OrdenedElementList<Product>(
         name.innerText = "Invalid";
       } else {
         name.innerText =
-          cacheProducts.find((_: ItemData) => _.uuid === value)?.name ||
+          cacheProducts.find((_: Product) => _.uuid === value)?.name ||
           "Invalid";
       }
     } else {
@@ -215,7 +220,7 @@ const productsList = new OrdenedElementList<Product>(
     const index = ctx.list.getIndex(ctx.data);
     if (
       index !== -1 &&
-      cacheProducts.find((_: ItemData) => _.uuid === value) !== undefined
+      cacheProducts.find((_: Product) => _.uuid === value) !== undefined
     ) {
       ctx.data.uuid = value;
     } else {
@@ -240,6 +245,70 @@ const productsList = new OrdenedElementList<Product>(
 </div>
 `);
 
+const productsListSelector = new RecomendedSelectorList<Product>({
+  list: [],
+  properties: [
+    {
+      text: "Name",
+      target: "name",
+      style: "large",
+    },
+  ],
+  target: [],
+  useOnInput: true,
+});
+
+function SetOrderActions(order: string[]) {
+  const addBtn =
+    modalCategory.getBody()._.orders._.header._.actions._.button.dom;
+
+  AddEvent("click", addBtn, () => {
+    productsList.add({ uuid: "", name: "", category: "" });
+    const childs: HTMLElement[] = <HTMLElement[]>(
+      Array.from(
+        queryAll<HTMLInputElement>(
+          ".input-zone input",
+          modalCategory.getBody()._.orders._.list.dom
+        )
+      )
+    );
+    
+    productsListSelector.setTarget(childs);
+  });
+  productsList.clearPipes();
+  productsList.pipe((method: string) => {
+    if (method !== "custom:change") return;
+    order.splice(0, order.length);
+    order.push(...productsList.getData().map((v) => v.uuid));
+    console.log(order);
+  });
+}
+
+function LoadProductsOnCategoryModal(actual: string[]) {
+  productsList.deleteAll();
+  for (let [product, i] of ArrayIndex<string>(actual)) {
+    const prod: Product | undefined = cacheProducts.find(
+      (_: Product) => _.uuid === product
+    );
+    const name = prod?.name || "";
+    const category = prod?.category || "";
+    productsList.add({ uuid: product, name: name, category: category });
+
+    const childs: HTMLElement[] = <HTMLElement[]>(
+      Array.from(
+        queryAll<HTMLInputElement>(
+          ".input-zone input",
+          modalCategory.getBody()._.orders._.list.dom
+        )
+      )
+    );
+    
+    productsListSelector.setTarget(childs);
+  }
+}
+//#endregion
+
+//#region Subcategory list
 interface SubCategory {
   uuid: string;
   name: string;
@@ -264,7 +333,7 @@ const subcategoriesList = new OrdenedElementList<SubCategory>(
         name.innerText = "Invalid";
       } else {
         name.innerText =
-          cacheProducts.find((_: ItemData) => _.uuid === value)?.name ||
+          cacheProducts.find((_: Product) => _.uuid === value)?.name ||
           "Invalid";
       }
     } else {
@@ -274,7 +343,7 @@ const subcategoriesList = new OrdenedElementList<SubCategory>(
     const index = ctx.list.getIndex(ctx.data);
     if (
       index !== -1 &&
-      cacheProducts.find((_: ItemData) => _.uuid === value) !== undefined
+      cacheProducts.find((_: Product) => _.uuid === value) !== undefined
     ) {
       ctx.data.uuid = value;
     } else {
@@ -299,53 +368,31 @@ const subcategoriesList = new OrdenedElementList<SubCategory>(
 </div>
 `);
 
-function SetOrderActions(order: string[]) {
-  const addBtn =
-    modalCategory.getBody()._.orders._.header._.actions._.button.dom;
+// function SetSubcategoriesActions(order: string[]) {
+//   const addBtn =
+//     modalCategory.getBody()._.categories._.header._.actions._.button.dom;
 
-  AddEvent("click", addBtn, () => productsList.add({ uuid: "", name: "" }));
-  productsList.clearPipes();
-  productsList.pipe((method: string) => {
-    if (method !== "custom:change") return;
-    order.splice(0, order.length);
-    order.push(...productsList.getData().map((v) => v.uuid));
-    console.log(order);
-  });
-}
+//   AddEvent("click", addBtn, () => productsList.add({ uuid: "", name: "" }));
+//   productsList.clearPipes();
+//   productsList.pipe((method: string) => {
+//     if (method !== "custom:change") return;
+//     order.splice(0, order.length);
+//     order.push(...productsList.getData().map((v) => v.uuid));
+//     console.log(order);
+//   });
+// }
 
-function LoadProductsOnCategoryModal(actual: string[]) {
-  productsList.deleteAll();
-  for (let [product, i] of ArrayIndex<string>(actual)) {
-    const name =
-      cacheProducts.find((_: ItemData) => _.uuid === product)?.name ||
-      "Invalid";
-    productsList.add({ uuid: product, name: name });
-  }
-}
+// function LoadSubcategoriesOnCategoryModal(actual: string[]) {
+//   productsList.deleteAll();
+//   for (let [product, i] of ArrayIndex<string>(actual)) {
+//     const name =
+//       cacheProducts.find((_: Product) => _.uuid === product)?.name ||
+//       "Invalid";
+//     productsList.add({ uuid: product, name: name });
+//   }
+// }
 
-function SetSubcategoriesActions(order: string[]) {
-  const addBtn =
-    modalCategory.getBody()._.categories._.header._.actions._.button.dom;
-
-  AddEvent("click", addBtn, () => productsList.add({ uuid: "", name: "" }));
-  productsList.clearPipes();
-  productsList.pipe((method: string) => {
-    if (method !== "custom:change") return;
-    order.splice(0, order.length);
-    order.push(...productsList.getData().map((v) => v.uuid));
-    console.log(order);
-  });
-}
-
-function LoadSubcategoriesOnCategoryModal(actual: string[]) {
-  productsList.deleteAll();
-  for (let [product, i] of ArrayIndex<string>(actual)) {
-    const name =
-      cacheProducts.find((_: ItemData) => _.uuid === product)?.name ||
-      "Invalid";
-    productsList.add({ uuid: product, name: name });
-  }
-}
+//#endregion
 
 function UpdateData(
   property: [object, string],
@@ -677,4 +724,5 @@ async function RemItem(uuid: string, confirmation: string) {
 
   if (!res.ok) return;
   cacheProducts = await res.json();
+  productsListSelector.setList(cacheProducts);
 })();

@@ -64,8 +64,10 @@ export function middlewareEvents(
   return {
     removeAll() {
       for (const ev of eventNames)
-        // @ts-ignore
-        for (const fn of events[ev]) element.removeEventListener(ev, fn);
+        for (const fn of events[ev]) {
+          // @ts-ignore
+          element.removeEventListener(ev, fn);
+        }
     },
 
     add: element.addEventListener,
@@ -210,4 +212,125 @@ export function getElementFromJSON<T extends HTMLElement = HTMLElement>(
   }
 
   return structureCopy<T>(element);
+}
+
+interface Position2D {
+  x: number;
+  y: number;
+}
+
+export function getAbsolutePosition(element: HTMLElement): Position2D {
+  const arr: Position2D[] = [];
+  let last: HTMLElement = element;
+
+  while (true) {
+    console.log([last]);
+    if(last == null) break;
+    const pos: TransformStyles = getTranslateValues(last);
+
+    arr.push({
+      x: last.offsetLeft + last.scrollLeft + pos.translate.x,
+      y: last.offsetTop - last.scrollTop - pos.translate.y,
+    });
+
+    last = <HTMLElement>last.offsetParent;
+  }
+
+  return arr.reduce(
+    (prev: Position2D, curr: Position2D): Position2D => {
+      return { x: prev.x + curr.x, y: prev.x + curr.y };
+    },
+    { x: 0, y: 0 }
+  );
+}
+
+interface Position3D {
+  x: number;
+  y: number;
+  z: number;
+}
+
+interface TransformStyles {
+  translate: Position3D;
+  rotate: Position3D;
+  scale: Position3D;
+}
+
+
+
+export function getTranslateValues(element: HTMLElement): TransformStyles {
+  const style = window.getComputedStyle(element);
+  const matrix =
+  // @ts-ignore
+    style["transform"] || style.webkitTransform || style.mozTransform;
+
+  // No transform property. Simply return 0 values.
+  if (matrix === "none" || typeof matrix === "undefined") {
+    return {
+      translate: { x: 0, y: 0, z: 0 },
+      rotate: { x: 0, y: 0, z: 0 },
+      scale: { x: 1, y: 1, z: 1 }
+    };
+  }
+
+  // Can either be 2d or 3d transform
+  const matrixType: "2d" | "3d" = matrix.includes("3d") ? "3d" : "2d";
+  const matrixValues: number[] = matrix
+    .match(/matrix.*\((.+)\)/)[1]
+    .split(", ")
+    .map(parseFloat);
+  
+  let translate: Position3D = { x: 0, y: 0, z: 0 };
+
+  if (matrixType === "2d") {
+    translate = {
+      x: matrixValues[4],
+      y: matrixValues[5],
+      z: 0,
+    };
+  } else if (matrixType === "3d") {
+    translate = {
+      x: matrixValues[12],
+      y: matrixValues[13],
+      z: matrixValues[14],
+    };
+  }
+
+  let rotate: Position3D = { x: 0, y: 0, z: 0 };
+
+  if (matrixType === "2d") {
+    rotate = {
+      x: matrixValues[1],
+      y: matrixValues[2],
+      z: 0,
+    };
+  } else if (matrixType === "3d") {
+    rotate = {
+      x: matrixValues[4],
+      y: matrixValues[5],
+      z: matrixValues[6],
+    };
+  }
+
+  let scale: Position3D = { x: 0, y: 0, z: 0 };
+
+  if (matrixType === "2d") {
+    scale = {
+      x: matrixValues[0],
+      y: matrixValues[3],
+      z: 0,
+    };
+  } else if (matrixType === "3d") {
+    scale = {
+      x: matrixValues[0],
+      y: matrixValues[5],
+      z: matrixValues[10],
+    };
+  }
+
+  return {
+    translate,
+    rotate,
+    scale,
+  };
 }

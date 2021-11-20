@@ -39,3 +39,20 @@ export interface jsonHtml<T extends HTMLElement = HTMLElement> {
 export declare function structureCopy<T extends HTMLElement>(element: T): jsonHtml<T>;
 export declare function getElementFromString<T extends HTMLElement = HTMLElement>(str: string): T;
 export declare function getElementFromJSON<T extends HTMLElement = HTMLElement>(json: htmlElementStruct): jsonHtml<T>;
+interface Position2D {
+    x: number;
+    y: number;
+}
+export declare function getAbsolutePosition(element: HTMLElement): Position2D;
+interface Position3D {
+    x: number;
+    y: number;
+    z: number;
+}
+interface TransformStyles {
+    translate: Position3D;
+    rotate: Position3D;
+    scale: Position3D;
+}
+export declare function getTranslateValues(element: HTMLElement): TransformStyles;
+export {};

@@ -10,7 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import Modal from "../../../components/modal.js";
 import Select from "../../../components/select.js";
 import ElementList from "../../../components/list/list.js";
+import { queryAll } from "../../../common/html.js";
 import { wait, } from "../../../common/shop.js";
+import { RecomendedSelectorList, } from "../../../components/selector_list/selectorList.js";
 import { query as querySelector } from "../../../common/html.js";
 import { OrdenedElementList } from "../../../components/list/order.js";
 var UserRank;
@@ -159,6 +161,45 @@ const productsList = new OrdenedElementList(document.querySelector("#product_lis
   </div>
 </div>
 `);
+const productsListSelector = new RecomendedSelectorList({
+    list: [],
+    properties: [
+        {
+            text: "Name",
+            target: "name",
+            style: "large",
+        },
+    ],
+    target: [],
+    useOnInput: true,
+});
+function SetOrderActions(order) {
+    const addBtn = modalCategory.getBody()._.orders._.header._.actions._.button.dom;
+    AddEvent("click", addBtn, () => {
+        productsList.add({ uuid: "", name: "", category: "" });
+        const childs = (Array.from(queryAll(".input-zone input", modalCategory.getBody()._.orders._.list.dom)));
+        productsListSelector.setTarget(childs);
+    });
+    productsList.clearPipes();
+    productsList.pipe((method) => {
+        if (method !== "custom:change")
+            return;
+        order.splice(0, order.length);
+        order.push(...productsList.getData().map((v) => v.uuid));
+        console.log(order);
+    });
+}
+function LoadProductsOnCategoryModal(actual) {
+    productsList.deleteAll();
+    for (let [product, i] of ArrayIndex(actual)) {
+        const prod = cacheProducts.find((_) => _.uuid === product);
+        const name = (prod === null || prod === void 0 ? void 0 : prod.name) || "";
+        const category = (prod === null || prod === void 0 ? void 0 : prod.category) || "";
+        productsList.add({ uuid: product, name: name, category: category });
+        const childs = (Array.from(queryAll(".input-zone input", modalCategory.getBody()._.orders._.list.dom)));
+        productsListSelector.setTarget(childs);
+    }
+}
 const subcategoriesList = new OrdenedElementList(document.querySelector("#categories_list"), OrdenedElementList.NO_URL, {
     autoRefresh: true,
     idTarget: "uuid",
@@ -207,48 +248,6 @@ const subcategoriesList = new OrdenedElementList(document.querySelector("#catego
   </div>
 </div>
 `);
-function SetOrderActions(order) {
-    const addBtn = modalCategory.getBody()._.orders._.header._.actions._.button.dom;
-    AddEvent("click", addBtn, () => productsList.add({ uuid: "", name: "" }));
-    productsList.clearPipes();
-    productsList.pipe((method) => {
-        if (method !== "custom:change")
-            return;
-        order.splice(0, order.length);
-        order.push(...productsList.getData().map((v) => v.uuid));
-        console.log(order);
-    });
-}
-function LoadProductsOnCategoryModal(actual) {
-    var _a;
-    productsList.deleteAll();
-    for (let [product, i] of ArrayIndex(actual)) {
-        const name = ((_a = cacheProducts.find((_) => _.uuid === product)) === null || _a === void 0 ? void 0 : _a.name) ||
-            "Invalid";
-        productsList.add({ uuid: product, name: name });
-    }
-}
-function SetSubcategoriesActions(order) {
-    const addBtn = modalCategory.getBody()._.categories._.header._.actions._.button.dom;
-    AddEvent("click", addBtn, () => productsList.add({ uuid: "", name: "" }));
-    productsList.clearPipes();
-    productsList.pipe((method) => {
-        if (method !== "custom:change")
-            return;
-        order.splice(0, order.length);
-        order.push(...productsList.getData().map((v) => v.uuid));
-        console.log(order);
-    });
-}
-function LoadSubcategoriesOnCategoryModal(actual) {
-    var _a;
-    productsList.deleteAll();
-    for (let [product, i] of ArrayIndex(actual)) {
-        const name = ((_a = cacheProducts.find((_) => _.uuid === product)) === null || _a === void 0 ? void 0 : _a.name) ||
-            "Invalid";
-        productsList.add({ uuid: product, name: name });
-    }
-}
 function UpdateData(property, elm, _default, pre) {
     elm.dom.value = _default;
     pre = pre || ((_) => _);
@@ -461,5 +460,6 @@ function RemItem(uuid, confirmation) {
     if (!res.ok)
         return;
     cacheProducts = yield res.json();
+    productsListSelector.setList(cacheProducts);
 }))();
 //# sourceMappingURL=categories.js.map

@@ -36,8 +36,9 @@ export function middlewareEvents(element) {
     return {
         removeAll() {
             for (const ev of eventNames)
-                for (const fn of events[ev])
+                for (const fn of events[ev]) {
                     element.removeEventListener(ev, fn);
+                }
         },
         add: element.addEventListener,
         rem: element.removeEventListener,
@@ -126,5 +127,89 @@ export function getElementFromJSON(json) {
         }
     }
     return structureCopy(element);
+}
+export function getAbsolutePosition(element) {
+    const arr = [];
+    let last = element;
+    while (true) {
+        console.log([last]);
+        if (last == null)
+            break;
+        const pos = getTranslateValues(last);
+        arr.push({
+            x: last.offsetLeft + last.scrollLeft + pos.translate.x,
+            y: last.offsetTop - last.scrollTop - pos.translate.y,
+        });
+        last = last.offsetParent;
+    }
+    return arr.reduce((prev, curr) => {
+        return { x: prev.x + curr.x, y: prev.x + curr.y };
+    }, { x: 0, y: 0 });
+}
+export function getTranslateValues(element) {
+    const style = window.getComputedStyle(element);
+    const matrix = style["transform"] || style.webkitTransform || style.mozTransform;
+    if (matrix === "none" || typeof matrix === "undefined") {
+        return {
+            translate: { x: 0, y: 0, z: 0 },
+            rotate: { x: 0, y: 0, z: 0 },
+            scale: { x: 1, y: 1, z: 1 }
+        };
+    }
+    const matrixType = matrix.includes("3d") ? "3d" : "2d";
+    const matrixValues = matrix
+        .match(/matrix.*\((.+)\)/)[1]
+        .split(", ")
+        .map(parseFloat);
+    let translate = { x: 0, y: 0, z: 0 };
+    if (matrixType === "2d") {
+        translate = {
+            x: matrixValues[4],
+            y: matrixValues[5],
+            z: 0,
+        };
+    }
+    else if (matrixType === "3d") {
+        translate = {
+            x: matrixValues[12],
+            y: matrixValues[13],
+            z: matrixValues[14],
+        };
+    }
+    let rotate = { x: 0, y: 0, z: 0 };
+    if (matrixType === "2d") {
+        rotate = {
+            x: matrixValues[1],
+            y: matrixValues[2],
+            z: 0,
+        };
+    }
+    else if (matrixType === "3d") {
+        rotate = {
+            x: matrixValues[4],
+            y: matrixValues[5],
+            z: matrixValues[6],
+        };
+    }
+    let scale = { x: 0, y: 0, z: 0 };
+    if (matrixType === "2d") {
+        scale = {
+            x: matrixValues[0],
+            y: matrixValues[3],
+            z: 0,
+        };
+    }
+    else if (matrixType === "3d") {
+        scale = {
+            x: matrixValues[0],
+            y: matrixValues[5],
+            z: matrixValues[10],
+        };
+    }
+    return {
+        translate,
+        rotate,
+        scale,
+    };
 }
 //# sourceMappingURL=html.js.map

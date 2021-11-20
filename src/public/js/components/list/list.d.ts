@@ -17,7 +17,7 @@ declare type CustomFunctions = {
 };
 declare type PipeFunction = (method: string, ...args: any[]) => void;
 export declare class ElementList<T extends any, K extends HTMLElement = HTMLDivElement> {
-    protected parent: HTMLDivElement;
+    parent: HTMLDivElement;
     protected url: string;
     protected data: T[];
     protected cache: ElementList_Cache<T>;
