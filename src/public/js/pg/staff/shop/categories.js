@@ -165,10 +165,24 @@ const productsListSelector = new RecomendedSelectorList({
     list: [],
     properties: [
         {
+            target: "uuid",
+            text: "UUID",
+            style: "small",
+            regex: /^&/,
+            visible: false
+        },
+        {
             text: "Name",
             target: "name",
             style: "large",
         },
+        {
+            text: "Price",
+            target: "price",
+            style: "small",
+            regex: /^\$/,
+            visible: false
+        }
     ],
     target: [],
     useOnInput: true,

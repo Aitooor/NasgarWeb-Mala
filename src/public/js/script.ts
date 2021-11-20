@@ -39,9 +39,8 @@ import {
       },
     ],
     hint: `
-    Use <span class="text-style-code"><span class="code-comment">NAME</span></span> to name, 
-    and <span class="text-style-code"><span class="code-active">@</span><span class="code-comment">CATEGORY</span></span> 
-    to categories.`,
+    Use <span class="text-style-code"><span class="code-comment">NAME</span></span> or <span class="text-style-code"><span class="code-active">@</span><span class="code-comment">CATEGORY</span></span> 
+    to filter search.`,
     target: <HTMLElement>document.querySelector("#Hola"),
     useOnInput: true,
     onSelect: (item: listItem) => {

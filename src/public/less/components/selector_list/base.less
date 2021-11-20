@@ -3,8 +3,16 @@
 
 .selector-list {
 
-  @background: @white;
-  @gray: @gray-light-2;
+  @background-light: @white;
+  @background-dark: @gray-dark-1;
+  @gray-light: @gray-light-2;
+  @gray-dark: @gray-dark-1;
+
+  @background: var(--background);
+  @gray: var(--gray);
+
+  --background: @background-light;
+  --gray: @gray-light;
 
   position: fixed;
   top: 0;
@@ -60,6 +68,8 @@
   @table-column: {
     position: relative;
     padding: .1rem .1rem .1rem .2rem;
+    overflow: hidden;
+    word-break: keep-all;
 
     &:not(:first-child):last-child {
       text-align: right;
@@ -100,8 +110,20 @@
   }
 
   &-item {
+    position: relative;
     display: flex;
     padding: .1rem;
+
+    &:not(:last-child)::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+
+      height: 1px;
+      background-color: @gray;
+    }
     
     &__column {
       @table-column();

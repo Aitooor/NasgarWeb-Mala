@@ -80,6 +80,14 @@ export class RecomendedSelectorList<T = any> {
 
   constructor(options?: RecomendedSelectorListOptions<T>) {
     this.options = { ...defaultOptions, ...(options || {}) };
+    this.options.properties = this.options.properties.map((property) => {
+      if (typeof property === "string") return property;
+      return {
+        ...property,
+        regex: this.#RegExp(property.regex),
+        visible: property.visible === undefined ? true : property.visible,
+      };
+    });
     this.#_init();
   }
 
@@ -197,6 +205,18 @@ export class RecomendedSelectorList<T = any> {
     this.element.style.left = `${x}px`;
   }
 
+  protected _loadData(data: T[]) {
+    const list = this.structure.childs[1].childs[2];
+    list.dom.innerHTML = "";
+    list.childs.splice(0, list.childs.length);
+    data.forEach((item) => {
+      const listItem = this._createListItem(item);
+      list.addChild(listItem.dom);
+      return listItem;
+    });
+  }
+
+
   setList(list: T[]) {
     this.options.list = list;
     this.fuse = new Fuse(this.options.list, {
@@ -233,7 +253,7 @@ export class RecomendedSelectorList<T = any> {
           throw new Error("Target must be an input element");
         }
         target.addEventListener("click", (e: MouseEvent) => {
-          this.open(target, e);
+          this._open(target, e);
           this._onScroll(e);
           this.search((<HTMLInputElement>target).value);
         });
@@ -255,20 +275,13 @@ export class RecomendedSelectorList<T = any> {
    * Refresh the list
    */
   refresh() {
-    const listElm = this.structure.childs[1]._["list"];
-    listElm.dom.innerHTML = "";
-    listElm.childs.splice(0, listElm.childs.length);
-    this.options.list.map<jsonHtml<HTMLElement>>((item: T) => {
-      const listItem = this._createListItem(item);
-      listElm.addChild(listItem.dom);
-      return listItem;
-    });
+    this._loadData(this.options.list);
   }
 
   /**
    * Show component
    */
-  open(target?: HTMLElement, event?: MouseEvent) {
+  private _open(target?: HTMLElement, event?: MouseEvent) {
     if(this.isOpen) return;
     this.isOpen = true;
     this.inputCard.dom.value = "";
@@ -327,13 +340,7 @@ export class RecomendedSelectorList<T = any> {
       results = this.fuse.search(query);
     }
 
-    // Refresh list with results
-    const listElm = this.structure.childs[1]._["list"];
-    listElm.dom.innerHTML = "";
-    listElm.childs.splice(0, listElm.childs.length);
-    results.forEach((result: Fuse.FuseResult<T>) => {
-      const listItem = this._createListItem(result.item);
-      listElm.addChild(listItem.dom);
-    });
+    // Get items from results and render them
+    this._loadData(results.map(_ => _.item));
   }
 }

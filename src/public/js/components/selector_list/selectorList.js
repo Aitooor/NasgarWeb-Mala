@@ -41,6 +41,11 @@ export class RecomendedSelectorList {
         this.activeTarget = null;
         this.isOpen = false;
         this.options = Object.assign(Object.assign({}, defaultOptions), (options || {}));
+        this.options.properties = this.options.properties.map((property) => {
+            if (typeof property === "string")
+                return property;
+            return Object.assign(Object.assign({}, property), { regex: __classPrivateFieldGet(this, _RecomendedSelectorList_instances, "m", _RecomendedSelectorList_RegExp).call(this, property.regex), visible: property.visible === undefined ? true : property.visible });
+        });
         __classPrivateFieldGet(this, _RecomendedSelectorList_instances, "m", _RecomendedSelectorList__init).call(this);
     }
     _createSelector(property) {
@@ -106,6 +111,16 @@ export class RecomendedSelectorList {
         this.element.style.top = `${y}px`;
         this.element.style.left = `${x}px`;
     }
+    _loadData(data) {
+        const list = this.structure.childs[1].childs[2];
+        list.dom.innerHTML = "";
+        list.childs.splice(0, list.childs.length);
+        data.forEach((item) => {
+            const listItem = this._createListItem(item);
+            list.addChild(listItem.dom);
+            return listItem;
+        });
+    }
     setList(list) {
         this.options.list = list;
         this.fuse = new Fuse(this.options.list, {
@@ -141,7 +156,7 @@ export class RecomendedSelectorList {
                     throw new Error("Target must be an input element");
                 }
                 target.addEventListener("click", (e) => {
-                    this.open(target, e);
+                    this._open(target, e);
                     this._onScroll(e);
                     this.search(target.value);
                 });
@@ -156,16 +171,9 @@ export class RecomendedSelectorList {
         this.options.target = targets;
     }
     refresh() {
-        const listElm = this.structure.childs[1]._["list"];
-        listElm.dom.innerHTML = "";
-        listElm.childs.splice(0, listElm.childs.length);
-        this.options.list.map((item) => {
-            const listItem = this._createListItem(item);
-            listElm.addChild(listItem.dom);
-            return listItem;
-        });
+        this._loadData(this.options.list);
     }
-    open(target, event) {
+    _open(target, event) {
         if (this.isOpen)
             return;
         this.isOpen = true;
@@ -207,13 +215,7 @@ export class RecomendedSelectorList {
         if (!results) {
             results = this.fuse.search(query);
         }
-        const listElm = this.structure.childs[1]._["list"];
-        listElm.dom.innerHTML = "";
-        listElm.childs.splice(0, listElm.childs.length);
-        results.forEach((result) => {
-            const listItem = this._createListItem(result.item);
-            listElm.addChild(listItem.dom);
-        });
+        this._loadData(results.map(_ => _.item));
     }
 }
 _RecomendedSelectorList_instances = new WeakSet(), _RecomendedSelectorList_RegExp = function _RecomendedSelectorList_RegExp(regex) {
