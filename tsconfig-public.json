@@ -7,7 +7,7 @@
     "./node_modules"
   ],
   "compilerOptions": {
-    "declaration": true,
+    "declaration": false,
     "sourceMap": true,
     "allowJs": false,
     "watch": true,
