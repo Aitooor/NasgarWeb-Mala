@@ -110,7 +110,8 @@ export function getElementFromJSON(json) {
     const element = createElement(json.elm);
     if (json.classes) {
         for (const cls of json.classes)
-            element.classList.add(cls);
+            if (cls !== "")
+                element.classList.add(cls);
     }
     if (json.attrs) {
         for (const attr in json.attrs)

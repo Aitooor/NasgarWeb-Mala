@@ -194,7 +194,7 @@ export function getElementFromJSON<T extends HTMLElement = HTMLElement>(
 ): jsonHtml<T> {
   const element = createElement<T>(json.elm);
   if (json.classes) {
-    for (const cls of json.classes) element.classList.add(cls);
+    for (const cls of json.classes) if(cls !== "") element.classList.add(cls);
   }
 
   if (json.attrs) {
