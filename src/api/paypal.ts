@@ -86,13 +86,13 @@ export function createPayment(options: PaymentOptions): Promise<paypal.PaymentRe
   return new Promise<paypal.PaymentResponse>((res, rej) => {
     paypal.payment.create(payment, (err, _res) => {
       if(err) {
-        rej(err);
         logger.log(PREFIX + red_flag + "Payment failed.");
+        rej(err);
         return;
       }
 
-      res(_res);
       logger.log(PREFIX + green_flag + "Payment success.");
+      res(_res);
     });
   });
 }

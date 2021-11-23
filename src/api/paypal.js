@@ -82,12 +82,12 @@ function createPayment(options) {
     return new Promise((res, rej) => {
         paypal_rest_sdk_1.default.payment.create(payment, (err, _res) => {
             if (err) {
-                rej(err);
                 logger.log(PREFIX + red_flag + "Payment failed.");
+                rej(err);
                 return;
             }
-            res(_res);
             logger.log(PREFIX + green_flag + "Payment success.");
+            res(_res);
         });
     });
 }
