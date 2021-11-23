@@ -58,8 +58,8 @@
 // PAYPAL data
   PAYPAL: {
     SANDBOX: {
-      ID: "ATTRkmYKKQb0LbE3HIoUweukH1AwXyB7yPACBFi7iXxx36dfZMmor80pWMkHAVz1Sd57pm5c4KOnXABV"
-      SECRET: "EMk7bV3f-usjRNm6fQfSuQsWk9cb3TUVZ_DkJgLmUuWnYYzNeS-njahy8otqps59D8yDXTLYF5QglPGZ"
+      ID: "Ae0yRdOO1ycGxfVFMO7Cc8OfQ5qeYi6obu5IOctyNkbvMhJbS1ObfuqBoYHNQe9CSjsgbaZ40upFSzsV"
+      SECRET: "ENRRR_Ob17kbroMB-w-H-9Ed1sMmcmH098R-bWXkU1IGBqrZtOHgvWTCRheILmXRy-uLWPffDBSO0gzM"
     }
   }
 }
