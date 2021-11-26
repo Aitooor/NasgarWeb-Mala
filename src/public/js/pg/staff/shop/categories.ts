@@ -1,17 +1,9 @@
 import Modal from "../../../components/modal.js";
 import Select from "../../../components/select.js";
 import ElementList from "../../../components/list/list.js";
-import { createElement, jsonHtml, queryAll } from "../../../common/html.js";
-import {
-  monetize,
-  wait,
-  capitalize,
-  applyFilter,
-} from "../../../common/shop.js";
-import {
-  RecomendedSelectorList,
-  RecomendedSelectorListOptions,
-} from "../../../components/selector_list/selectorList.js";
+import { jsonHtml, queryAll } from "../../../common/html.js";
+import { monetize, wait } from "../../../common/shop.js";
+import { RecomendedSelectorList } from "../../../components/selector_list/selectorList.js";
 
 import { query as querySelector } from "../../../common/html.js";
 import { OrdenedElementList } from "../../../components/list/order.js";
@@ -37,6 +29,7 @@ interface Category {
   image: string;
   min_rank: UserRank;
   order: string[];
+  subcategories: string[];
 }
 
 interface Product {
@@ -177,19 +170,6 @@ const tmCategoryListModal = <HTMLDivElement>(
     .firstElementChild
 );
 
-// /**
-//  * @param {string} msg
-//  * @param {string} title
-// */
-// function ThrowBadRequestOnItemModal(msg, title) {
-//   alert("Bad request: " + msg);
-
-//   modalCategory.getActions()._.Save.classes.remove("disabled");
-//   modalCategory.getActions()._.Cancel.classes.remove("disabled");
-
-//   modalCategory.setHeader(title);
-// }
-
 //#region Product list
 const productsList = new OrdenedElementList<Product>(
   document.querySelector("#product_list"),
@@ -247,13 +227,33 @@ const productsList = new OrdenedElementList<Product>(
 
 const productsListSelector = new RecomendedSelectorList<Product>({
   list: [],
+  hint:
+    "Use " +
+    '<span class="text-style-code">' +
+    '<span class="code-active">&</span><span class="code-comment">UUID</span>' +
+    "</span>, " +
+    '<span class="text-style-code">' +
+    '<span class="code-active">@</span><span class="code-comment">Category</span>' +
+    "</span>, " +
+    '<span class="text-style-code">' +
+    '<span class="code-active"></span><span class="code-comment">Name</span>' +
+    "</span> or " +
+    '<span class="text-style-code">' +
+    '<span class="code-active">$</span><span class="code-comment">Price</span>' +
+    "</span>",
   properties: [
     {
       target: "uuid",
       text: "UUID",
       style: "small",
       regex: /^&/,
-      visible: false
+      visible: false,
+    },
+    {
+      text: "Category",
+      target: "category",
+      style: "fit",
+      regex: /^@/,
     },
     {
       text: "Name",
@@ -263,10 +263,9 @@ const productsListSelector = new RecomendedSelectorList<Product>({
     {
       text: "Price",
       target: "price",
-      style: "small",
+      style: "fit",
       regex: /^\$/,
-      visible: false
-    }
+    },
   ],
   target: [],
   useOnInput: true,
@@ -275,10 +274,10 @@ const productsListSelector = new RecomendedSelectorList<Product>({
 function SetOrderActions(order: string[]) {
   const addBtn =
     modalCategory.getBody()._.orders._.header._.actions._.button.dom;
-
+  
   AddEvent("click", addBtn, () => {
     productsList.add({ uuid: "", name: "", category: "" });
-    const childs: HTMLElement[] = <HTMLElement[]>(
+    const childs: HTMLInputElement[] = <HTMLInputElement[]>(
       Array.from(
         queryAll<HTMLInputElement>(
           ".input-zone input",
@@ -286,22 +285,30 @@ function SetOrderActions(order: string[]) {
         )
       )
     );
-    
+
     productsListSelector.setTarget(childs);
+    productsListSelector.setOnSelect((item: Product, i: number) => {
+      console.log(item);
+
+      childs[i].value = item.uuid;
+      childs[i].dispatchEvent(
+        new Event("input", { bubbles: true, cancelable: true })
+      );
+    });
   });
+
   productsList.clearPipes();
   productsList.pipe((method: string) => {
     if (method !== "custom:change") return;
     order.splice(0, order.length);
     order.push(...productsList.getData().map((v) => v.uuid));
-    console.log(order);
   });
 }
 
 function LoadProductsOnCategoryModal(actual: string[]) {
   productsList.deleteAll();
   for (let [product, i] of ArrayIndex<string>(actual)) {
-    const prod: Product | undefined = cacheProducts.find(
+    const prod: Product = cacheProducts.find(
       (_: Product) => _.uuid === product
     );
     const name = prod?.name || "";
@@ -316,20 +323,20 @@ function LoadProductsOnCategoryModal(actual: string[]) {
         )
       )
     );
-    
+
     productsListSelector.setTarget(childs);
   }
 }
 //#endregion
 
 //#region Subcategory list
-interface SubCategory {
+interface CategoryOnList {
   uuid: string;
   name: string;
 }
 
-const subcategoriesList = new OrdenedElementList<SubCategory>(
-  document.querySelector("#categories_list"),
+const categoriesList = new OrdenedElementList<CategoryOnList>(
+  document.querySelector("#category_list"),
   OrdenedElementList.NO_URL,
   {
     autoRefresh: true,
@@ -347,8 +354,8 @@ const subcategoriesList = new OrdenedElementList<SubCategory>(
         name.innerText = "Invalid";
       } else {
         name.innerText =
-          cacheProducts.find((_: Product) => _.uuid === value)?.name ||
-          "Invalid";
+          category_list.getData().find((_: CategoryOnList) => _.uuid === value)
+            ?.name || "Invalid";
       }
     } else {
       inpZone.classList.add("blank");
@@ -357,7 +364,8 @@ const subcategoriesList = new OrdenedElementList<SubCategory>(
     const index = ctx.list.getIndex(ctx.data);
     if (
       index !== -1 &&
-      cacheProducts.find((_: Product) => _.uuid === value) !== undefined
+      category_list.getData().find((_: CategoryOnList) => _.uuid === value) !==
+        undefined
     ) {
       ctx.data.uuid = value;
     } else {
@@ -382,30 +390,87 @@ const subcategoriesList = new OrdenedElementList<SubCategory>(
 </div>
 `);
 
-// function SetSubcategoriesActions(order: string[]) {
-//   const addBtn =
-//     modalCategory.getBody()._.categories._.header._.actions._.button.dom;
+const categoriesListSelector = new RecomendedSelectorList<CategoryOnList>({
+  list: [],
+  hint:
+    "Use " +
+    '<span class="text-style-code">' +
+    '<span class="code-active"></span><span class="code-comment">Name</span>' +
+    "</span>",
+  properties: [
+    {
+      target: "uuid",
+      text: "UUID",
+      style: "small",
+      regex: /^&/,
+      visible: false,
+    },
+    {
+      text: "Name",
+      target: "name",
+      style: "large",
+    },
+  ],
+  target: [],
+  useOnInput: true,
+});
 
-//   AddEvent("click", addBtn, () => productsList.add({ uuid: "", name: "" }));
-//   productsList.clearPipes();
-//   productsList.pipe((method: string) => {
-//     if (method !== "custom:change") return;
-//     order.splice(0, order.length);
-//     order.push(...productsList.getData().map((v) => v.uuid));
-//     console.log(order);
-//   });
-// }
+function SetOrderCategories(order: string[]) {
+  const addBtn =
+    modalCategory.getBody()._.categories._.header._.actions._.button.dom;
 
-// function LoadSubcategoriesOnCategoryModal(actual: string[]) {
-//   productsList.deleteAll();
-//   for (let [product, i] of ArrayIndex<string>(actual)) {
-//     const name =
-//       cacheProducts.find((_: Product) => _.uuid === product)?.name ||
-//       "Invalid";
-//     productsList.add({ uuid: product, name: name });
-//   }
-// }
+  categoriesListSelector.setList(category_list.getData());
 
+  AddEvent("click", addBtn, () => {
+    categoriesList.add({ uuid: "", name: "" });
+    const childs: HTMLInputElement[] = <HTMLInputElement[]>(
+      Array.from(
+        queryAll<HTMLInputElement>(
+          ".input-zone input",
+          modalCategory.getBody()._.categories._.list.dom
+        )
+      )
+    );
+
+    categoriesListSelector.setTarget(childs);
+    categoriesListSelector.setOnSelect((item: CategoryOnList, i: number) => {
+      console.log(item);
+
+      childs[i].value = item.uuid;
+      childs[i].dispatchEvent(
+        new Event("input", { bubbles: true, cancelable: true })
+      );
+    });
+  });
+  categoriesList.clearPipes();
+  categoriesList.pipe((method: string) => {
+    if (method !== "custom:change") return;
+    order.splice(0, order.length);
+    order.push(...categoriesList.getData().map((v) => v.uuid));
+  });
+}
+
+function LoadCategoriesOnCategoryModal(actual: string[]) {
+  categoriesList.deleteAll();
+  for (let [category, i] of ArrayIndex<string>(actual)) {
+    const prod: CategoryOnList | undefined = categoriesList
+      .getData()
+      .find((_: CategoryOnList) => _.uuid === category);
+    const name = prod?.name || "";
+    categoriesList.add({ uuid: category, name: name });
+
+    const childs: HTMLElement[] = <HTMLElement[]>(
+      Array.from(
+        queryAll<HTMLInputElement>(
+          ".input-zone input",
+          modalCategory.getBody()._.categories._.list.dom
+        )
+      )
+    );
+
+    categoriesListSelector.setTarget(childs);
+  }
+}
 //#endregion
 
 function UpdateData(
@@ -452,8 +517,10 @@ function OpenAddModal() {
     image: "",
     min_rank: UserRank.Default,
     order: [],
+    subcategories: [],
   };
   const actual_order: string[] = actual_category_data.order;
+  const actual_subcategories: string[] = actual_category_data.subcategories;
 
   const body = modalCategory.getBody();
 
@@ -499,6 +566,10 @@ function OpenAddModal() {
   );
 
   SetOrderActions(actual_order);
+  LoadCategoriesOnCategoryModal(actual_order);
+
+  SetOrderCategories(actual_subcategories);
+  LoadCategoriesOnCategoryModal(actual_subcategories);
 
   modalCategory_events._save = async (modal: Modal) => {
     modal.disableActions();
@@ -513,6 +584,7 @@ function OpenAddModal() {
         image: actual_category_data.image,
         min_rank: actual_category_data.min_rank,
         order: actual_category_data.order,
+        subcategories: actual_category_data.subcategories,
       });
     } catch (err) {
       alert(err);
@@ -533,6 +605,7 @@ function OpenAddModal() {
 function OpenCategoryModal(data: Category) {
   const actual_category_data: Category = JSON.parse(JSON.stringify(data));
   const actual_order: string[] = actual_category_data.order;
+  const actual_subcategories: string[] = actual_category_data.subcategories;
 
   const body = modalCategory.getBody();
 
@@ -590,6 +663,9 @@ function OpenCategoryModal(data: Category) {
   SetOrderActions(actual_order);
   LoadProductsOnCategoryModal(actual_order);
 
+  SetOrderCategories(actual_subcategories);
+  LoadCategoriesOnCategoryModal(actual_subcategories);
+
   /** @param {Modal} modal */
   modalCategory_events._save = async (modal) => {
     modal.disableActions();
@@ -605,6 +681,7 @@ function OpenCategoryModal(data: Category) {
         image: actual_category_data.image,
         min_rank: actual_category_data.min_rank,
         order: actual_category_data.order,
+        subcategories: actual_category_data.subcategories,
       });
     } catch (err) {
       alert(err);
@@ -636,7 +713,6 @@ function AddEvent(ev: string, elm: HTMLElement, fn: (e?: Event) => void) {
 }
 
 function* ArrayIndex<T extends any = any>(arr: T[]): Generator<[T, number]> {
-  modalCategory.getBody()._.orders._.list.dom.innerHTML = "";
   for (let i = 0; i < arr.length; i++) {
     yield [arr[i], i];
   }

@@ -85,6 +85,7 @@ export class OrdenedElementList extends ElementList {
     }
     add(elm) {
         this.data.push(elm);
+        this.cache[elm[this._options.idTarget]] = elm;
         return this._returnDataAndRefresh();
     }
     delete(elm) {

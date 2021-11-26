@@ -4,13 +4,14 @@ import {
   getAbsolutePosition,
   getElementFromJSON,
   getElementFromString,
+  htmlElementStruct,
   jsonHtml,
   structureCopy,
 } from "../../common/html.js";
 
 const templateHtml = `
 <div class="selector-list">
-  <div class="selector-list__header" data-name="header">
+  <div class="selector-list__header hidden" data-name="header">
     <input type="text"/>
   </div>
   <div class="selector-list__body">
@@ -31,7 +32,7 @@ if (!parent) {
 }
 
 export interface RecomendedSelectorListOptionsProperties {
-  style: "small" | "medium" | "large";
+  style: "small" | "medium" | "large" | "fit";
   target: string;
   text: string;
   regex?: string | RegExp;
@@ -44,7 +45,7 @@ export interface RecomendedSelectorListOptions<T = any> {
   hint?: string;
   target?: HTMLElement | HTMLElement[];
   useOnInput?: boolean;
-  onSelect?(item: T): void;
+  onSelect?(item: T, index: number): void;
   onClose?(): void;
 }
 
@@ -67,7 +68,8 @@ export class RecomendedSelectorList<T = any> {
   private fuse: Fuse<T>;
   private fuseByProperty: { [key: string]: Fuse<T> } = {};
 
-  private activeTarget: HTMLElement = null;
+  protected selectors: { [key: string]: jsonHtml<HTMLDivElement> } = {};
+  protected _actualIndex: number = 0;
 
   isOpen: boolean = false;
 
@@ -103,9 +105,7 @@ export class RecomendedSelectorList<T = any> {
     // Create Fuse instances
     this.setList(this.options.list);
 
-    if (this.options.hint) {
-      this.structure.childs[1].childs[0].dom.innerHTML = this.options.hint;
-    }
+    this.setHint(this.options.hint || "");
 
     // Set targets if are setted
     if (this.options.target) {
@@ -129,17 +129,32 @@ export class RecomendedSelectorList<T = any> {
     this.refresh();
   }
 
+  protected _normalizeProperty(
+    property: string | RecomendedSelectorListOptionsProperties
+  ): RecomendedSelectorListOptionsProperties {
+    if (typeof property === "string") {
+      return {
+        style: "fit",
+        target: property,
+        text: property,
+        visible: true,
+      };
+    }
+
+    return property;
+  }
+
   protected _createSelector(
     property: string | RecomendedSelectorListOptionsProperties
   ) {
-    const selector = getElementFromJSON({
+    const prop = this._normalizeProperty(property);
+    const selector = getElementFromJSON<HTMLDivElement>({
       elm: "div",
-      classes: [
-        "selector-list__selector",
-        typeof property === "string" ? "medium" : property.style,
-      ],
-      childs: typeof property === "string" ? [property] : [property.text],
+      classes: ["selector-list__selector", prop.style],
+      childs: [prop.text],
     });
+
+    this.selectors[prop.target] = selector;
 
     return selector;
   }
@@ -164,45 +179,46 @@ export class RecomendedSelectorList<T = any> {
       classes: ["selector-list-item"],
       childs: this.options.properties
         .map((property) => {
-          if (typeof property === "string")
-            return {
-              elm: "div",
-              classes: ["selector-list-item__column", "medium"],
-              childs: [item[property]],
-            };
+          const prop = this._normalizeProperty(property);
 
-          const { style, target, visible } = property;
-          if (visible === false) {
+          if (prop.visible === false) {
             return null;
           }
-          return {
+
+          return <htmlElementStruct>{
             elm: "div",
-            classes: ["selector-list-item__column", style],
-            childs: [item[target]],
+            classes: [
+              "selector-list-item__column",
+              prop.style === "fit" ? "" : prop.style,
+            ],
+            attrs:
+              prop.style !== "fit"
+                ? {}
+                : {
+                    style: `width: ${
+                      this.selectors[prop.target].dom.clientWidth
+                    }px`,
+                  },
+            childs: [item[prop.target] + ""],
           };
         })
         .filter((item) => item !== null),
     });
 
     listItem.events.add("click", () => {
-      this.options.onSelect(item);
+      this.options.onSelect(item, this._actualIndex);
       this.close();
     });
 
     return listItem;
   }
 
-  private _onScroll(e: MouseEvent) {
-    const { x, y } = {
-      x: e.pageX,
-      y: e.pageY,
-    }
-    console.log(x, y);
-    
-    this.element.style.top = `${
-      y
-    }px`;
-    this.element.style.left = `${x}px`;
+  private _setPos(e: MouseEvent) {
+    const x: number = e.pageX;
+    const y: number = e.pageY;
+
+    this.element.style.top = `${y - window.scrollY}px`;
+    this.element.style.left = `${x - window.scrollX}px`;
   }
 
   protected _loadData(data: T[]) {
@@ -216,6 +232,14 @@ export class RecomendedSelectorList<T = any> {
     });
   }
 
+  setHint(hint: string) {
+    if (hint.length === 0) {
+      this.structure.childs[1].childs[0].classes.add("hidden");
+      return;
+    }
+    this.structure.childs[1].childs[0].classes.remove("hidden");
+    this.structure.childs[1].childs[0].dom.innerHTML = hint;
+  }
 
   setList(list: T[]) {
     this.options.list = list;
@@ -247,14 +271,14 @@ export class RecomendedSelectorList<T = any> {
 
   setTarget(_target: HTMLElement | HTMLElement[]) {
     let targets: HTMLElement[] = Array.isArray(_target) ? _target : [_target];
-    for (const target of targets) {
+    for (const [i, target] of targets.entries()) {
       if (this.options.useOnInput) {
         if (target.tagName !== "INPUT") {
           throw new Error("Target must be an input element");
         }
         target.addEventListener("click", (e: MouseEvent) => {
-          this._open(target, e);
-          this._onScroll(e);
+          this._open(e);
+          this._actualIndex = i;
           this.search((<HTMLInputElement>target).value);
         });
 
@@ -271,6 +295,10 @@ export class RecomendedSelectorList<T = any> {
     this.options.target = targets;
   }
 
+  setOnSelect(onSelect: (item: T, index: number) => void) {
+    this.options.onSelect = onSelect;
+  }
+
   /**
    * Refresh the list
    */
@@ -281,27 +309,13 @@ export class RecomendedSelectorList<T = any> {
   /**
    * Show component
    */
-  private _open(target?: HTMLElement, event?: MouseEvent) {
-    if(this.isOpen) return;
+  private _open(event?: MouseEvent) {
+    if (this.isOpen) return;
     this.isOpen = true;
     this.inputCard.dom.value = "";
 
-    if (
-      target &&
-      (Array.isArray(this.options.target)
-        ? this.options.target.includes(target)
-        : this.options.target === target)
-    ) {
-      this.activeTarget = target;
-    } else if (Array.isArray(this.options.target)) {
-      this.activeTarget = this.options.target[0];
-    } else {
-      this.activeTarget = this.options.target;
-    }
-
     this.structure.classes.add("active");
-    this._onScroll(event);
-    // window.addEventListener("scroll", this.__onScroll);
+    this._setPos(event);
   }
 
   /**
@@ -311,8 +325,6 @@ export class RecomendedSelectorList<T = any> {
     this.isOpen = false;
     this.structure.classes.remove("active");
     this.options.onClose();
-
-    // window.removeEventListener("scroll", this.__onScroll);
   }
 
   /**
@@ -341,6 +353,6 @@ export class RecomendedSelectorList<T = any> {
     }
 
     // Get items from results and render them
-    this._loadData(results.map(_ => _.item));
+    this._loadData(results.map((_) => _.item));
   }
 }

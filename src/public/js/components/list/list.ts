@@ -1,7 +1,3 @@
-import {
-  EventEmitter,
-  _listener as EventListener,
-} from "../../common/events.js";
 import { queryAll } from "../../common/html.js";
 
 export interface ElementList_Options {
@@ -175,7 +171,7 @@ export class ElementList<
     elm.addEventListener("click", () => {
       if (this._onclickEvent !== null) this._onclickEvent(this, elm, data);
     });
-
+    
     return elm;
   }
 
@@ -183,7 +179,7 @@ export class ElementList<
     if (this.template === null) {
       throw new ReferenceError("`template` is not defined.");
     }
-
+    
     const elms: K[] = [];
 
     for (const oneData of this.data) {

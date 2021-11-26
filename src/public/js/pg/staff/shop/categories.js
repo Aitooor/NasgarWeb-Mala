@@ -11,8 +11,8 @@ import Modal from "../../../components/modal.js";
 import Select from "../../../components/select.js";
 import ElementList from "../../../components/list/list.js";
 import { queryAll } from "../../../common/html.js";
-import { wait, } from "../../../common/shop.js";
-import { RecomendedSelectorList, } from "../../../components/selector_list/selectorList.js";
+import { wait } from "../../../common/shop.js";
+import { RecomendedSelectorList } from "../../../components/selector_list/selectorList.js";
 import { query as querySelector } from "../../../common/html.js";
 import { OrdenedElementList } from "../../../components/list/order.js";
 var UserRank;
@@ -163,13 +163,32 @@ const productsList = new OrdenedElementList(document.querySelector("#product_lis
 `);
 const productsListSelector = new RecomendedSelectorList({
     list: [],
+    hint: "Use " +
+        '<span class="text-style-code">' +
+        '<span class="code-active">&</span><span class="code-comment">UUID</span>' +
+        "</span>, " +
+        '<span class="text-style-code">' +
+        '<span class="code-active">@</span><span class="code-comment">Category</span>' +
+        "</span>, " +
+        '<span class="text-style-code">' +
+        '<span class="code-active"></span><span class="code-comment">Name</span>' +
+        "</span> or " +
+        '<span class="text-style-code">' +
+        '<span class="code-active">$</span><span class="code-comment">Price</span>' +
+        "</span>",
     properties: [
         {
             target: "uuid",
             text: "UUID",
             style: "small",
             regex: /^&/,
-            visible: false
+            visible: false,
+        },
+        {
+            text: "Category",
+            target: "category",
+            style: "fit",
+            regex: /^@/,
         },
         {
             text: "Name",
@@ -179,10 +198,9 @@ const productsListSelector = new RecomendedSelectorList({
         {
             text: "Price",
             target: "price",
-            style: "small",
+            style: "fit",
             regex: /^\$/,
-            visible: false
-        }
+        },
     ],
     target: [],
     useOnInput: true,
@@ -193,6 +211,11 @@ function SetOrderActions(order) {
         productsList.add({ uuid: "", name: "", category: "" });
         const childs = (Array.from(queryAll(".input-zone input", modalCategory.getBody()._.orders._.list.dom)));
         productsListSelector.setTarget(childs);
+        productsListSelector.setOnSelect((item, i) => {
+            console.log(item);
+            childs[i].value = item.uuid;
+            childs[i].dispatchEvent(new Event("input", { bubbles: true, cancelable: true }));
+        });
     });
     productsList.clearPipes();
     productsList.pipe((method) => {
@@ -200,7 +223,6 @@ function SetOrderActions(order) {
             return;
         order.splice(0, order.length);
         order.push(...productsList.getData().map((v) => v.uuid));
-        console.log(order);
     });
 }
 function LoadProductsOnCategoryModal(actual) {
@@ -214,7 +236,7 @@ function LoadProductsOnCategoryModal(actual) {
         productsListSelector.setTarget(childs);
     }
 }
-const subcategoriesList = new OrdenedElementList(document.querySelector("#categories_list"), OrdenedElementList.NO_URL, {
+const categoriesList = new OrdenedElementList(document.querySelector("#category_list"), OrdenedElementList.NO_URL, {
     autoRefresh: true,
     idTarget: "uuid",
 }).setCustomFunctions({
@@ -230,8 +252,7 @@ const subcategoriesList = new OrdenedElementList(document.querySelector("#catego
             }
             else {
                 name.innerText =
-                    ((_a = cacheProducts.find((_) => _.uuid === value)) === null || _a === void 0 ? void 0 : _a.name) ||
-                        "Invalid";
+                    ((_a = category_list.getData().find((_) => _.uuid === value)) === null || _a === void 0 ? void 0 : _a.name) || "Invalid";
             }
         }
         else {
@@ -239,7 +260,8 @@ const subcategoriesList = new OrdenedElementList(document.querySelector("#catego
         }
         const index = ctx.list.getIndex(ctx.data);
         if (index !== -1 &&
-            cacheProducts.find((_) => _.uuid === value) !== undefined) {
+            category_list.getData().find((_) => _.uuid === value) !==
+                undefined) {
             ctx.data.uuid = value;
         }
         else {
@@ -262,6 +284,62 @@ const subcategoriesList = new OrdenedElementList(document.querySelector("#catego
   </div>
 </div>
 `);
+const categoriesListSelector = new RecomendedSelectorList({
+    list: [],
+    hint: "Use " +
+        '<span class="text-style-code">' +
+        '<span class="code-active"></span><span class="code-comment">Name</span>' +
+        "</span>",
+    properties: [
+        {
+            target: "uuid",
+            text: "UUID",
+            style: "small",
+            regex: /^&/,
+            visible: false,
+        },
+        {
+            text: "Name",
+            target: "name",
+            style: "large",
+        },
+    ],
+    target: [],
+    useOnInput: true,
+});
+function SetOrderCategories(order) {
+    const addBtn = modalCategory.getBody()._.categories._.header._.actions._.button.dom;
+    categoriesListSelector.setList(category_list.getData());
+    AddEvent("click", addBtn, () => {
+        categoriesList.add({ uuid: "", name: "" });
+        const childs = (Array.from(queryAll(".input-zone input", modalCategory.getBody()._.categories._.list.dom)));
+        categoriesListSelector.setTarget(childs);
+        categoriesListSelector.setOnSelect((item, i) => {
+            console.log(item);
+            childs[i].value = item.uuid;
+            childs[i].dispatchEvent(new Event("input", { bubbles: true, cancelable: true }));
+        });
+    });
+    categoriesList.clearPipes();
+    categoriesList.pipe((method) => {
+        if (method !== "custom:change")
+            return;
+        order.splice(0, order.length);
+        order.push(...categoriesList.getData().map((v) => v.uuid));
+    });
+}
+function LoadCategoriesOnCategoryModal(actual) {
+    categoriesList.deleteAll();
+    for (let [category, i] of ArrayIndex(actual)) {
+        const prod = categoriesList
+            .getData()
+            .find((_) => _.uuid === category);
+        const name = (prod === null || prod === void 0 ? void 0 : prod.name) || "";
+        categoriesList.add({ uuid: category, name: name });
+        const childs = (Array.from(queryAll(".input-zone input", modalCategory.getBody()._.categories._.list.dom)));
+        categoriesListSelector.setTarget(childs);
+    }
+}
 function UpdateData(property, elm, _default, pre) {
     elm.dom.value = _default;
     pre = pre || ((_) => _);
@@ -289,8 +367,10 @@ function OpenAddModal() {
         image: "",
         min_rank: UserRank.Default,
         order: [],
+        subcategories: [],
     };
     const actual_order = actual_category_data.order;
+    const actual_subcategories = actual_category_data.subcategories;
     const body = modalCategory.getBody();
     modalCategory.setHeader("New Category");
     body._.uuid.classes.add("hidden");
@@ -306,6 +386,9 @@ function OpenAddModal() {
     UpdateData([actual_category_data, "description"], body._.description._.textarea, "");
     UpdateDataSelect([actual_category_data, "min_rank"], body._.rank._.select, rankSelect, 0, (value) => UserRank[value]);
     SetOrderActions(actual_order);
+    LoadCategoriesOnCategoryModal(actual_order);
+    SetOrderCategories(actual_subcategories);
+    LoadCategoriesOnCategoryModal(actual_subcategories);
     modalCategory_events._save = (modal) => __awaiter(this, void 0, void 0, function* () {
         modal.disableActions();
         modal.setHeader("New category [SAVING]");
@@ -318,6 +401,7 @@ function OpenAddModal() {
                 image: actual_category_data.image,
                 min_rank: actual_category_data.min_rank,
                 order: actual_category_data.order,
+                subcategories: actual_category_data.subcategories,
             });
         }
         catch (err) {
@@ -335,6 +419,7 @@ function OpenAddModal() {
 function OpenCategoryModal(data) {
     const actual_category_data = JSON.parse(JSON.stringify(data));
     const actual_order = actual_category_data.order;
+    const actual_subcategories = actual_category_data.subcategories;
     const body = modalCategory.getBody();
     modalCategory.setHeader(data.name);
     const uuid_s = body._.uuid;
@@ -360,6 +445,8 @@ function OpenCategoryModal(data) {
     UpdateDataSelect([actual_category_data, "min_rank"], body._.rank._.select, rankSelect, actual_category_data.min_rank - 1, (value) => UserRank[value]);
     SetOrderActions(actual_order);
     LoadProductsOnCategoryModal(actual_order);
+    SetOrderCategories(actual_subcategories);
+    LoadCategoriesOnCategoryModal(actual_subcategories);
     modalCategory_events._save = (modal) => __awaiter(this, void 0, void 0, function* () {
         modal.disableActions();
         modal.setHeader(data.name + " [SAVING]");
@@ -372,6 +459,7 @@ function OpenCategoryModal(data) {
                 image: actual_category_data.image,
                 min_rank: actual_category_data.min_rank,
                 order: actual_category_data.order,
+                subcategories: actual_category_data.subcategories,
             });
         }
         catch (err) {
@@ -397,7 +485,6 @@ function AddEvent(ev, elm, fn) {
     elm.addEventListener(ev, fn);
 }
 function* ArrayIndex(arr) {
-    modalCategory.getBody()._.orders._.list.dom.innerHTML = "";
     for (let i = 0; i < arr.length; i++) {
         yield [arr[i], i];
     }

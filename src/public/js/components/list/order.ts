@@ -124,6 +124,7 @@ export class OrdenedElementList<
 
   add(elm: T): T[] {
     this.data.push(elm);
+    this.cache[elm[this._options.idTarget]] = elm;
 
     return this._returnDataAndRefresh();
   }
