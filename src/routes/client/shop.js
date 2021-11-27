@@ -1,9 +1,74 @@
-const { getCategoryVisible } = require("../../lib/shop");
+const shop = require("../../lib/shop");
+const cacheCategory = require("../../lib/cacheCategory");
+const { getCategoryVisible, getSubcategories } = shop;
+
+async function asyncForEach(array, callback) {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array);
+  }
+}
+
+async function autoUpdate(db) {
+  if (Date.now() - cacheCategory.read()?.lastUpdate > 1000) {
+    await updateCache(db);
+  }
+}
+
+async function updateCache(db) {
+  const main = (await shop.getCategoryByName(db, "MAIN"))[0];
+  await asyncForEach(main.subcategories, async (category, i) => {
+    const subcategory = await shop.getCategory(db, category);
+    main.subcategories[i] = subcategory;
+  });
+
+
+  // TODO: Resolve a bug with subcategories
+  const categories = await getCategoryVisible(db);
+  await asyncForEach(categories, async (category) => {
+    const subcategories = await getSubcategories(db, category.uuid);
+    category.subcategories = subcategories;
+
+    // Add subcategories data to subcategories
+    await asyncForEach(subcategories, async (subcategory) => {
+      const subcategoriesData = await shop.getSubcategories(db, subcategory.uuid);
+      subcategory.subcategories = subcategoriesData;
+    });
+  });
+
+  cacheCategory.save({
+    lastUpdate: Date.now(),
+    main,
+    categories,
+  });
+
+  return {
+    lastUpdate: Date.now(),
+    main,
+    categories,
+  };
+}
+
+async function getMain(db) {
+  autoUpdate(db);
+
+  if (cacheCategory.read()?.main) {
+    return cacheCategory.read()?.main;
+  }
+
+  return (await updateCache(db)).main;
+}
 
 async function getCategories(db) {
-  const categories = await getCategoryVisible(db);
-  console.log(categories);
-  return categories;
+  autoUpdate(db);
+
+  if (
+    cacheCategory.read()?.categories &&
+    cacheCategory.read()?.categories.length > 0
+  ) {
+    return cacheCategory.read()?.categories;
+  }
+
+  return (await updateCache(db)).categories;
 }
 
 module.exports = require("../../lib/Routes/exports")(
@@ -11,10 +76,12 @@ module.exports = require("../../lib/Routes/exports")(
   (router, waRedirect, db, rcons) => {
     router.get("/", async (req, res) => {
       const categories = await getCategories(db);
+      const category = await getMain(db);
+
       res.render("pags/shop/index", {
-        category: { name: "MAIN", display: "{{NAME}}" },
+        category: category,
         products: [],
-        categories
+        categories,
       });
     });
 
@@ -46,6 +113,8 @@ module.exports = require("../../lib/Routes/exports")(
       const data = await shop.getCategory(db, uuid);
       if (data === null) return next();
 
+      const categories = await getCategories(db);
+
       const products = await data.order.reduce(async (promise, uuid) => {
         return [
           ...(await promise),
@@ -53,9 +122,7 @@ module.exports = require("../../lib/Routes/exports")(
         ].filter((v) => v);
       }, Promise.resolve([]));
 
-      console.log(products);
-
-      res.render("pags/shop/index", { category: data, products });
+      res.render("pags/shop/index", { category: data, products, categories });
     });
 
     router.get("/cart", (req, res) => {

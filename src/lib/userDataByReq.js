@@ -2,8 +2,6 @@ const express = require("express");
 const jwt = require("./jwt");
 const Account = require("../api/account");
 const UserLevel = require("../@types/userLevel");
-const shop = require("./shop");
-const cacheCategory = require("./cacheCategory");
 
 module.exports = function (db) {
   /**
@@ -35,20 +33,12 @@ module.exports = function (db) {
 
     req.session.showAlert = false;
 
-    if(JSON.stringify(cacheCategory.read()?.categories ?? []) === "[]") {
-      const categories = await shop.getCategoryVisible(db);
-      cacheCategory.save({
-        categories
-      })
-    }
-
     res.locals.global = {
       "const": {
         WEB_HREF: process.WEB_HREF,
         PRODUCTION: process.PRODUCTION,
         LEVEL: UserLevel.Level,
-      },
-      categories: cacheCategory.read().categories,
+      }
     };
 
     const userId = jwt.get(req)?.uuid;

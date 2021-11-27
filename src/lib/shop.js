@@ -314,11 +314,56 @@ async function delCategory(db, uuid) {
  async function getCategoryVisible(db) {
   const pool = db();
   try {
-    const main = await pool.query(`SELECT uuid, name, subcategories FROM web.categories WHERE name = "MAIN"`);
-    const res = await pool.query(`SELECT * FROM web.categories`);
+    const main = (await getCategoryByName(db, "MAIN"))[0];
+    const sub = await getSubcategories(db, main.uuid);
+    pool.end();
+
+    return sub;
+  } catch (e) {
+    pool.end();
+    console.error(e);
+
+    return null;
+  }
+}
+
+/**
+ * @param {()=>import('mysql').Pool} db
+ * @param {string} name
+ * @returns {Promise<Category[]>}
+ */
+async function getCategoryByName(db, name) {
+  const pool = db();
+  try {
+    const res = await pool.query(`SELECT * FROM web.categories WHERE name = ?`, [name]);
     pool.end();
 
     return res.map(parseCategory);
+  } catch (e) {
+    pool.end();
+    console.error(e);
+
+    return null;
+  }
+}
+
+/**
+ * @param {()=>import('mysql').Pool} db
+ * @param {string} uuid
+ * @returns {Promise<Category[]>}
+ */
+async function getSubcategories(db, uuid) {
+  const pool = db();
+  try {
+    const category = await getCategory(db, uuid);
+    if(category.subcategories.length === 0) {
+      pool.end();
+      return [];
+    }
+    const sub = await pool.query(`SELECT * FROM web.categories WHERE uuid IN (${category.subcategories.map(_ => `'${_}'`).join(", ")})`);
+    pool.end();
+
+    return sub.map(parseCategory);
   } catch (e) {
     pool.end();
     console.error(e);
@@ -338,7 +383,9 @@ module.exports = {
 
   getAllCategories,
   getCategoryVisible,
+  getCategoryByName,
   getCategory,
+  getSubcategories,
   addCategory,
   updateCategory,
   delCategory,

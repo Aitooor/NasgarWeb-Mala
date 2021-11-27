@@ -1,27 +1,34 @@
-<% const _transparent = typeof transparent === "boolean" ? transparent : false; %> 
-<% const _solid       = typeof solid === "boolean" ? solid : false; %> 
-<% const _style       = typeof style === "string" ? style : ""; %> 
-<% const _nav_class   = (
-     (_transparent  ? "" : "always") + 
-     (!_transparent && _solid ? " solid" : "") + 
-     (!_transparent ? " " : "") + _style 
-);%> 
-<% const _height       = typeof transparent_height === "number" ? transparent_height : 17; %>
-<% const _height_style = _height === -1 ? "0px" : `calc(50px + ${_height}rem)`%> 
-<nav class="<%= _nav_class %> ">
+<% 
+const _transparent = typeof transparent === "boolean" ? transparent : false;  
+const _solid       = typeof solid === "boolean" ? solid : false;  
+const _style       = typeof style === "string" ? style : "";  
+const _nav_class   = (
+    (_transparent  ? "" : "always") + 
+    (!_transparent && _solid ? " solid" : "") + 
+    (!_transparent ? " " : "") + _style 
+); 
+const _height       = typeof transparent_height === "number" ? transparent_height : 17; 
+const _height_style = _height === -1 ? "0px" : `calc(50px + ${_height}rem)`;
+
+const tabs = [ "home", "updates", "shop", "bans", "vote", "profile" ]; 
+const _tab = tabs.indexOf(tab) === -1 ? "home" : tab;
+function _tab_class(tab) { return _tab === tab ? "selected" : ""; }
+%>
+
+<nav class="<%= _nav_class %>">
   <div class="desktop">
     <a href="/" class="logo">
       <img src="/img/logo-128x.png" alt="Nasgar Network" />
     </a>
     <div class="tabs">
-      <a href="/" class="tab selected"><%= global.lang.menu.home %></a>
-      <a href="/updates" class="tab"><%= global.lang.menu.updates %></a>
-      <a href="/shop" class="tab"><%= global.lang.menu.shop.title %></a>
-      <a href="/bans" class="tab"><%= global.lang.menu.bans %></a>
-      <a href="/vote" target="_blank" class="tab"><%= global.lang.menu.vote %></a>
+      <a href="/" class="tab <%- _tab_class("home") %>"><%= global.lang.menu.home %></a>
+      <a href="/updates" class="tab <%- _tab_class("updates") %>"><%= global.lang.menu.updates %></a>
+      <a href="/shop" class="tab <%- _tab_class("shop") %>"><%= global.lang.menu.shop.title %></a>
+      <a href="/bans" class="tab <%- _tab_class("bans") %>"><%= global.lang.menu.bans %></a>
+      <a href="/vote" target="_blank" class="tab <%- _tab_class("vote") %>"><%= global.lang.menu.vote %></a>
       <% if (global.user !== null) { %>
 
-        <div class="tab login">
+        <div class="tab <%- _tab_class("profile") %> login">
           <div class="title">
             <i class="material">account_circle</i> 
             <%= global.user.name %>

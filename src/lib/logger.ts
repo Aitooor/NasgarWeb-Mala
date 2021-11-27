@@ -8,10 +8,6 @@ import { instance } from "../api/paypal";
 if (typeof process.logger === "undefined") {
   // Remove last logs [Disable]
   const PATH = `${process.cwd()}/${CONFIG.LOGGER.PATHS.DIR}/`;
-  /*Fs.rmSync(PATH, {
-    force: true,
-    recursive: true,
-  });*/
 
   // Regular expression to colors in string,
   // &0;255 \x1b[0;255m
@@ -260,6 +256,10 @@ export function error(...args: Error[] | (LogArgument | Error)[]): void {
   _log("error", msg);
 }
 
+
+// -----------------------------------------------------------------------------
+//                                TEST
+// -----------------------------------------------------------------------------
 if (require.main === module) {
   log(
     function myFunction() {},

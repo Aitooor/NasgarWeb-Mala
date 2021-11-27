@@ -11,10 +11,6 @@ const config_1 = __importDefault(require("../../config"));
 if (typeof process.logger === "undefined") {
     // Remove last logs [Disable]
     const PATH = `${process.cwd()}/${config_1.default.LOGGER.PATHS.DIR}/`;
-    /*Fs.rmSync(PATH, {
-      force: true,
-      recursive: true,
-    });*/
     // Regular expression to colors in string,
     // &0;255 \x1b[0;255m
     const RegColor = /(&|\x1b\[)([0-2]?[0-9]{1,2})(;([0-2]?[0-9]{1,2}))*m?/g;
@@ -196,6 +192,9 @@ function error(...args) {
     _log("error", msg);
 }
 exports.error = error;
+// -----------------------------------------------------------------------------
+//                                TEST
+// -----------------------------------------------------------------------------
 if (require.main === module) {
     log(function myFunction() { }, () => { }, 0, "Hola", false, {
         name: "Yeah",
