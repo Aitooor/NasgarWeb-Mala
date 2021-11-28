@@ -16,13 +16,7 @@ async function autoUpdate(db) {
 
 async function updateCache(db) {
   const main = (await shop.getCategoryByName(db, "MAIN"))[0];
-  await asyncForEach(main.subcategories, async (category, i) => {
-    const subcategory = await shop.getCategory(db, category);
-    main.subcategories[i] = subcategory;
-  });
 
-
-  // TODO: Resolve a bug with subcategories
   const categories = await getCategoryVisible(db);
   await asyncForEach(categories, async (category) => {
     const subcategories = await getSubcategories(db, category.uuid);
@@ -30,10 +24,15 @@ async function updateCache(db) {
 
     // Add subcategories data to subcategories
     await asyncForEach(subcategories, async (subcategory) => {
-      const subcategoriesData = await shop.getSubcategories(db, subcategory.uuid);
+      const subcategoriesData = await shop.getSubcategories(
+        db,
+        subcategory.uuid
+      );
       subcategory.subcategories = subcategoriesData;
     });
   });
+
+  main.subcategories = categories;
 
   cacheCategory.save({
     lastUpdate: Date.now(),
@@ -71,6 +70,26 @@ async function getCategories(db) {
   return (await updateCache(db)).categories;
 }
 
+async function getCategory(db, uuid) {
+  autoUpdate(db);
+
+  if (
+    cacheCategory.read()?.categories &&
+    cacheCategory.read()?.categories.length > 0
+  ) {
+    const category = cacheCategory
+      .read()
+      ?.categories.find((category) => category.uuid === uuid);
+    if (category) {
+      return category;
+    }
+  }
+
+  return (await updateCache(db)).categories.find(
+    (category) => category.uuid === uuid
+  );
+}
+
 module.exports = require("../../lib/Routes/exports")(
   "/shop",
   (router, waRedirect, db, rcons) => {
@@ -78,6 +97,7 @@ module.exports = require("../../lib/Routes/exports")(
       const categories = await getCategories(db);
       const category = await getMain(db);
 
+      // console.log(JSON.stringify(category, null, 2));
       res.render("pags/shop/index", {
         category: category,
         products: [],
@@ -110,7 +130,7 @@ module.exports = require("../../lib/Routes/exports")(
       const uuid = req.params.uuid;
       if (uuid.length !== 36) return next();
 
-      const data = await shop.getCategory(db, uuid);
+      const data = await getCategory(db, uuid);
       if (data === null) return next();
 
       const categories = await getCategories(db);

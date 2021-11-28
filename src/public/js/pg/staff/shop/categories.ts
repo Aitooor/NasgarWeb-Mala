@@ -288,8 +288,6 @@ function SetOrderActions(order: string[]) {
 
     productsListSelector.setTarget(childs);
     productsListSelector.setOnSelect((item: Product, i: number) => {
-      console.log(item);
-
       childs[i].value = item.uuid;
       childs[i].dispatchEvent(
         new Event("input", { bubbles: true, cancelable: true })
@@ -566,7 +564,7 @@ function OpenAddModal() {
   );
 
   SetOrderActions(actual_order);
-  LoadCategoriesOnCategoryModal(actual_order);
+  LoadProductsOnCategoryModal(actual_order);
 
   SetOrderCategories(actual_subcategories);
   LoadCategoriesOnCategoryModal(actual_subcategories);

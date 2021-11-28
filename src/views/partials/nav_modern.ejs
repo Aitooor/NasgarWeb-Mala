@@ -1,4 +1,5 @@
 <% 
+const tab_         = typeof tab === 'string' ? tab : "home";
 const _transparent = typeof transparent === "boolean" ? transparent : false;  
 const _solid       = typeof solid === "boolean" ? solid : false;  
 const _style       = typeof style === "string" ? style : "";  
@@ -11,7 +12,7 @@ const _height       = typeof transparent_height === "number" ? transparent_heigh
 const _height_style = _height === -1 ? "0px" : `calc(50px + ${_height}rem)`;
 
 const tabs = [ "home", "updates", "shop", "bans", "vote", "profile" ]; 
-const _tab = tabs.indexOf(tab) === -1 ? "home" : tab;
+const _tab = tabs.indexOf(tab_) === -1 ? "home" : tab_;
 function _tab_class(tab) { return _tab === tab ? "selected" : ""; }
 %>
 

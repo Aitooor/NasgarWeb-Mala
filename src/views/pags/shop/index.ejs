@@ -27,20 +27,21 @@ function categoryDisplay(category, name) {
 					<% if (category.subcategories?.length > 0) { %>
 						<div class="category">
               <a href="/shop/category/<%- category.uuid %>" class="category-header">
-                <%- global.lang.menu.shop[category.name] || category.name %>
+                <%- categoryDisplay(category, global.lang.menu.shop[category.name] || category.name) %>
               </a>
 
               <div class="category-content">
                 <% for(const subcategory of category.subcategories) { %>
                   <a href="/shop/category/<%- subcategory.uuid %>" class="subcategory" >
-                    <%- subcategory.name %>
+                    <%- categoryDisplay(subcategory, global.lang.menu.shop[subcategory.name] || subcategory.name) %>
                   </a>
                 <% } %>
               </div>
             </div>
-					<% } %>
-				<a href="/shop/category/<%= category.uuid %>" class="category"><%- categoryDisplay(category, global.lang.menu.shop[category.name] || category.name) %></a>
-				<% } %>
+					<% } else { %>
+            <a href="/shop/category/<%= category.uuid %>" class="category"><%- categoryDisplay(category, global.lang.menu.shop[category.name] || category.name) %></a>
+          <% } %>
+        <% } %>
 			</div>
 		</aside>
 		<div class="mainbox">

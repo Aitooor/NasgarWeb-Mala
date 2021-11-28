@@ -212,7 +212,6 @@ function SetOrderActions(order) {
         const childs = (Array.from(queryAll(".input-zone input", modalCategory.getBody()._.orders._.list.dom)));
         productsListSelector.setTarget(childs);
         productsListSelector.setOnSelect((item, i) => {
-            console.log(item);
             childs[i].value = item.uuid;
             childs[i].dispatchEvent(new Event("input", { bubbles: true, cancelable: true }));
         });
@@ -386,7 +385,7 @@ function OpenAddModal() {
     UpdateData([actual_category_data, "description"], body._.description._.textarea, "");
     UpdateDataSelect([actual_category_data, "min_rank"], body._.rank._.select, rankSelect, 0, (value) => UserRank[value]);
     SetOrderActions(actual_order);
-    LoadCategoriesOnCategoryModal(actual_order);
+    LoadProductsOnCategoryModal(actual_order);
     SetOrderCategories(actual_subcategories);
     LoadCategoriesOnCategoryModal(actual_subcategories);
     modalCategory_events._save = (modal) => __awaiter(this, void 0, void 0, function* () {
