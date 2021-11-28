@@ -62,6 +62,13 @@
       SECRET: "ENRRR_Ob17kbroMB-w-H-9Ed1sMmcmH098R-bWXkU1IGBqrZtOHgvWTCRheILmXRy-uLWPffDBSO0gzM"
     }
   }
+
+  // CLOUDINARY data
+  CLOUDINARY: { 
+  cloud_name: 'nasgar', 
+  api_key: '231264589326955', 
+  api_secret: 'n6I0NYSfvPtXJVm0YBobt_ECpEI' 
+}
 }
 
 // vim: set ft=hjson
