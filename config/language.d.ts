@@ -13,8 +13,7 @@ export declare const DefaultLanguage: {
         login: string;
         shop: {
             title: string;
-            Keys: string;
-            Ranks: string;
+            MAIN: string;
         };
     };
     landing: {
