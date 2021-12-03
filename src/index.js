@@ -11,8 +11,9 @@ const userDataByReq = require("./lib/userDataByReq");
 const normalizeSession = require("./lib/normalizeSession");
 const database = require("./lib/database");
 const rcon = require("./lib/rcon");
-const paypal = require("./api/paypal");
+const paypal = require("./services/paypal");
 const languageMidd = require("./middlewares/language").middleware;
+const cloudinary = require("./services/cloudinary");
 
 // Configuration
 const CONFIG = require("../config");
@@ -43,7 +44,6 @@ app.use(
   require("express-fileupload")({
     preserveExtension: true,
     useTempFiles: true,
-    tempFileDir: join(__dirname, "db", "tmpFiles"),
     parseNested: true,
     abortOnLimit: true,
     responseOnLimit: "File is very bigger",
@@ -58,6 +58,7 @@ logger.log(" &42&38;5;16 ╚─═─═─═─═─═─═─═─═─�
 logger.log("");
 
 paypal.configure();
+cloudinary.configure();
 
 
 // Init All
