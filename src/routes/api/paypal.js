@@ -1,5 +1,5 @@
 
-const paypal = require("../../api/paypal");
+const paypal = require("../../services/paypal");
 const shop = require("../../lib/shop");
 
 module.exports = require("../../lib/Routes/exports")("/paypal", (router, waRedirect, db) => {

@@ -47,7 +47,7 @@ function categoryDisplay(category, name) {
 		<div class="mainbox">
 			<main>
 				<div class="title">
-					<%- categoryDisplay(category) %>
+					<%- categoryDisplay(category, global.lang.menu.shop[category.name] || category.name) %>
 				</div>
 				<div class="info-text">
 					<%- category.description %>

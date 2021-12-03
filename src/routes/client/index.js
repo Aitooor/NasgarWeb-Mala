@@ -53,6 +53,22 @@ module.exports = require("../../lib/Routes/exports")(
       res.render("pags/index", { serverData: lastRequest });
     });
 
+    router.get("/updates", async (req, res) => {
+      res.render("pags/updates", {
+        posts: [
+          {
+            title: "Update 1.0.0",
+            date: "2020-04-01",
+            content: `Est occaecat consequat reprehenderit duis elit in mollit. Do cupidatat sint ad nisi culpa ea culpa mollit id anim sit aliquip Lorem ea. Minim irure in quis culpa eu proident irure adipisicing. Ad qui nostrud reprehenderit aute magna amet ipsum exercitation. Pariatur velit et elit proident enim aliquip culpa dolore culpa dolore. Ipsum elit ea est ipsum nostrud sint laborum aliqua aliquip proident ipsum ut.
+
+Aliquip minim enim labore eu dolore. Aute sint excepteur labore elit eu sint est nostrud adipisicing ipsum. Est minim reprehenderit sint consequat esse fugiat adipisicing aliquip anim commodo eiusmod dolor. Consequat consequat excepteur ex magna voluptate nisi ea tempor dolore incididunt ex incididunt aliqua. Magna commodo ea deserunt aliqua sunt magna consequat enim fugiat aute dolor labore aliqua mollit.
+
+Occaecat aliquip sint ad cupidatat deserunt sunt. Sunt elit enim qui reprehenderit tempor qui exercitation. Mollit culpa sunt ipsum incididunt laboris velit tempor officia anim ea. Enim cupidatat in mollit ex voluptate sunt. Pariatur ad occaecat est aliquip ex. Aliqua occaecat sint adipisicing laborum.`,
+          }
+        ]
+      });
+    });
+
     router.get("/pay/return", async (req, res) => {
       const qk = Array.from(Object.keys(req.query));
 

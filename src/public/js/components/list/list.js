@@ -75,7 +75,7 @@ export class ElementList {
             list: this,
             parent: this.parent,
             custom: this._customFunctions,
-            usePipe: this.__usePipe.bind(this)
+            usePipe: this.__usePipe.bind(this),
         };
     }
     _setEventsOnElement(elm, data) {
@@ -106,12 +106,18 @@ export class ElementList {
         const allElementsWithSlot = queryAll("*[slot]", elm);
         for (const elmWithSlot of allElementsWithSlot) {
             const slot = elmWithSlot.getAttribute("slot");
+            const hasSlotFormatter = elmWithSlot.hasAttribute("data-slot-formatter");
+            const slotFormatter = elmWithSlot.dataset.slotFormatter;
             elmWithSlot.removeAttribute("slot");
+            if (hasSlotFormatter)
+                elmWithSlot.removeAttribute("data-slot-formatter");
+            const prop = getFromProperty(data, slot);
+            const formatted = hasSlotFormatter ? this._customFunctions[slotFormatter](prop) : prop;
             if (elmWithSlot instanceof HTMLInputElement) {
-                elmWithSlot.value = getFromProperty(data, slot);
+                elmWithSlot.value = formatted;
             }
             else {
-                elmWithSlot.innerHTML = getFromProperty(data, slot);
+                elmWithSlot.innerHTML = formatted;
             }
         }
         this._setEventsOnElement(elm, data);

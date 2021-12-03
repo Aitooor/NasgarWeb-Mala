@@ -217,5 +217,15 @@ module.exports = require("../../lib/Routes/exports")(
         categories,
       };
     }
+
+
+    router.get("/updates", async (_req, res) => {
+      res.status(200).send([{
+        uuid: "1",
+        title: "Update 1",
+        content: "This is the first update",
+        date: Date.now(),
+      }])
+    });
   }
 );

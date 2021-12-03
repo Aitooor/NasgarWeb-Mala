@@ -93,6 +93,10 @@ export class ElementList<
   /***         Methods         ***/
   /*******************************/
 
+  /**
+   * No implemented.
+   * @deprecated Use `pipe` instead.
+   */
   on(name: Events_type, listener: Listener<this, T, K>): this {
     return this;
   }
@@ -114,7 +118,7 @@ export class ElementList<
       list: this,
       parent: this.parent,
       custom: this._customFunctions,
-      usePipe: this.__usePipe.bind(this)
+      usePipe: this.__usePipe.bind(this),
     };
   }
 
@@ -156,13 +160,21 @@ export class ElementList<
     const allElementsWithSlot: HTMLElement[] = queryAll("*[slot]", elm);
 
     for (const elmWithSlot of allElementsWithSlot) {
-      const slot = elmWithSlot.getAttribute("slot");
+      const slot: string = elmWithSlot.getAttribute("slot");
+      const hasSlotFormatter: boolean = elmWithSlot.hasAttribute("data-slot-formatter");
+      const slotFormatter: string = elmWithSlot.dataset.slotFormatter;
+      
       elmWithSlot.removeAttribute("slot");
 
+      if (hasSlotFormatter) elmWithSlot.removeAttribute("data-slot-formatter");
+
+      const prop: string = getFromProperty<T, string>(data, slot);
+      const formatted: string = hasSlotFormatter ? this._customFunctions[slotFormatter](prop) : prop;
+
       if (elmWithSlot instanceof HTMLInputElement) {
-        elmWithSlot.value = getFromProperty<T, string>(data, slot);
+        elmWithSlot.value = formatted;
       } else {
-        elmWithSlot.innerHTML = getFromProperty<T, string>(data, slot);
+        elmWithSlot.innerHTML = formatted;
       }
     }
 
@@ -171,7 +183,7 @@ export class ElementList<
     elm.addEventListener("click", () => {
       if (this._onclickEvent !== null) this._onclickEvent(this, elm, data);
     });
-    
+
     return elm;
   }
 
@@ -179,7 +191,7 @@ export class ElementList<
     if (this.template === null) {
       throw new ReferenceError("`template` is not defined.");
     }
-    
+
     const elms: K[] = [];
 
     for (const oneData of this.data) {
@@ -245,13 +257,13 @@ export class ElementList<
     for (const pipe of this._pipes) {
       pipe(method, ...args);
     }
-  }
+  };
 
   /**
    * Execute a custom pipe, should be starts with "custom:"
    */
   protected __usePipe(method: string, ...args: any[]): void {
-    if(!method.startsWith("custom:") && method.length < 8) return;
+    if (!method.startsWith("custom:") && method.length < 8) return;
     this._execPipes(method, ...args);
   }
 
