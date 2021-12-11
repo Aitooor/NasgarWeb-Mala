@@ -1,29 +1,13 @@
 <%- include("../partials/head.ejs", { global, url: "/updates", title: "Updates" }) %>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"></script>
+
 <%- include("../partials/body.ejs", { global }) %>
 
 <div class="page-header">
   <h1 class="page-title">Updates</h1>
 </div>
 <div class="page-body">
-  <% posts.forEach(post => { %>
-    <div class="post" id="post1">
-      <div class="post-header">
-        <h2 class="post-title">
-          <a href="/updates#post1">
-            <%= post.title %> 
-          </a>
-        </h2>
-        <div class="post-meta">
-          <span class="post-date">
-            <%= post.date %> 
-          </span>
-        </div>
-      </div>
-      <div class="post-content">
-        <%- post.content.replace(/\n/g, "<br>") %> 
-      </div>
-    </div>
-  <% }); %>
+  <div id="update-list"></div>
 </div>
 
 <%- include("../partials/body_end.ejs") %>

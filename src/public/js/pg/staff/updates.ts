@@ -160,6 +160,7 @@ const modalUpdate = new Modal({
 
 const updateMDE = new SimpleMDE({
   autoDownloadFontAwesome: false,
+  spellChecker: false,
   element: querySelector<HTMLTextAreaElement>("#content"),
   toolbar: [
     {
@@ -338,6 +339,10 @@ function OpenUpdateModal(data: Update) {
 
   // Fields of modal
 
+  updateMDE.value(data.content);
+  //@ts-ignore
+  window.codemirror = updateMDE.codemirror;
+  
   UpdateData(
     [actual_update_data, "title"],
     <jsonHtml<HTMLInputElement>>body._.title._.input,
@@ -380,18 +385,19 @@ function OpenUpdateModal(data: Update) {
   };
 
   modalUpdate.open();
+  
+  updateMDE.codemirror.refresh();
 }
-
 
 function PrePostItem(data: Update) {
   if (data.title.length > 255)
-    throw new RangeError("Name is very long. Max 30.");
+    throw new RangeError("Name is very long. Max 255.");
 }
 
 
 async function UpdateItem(data: Update): Promise<Boolean> {
   PrePostItem(data);
-  const res = await fetch("/api/shop/update", {
+  const res = await fetch("/api/updates", {
     method: "PUT",
     credentials: "same-origin",
     headers: {
@@ -410,7 +416,7 @@ async function UpdateItem(data: Update): Promise<Boolean> {
 
 async function AddUpdate(data: Update) {
   PrePostItem(data);
-  const res = await fetch("/api/shop/update", {
+  const res = await fetch("/api/updates", {
     method: "POST",
     credentials: "same-origin",
     headers: {
@@ -425,7 +431,7 @@ async function AddUpdate(data: Update) {
 }
 
 async function RemItem(uuid: string, confirmation: string) {
-  const res = await fetch("/api/shop/update", {
+  const res = await fetch("/api/updates", {
     method: "DELETE",
     credentials: "same-origin",
     headers: {
@@ -449,19 +455,3 @@ async function RemItem(uuid: string, confirmation: string) {
 
   return true;
 }
-
-/**************************/
-/***    Product List    ***/
-/**************************/
-
-(async () => {
-  const res = await fetch("/api/get/products", {
-    headers: {
-      accept: "application/json",
-    },
-    credentials: "same-origin",
-  });
-
-  if (!res.ok) return;
-  cacheUpdates = await res.json();
-})();

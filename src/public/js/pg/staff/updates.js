@@ -113,6 +113,7 @@ const modalUpdate = new Modal({
 });
 const updateMDE = new SimpleMDE({
     autoDownloadFontAwesome: false,
+    spellChecker: false,
     element: querySelector("#content"),
     toolbar: [
         {
@@ -262,6 +263,8 @@ function OpenUpdateModal(data) {
     uuid_s.dom.innerHTML = "UUID: " + data.uuid;
     uuid_s.classes.remove("hidden");
     modalUpdate.getActions()._.Delete.classes.remove("hidden");
+    updateMDE.value(data.content);
+    window.codemirror = updateMDE.codemirror;
     UpdateData([actual_update_data, "title"], body._.title._.input, actual_update_data.title);
     modalUpdate_events._save = (modal) => __awaiter(this, void 0, void 0, function* () {
         modal.disableActions();
@@ -292,16 +295,17 @@ function OpenUpdateModal(data) {
         }
     });
     modalUpdate.open();
+    updateMDE.codemirror.refresh();
 }
 function PrePostItem(data) {
     if (data.title.length > 255)
-        throw new RangeError("Name is very long. Max 30.");
+        throw new RangeError("Name is very long. Max 255.");
 }
 function UpdateItem(data) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
         PrePostItem(data);
-        const res = yield fetch("/api/shop/update", {
+        const res = yield fetch("/api/updates", {
             method: "PUT",
             credentials: "same-origin",
             headers: {
@@ -318,7 +322,7 @@ function UpdateItem(data) {
 function AddUpdate(data) {
     return __awaiter(this, void 0, void 0, function* () {
         PrePostItem(data);
-        const res = yield fetch("/api/shop/update", {
+        const res = yield fetch("/api/updates", {
             method: "POST",
             credentials: "same-origin",
             headers: {
@@ -333,7 +337,7 @@ function AddUpdate(data) {
 }
 function RemItem(uuid, confirmation) {
     return __awaiter(this, void 0, void 0, function* () {
-        const res = yield fetch("/api/shop/update", {
+        const res = yield fetch("/api/updates", {
             method: "DELETE",
             credentials: "same-origin",
             headers: {
@@ -355,15 +359,4 @@ function RemItem(uuid, confirmation) {
         return true;
     });
 }
-(() => __awaiter(void 0, void 0, void 0, function* () {
-    const res = yield fetch("/api/get/products", {
-        headers: {
-            accept: "application/json",
-        },
-        credentials: "same-origin",
-    });
-    if (!res.ok)
-        return;
-    cacheUpdates = yield res.json();
-}))();
 //# sourceMappingURL=updates.js.map
