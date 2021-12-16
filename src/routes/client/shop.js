@@ -107,8 +107,6 @@ module.exports = require("../../lib/Routes/exports")(
     router.get("/", async (req, res) => {
       const category = await getMain(db);
 
-      console.log(JSON.stringify(category, null, 2));
-
       res.render("pags/shop/index", {
         category: category,
         products: [],
