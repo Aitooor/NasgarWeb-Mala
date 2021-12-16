@@ -20,6 +20,7 @@ module.exports = async function (app) {
     host: CONFIG.SV_HOST,
     user: CONFIG.DB.USER,
     password: CONFIG.DB.PASS,
+    insecureAuth: true,
   };
 
   let isFT = true;

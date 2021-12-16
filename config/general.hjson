@@ -1,15 +1,21 @@
 {
-// Enviroment (prod, dev)
+// Enviroment (prod dev)
   ENV: "dev"
 
 // Port to use and their conditional
   PORT: [
-    { port: "env"
-      condition: "exist" },
-    { port: 80
-      condition: "prod" },
-    { port: 1402
-      condition: "dev" }
+    {
+      port: "env"
+      condition: "exist"
+    }
+    {
+      port: 80
+      condition: "prod"
+    }
+    {
+      port: 1402
+      condition: "dev"
+    }
   ]
 
 // Express sessions secret key
@@ -31,35 +37,6 @@
       LOG: "log.log"
       DEBUG: "debug.log"
       ERROR: "error.log"
-    }
-  }
-
-// Server host ip
-  SV_HOST: "142.4.215.212"
-
-// Database data
-  DB: {
-    USER: "root"
-    PASS: "Nasgar19992%"
-  }
-
-// RCON data
-  RCON: {
-    PASS: "Aitor19992%"
-    PORTS: [ 100, 101 ]
-  }
-
-// Nodemailer auth
-  EMAIL_AUTH: {
-		user: "apikamailer@gmail.com"
-		pass: "Mailer_Test#01"
-  }
-
-// PAYPAL data
-  PAYPAL: {
-    SANDBOX: {
-      ID: "Ae0yRdOO1ycGxfVFMO7Cc8OfQ5qeYi6obu5IOctyNkbvMhJbS1ObfuqBoYHNQe9CSjsgbaZ40upFSzsV"
-      SECRET: "ENRRR_Ob17kbroMB-w-H-9Ed1sMmcmH098R-bWXkU1IGBqrZtOHgvWTCRheILmXRy-uLWPffDBSO0gzM"
     }
   }
 }

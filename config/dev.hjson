@@ -1,0 +1,40 @@
+{
+// Server host ip
+  SV_HOST: "127.0.0.1"
+
+// Database data
+  DB: {
+    web: "u576248622_web"
+    USER: "root"
+    PASS: "Apika#1234"
+  }
+
+// Nodemailer auth
+  EMAIL_AUTH: {
+    user: "apikamailer@gmail.com"
+    pass: "Mailer_Test#01"
+  }
+
+// PAYPAL data
+  PAYPAL: {
+    SANDBOX: {
+      ID: "Ae0yRdOO1ycGxfVFMO7Cc8OfQ5qeYi6obu5IOctyNkbvMhJbS1ObfuqBoYHNQe9CSjsgbaZ40upFSzsV"
+      SECRET: "ENRRR_Ob17kbroMB-w-H-9Ed1sMmcmH098R-bWXkU1IGBqrZtOHgvWTCRheILmXRy-uLWPffDBSO0gzM"
+    }
+  }
+
+// CLOUDINARY data
+  CLOUDINARY: {
+    cloud_name: "nasgar"
+    api_key: "231264589326955"
+    api_secret: "n6I0NYSfvPtXJVm0YBobt_ECpEI"
+  }
+
+  REDIS: {
+    PORT: 6379,
+    CHANNEL: "Store"
+    PASS: ""
+  }
+}
+
+// vim: set ft=hjson

@@ -19,13 +19,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getByUUID = exports.set = exports.read = exports.save = void 0;
+exports.set = exports.read = exports.save = void 0;
 const Utils = __importStar(require("./cacheUtils"));
 const Path = __importStar(require("path"));
 const file = Path.join(Utils.cacheDir, "category.json");
 Utils.touchIf(file, JSON.stringify({
     lastUpdate: 0,
+    main: {},
     categories: [],
+    visible: [],
 }, undefined, 2));
 function save(json) {
     Utils.writeFile(file, process.env.NODE_ENV === "production"
@@ -43,22 +45,12 @@ exports.read = read;
 function set(...categories) {
     const oldJson = read();
     const newJson = {
+        lastUpdate: Date.now(),
+        main: oldJson.main,
         categories: Object.assign(Object.assign({}, oldJson.categories), categories),
+        visible: oldJson.visible
     };
     save(newJson);
     return newJson;
 }
 exports.set = set;
-function getByUUID(id) {
-    return (read().categories[id] || null);
-}
-exports.getByUUID = getByUUID;
-// export function getByUsername(username: string): CategoryCache {
-//   for (const id in read().categories) {
-//     if (Object.prototype.hasOwnProperty.call(read().categories, id)) {
-//       const element = read().categories[id];
-//       if(element.username === username)
-//         return element
-//     }
-//   }
-// }

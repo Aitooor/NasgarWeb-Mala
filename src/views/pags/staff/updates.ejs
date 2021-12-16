@@ -1,0 +1,37 @@
+<%- include("../../partials/head.ejs", { global, url: "/staff/updates", title: "Assets" }) %>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+
+<%- include("../../partials/body.ejs", { global }) %>
+
+<div class="page-header">
+  <span class="page-title">
+    <span class="text"> Updates </span>
+  </span>
+  <div class="page-header-actions">
+    <button class="page-header-actions__action refresh">
+      <i class="material">refresh</i>
+    </button>
+    <button class="page-header-actions__action add">
+      <i class="material">add_circle_outline</i>
+    </button>
+  </div>
+</div>
+<div class="card-list updates">
+</div>
+
+<div id="update-editor-body" hidden>
+  <div class="placeholder hidden" data-name="uuid">UUID: -</div>
+
+  <div class="field required" data-name="title">
+    <span class="title">Name</span>
+    <input class="input" placeholder="Name of category" />
+  </div>
+
+  <div class="field required" data-name="content">
+    <span class="title">Description</span>
+    <textarea class="input" id="content"></textarea>
+  </div>
+</div>
+
+<%- include("../../partials/body_end.ejs") %>

@@ -1,0 +1,13 @@
+<%- include("../partials/head.ejs", { global, url: "/updates", title: "Updates" }) %>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"></script>
+
+<%- include("../partials/body.ejs", { global, tab: "updates" }) %>
+
+<div class="page-header">
+  <h1 class="page-title">Updates</h1>
+</div>
+<div class="page-body">
+  <div id="update-list"></div>
+</div>
+
+<%- include("../partials/body_end.ejs") %>

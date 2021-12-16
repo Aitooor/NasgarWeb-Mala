@@ -1,5 +1,13 @@
 <% const _url = typeof url === "string" ? url : "/index" %>
-<% const title_inner = typeof title === "string" ? title : _url %>
+<% const title_inner = (
+  typeof title === "string" 
+    ? title + " - Nasgar Network" 
+    : typeof title === "boolean" 
+      ? title 
+        ? "Nasgar Network" 
+        : null 
+      :  _url + " - Nasgar Network"
+  ) %>
 <% const less_paths = typeof styles === "object" ? styles : [ "pags" + _url ]; %> 
 <% const js_paths   = typeof scripts === "object" ? scripts : [ "pg" + _url ]; %> 
 
@@ -8,9 +16,15 @@
 <head>
   <%- include("./header.ejs") %> 
 
-  <title><%= title_inner %> - Nasgar Network</title>
+  <% if(title_inner !== null) { %>
+    <title><%= title_inner %></title>
+  <% } %>
 
   <meta rel="canonical" href="<%- global.const.WEB_HREF %><%- _url %>">
 
-  <%- include("./less.ejs", { paths: less_paths }) %> 
+  <% if(global.PRODDUCTION) { %>
+    <%- include("./css.ejs", { paths: less_paths }) %> 
+  <% } else { %>
+    <%- include("./less.ejs", { paths: less_paths }) %> 
+  <% } %>
   <%- include("./script.ejs", { paths: js_paths }) %> 

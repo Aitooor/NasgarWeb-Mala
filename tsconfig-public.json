@@ -10,7 +10,6 @@
     "declaration": false,
     "sourceMap": true,
     "allowJs": false,
-    "watch": true,
     "target": "ES6",
     "module": "ES2020",
     "esModuleInterop": true,
