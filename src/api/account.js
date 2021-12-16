@@ -3,6 +3,8 @@ const { Level } = require("../@types/userLevel");
 const { ErrorCode, errorDesc } = require("../@types/errorCodes");
 const logger = require("../lib/logger");
 const uuid = require("uuid");
+const CONFIG = require("../../config");
+const webTable = CONFIG.DB.web;
 
 const PREFIX = "&1;41;37 ACCOUNTS &0&38;5;8";
 
@@ -32,7 +34,7 @@ async function login(db, username, password) {
   }
 
   const pool = db();
-  const query = (await pool.query(`SELECT * FROM web.accounts WHERE name = "${username}"`))[0];
+  const query = (await pool.query(`SELECT * FROM ${webTable}.accounts WHERE name = "${username}"`))[0];
   pool.end();
 
   if(query) {
@@ -106,13 +108,13 @@ async function signup(db, username, email, password) {
 
   // Query a user with same name or email
   const pool = db();
-  const query = await pool.query(`SELECT * FROM web.accounts WHERE name = "${username}" OR email = "${email}" LIMIT 1`);
+  const query = await pool.query(`SELECT * FROM ${webTable}.accounts WHERE name = "${username}" OR email = "${email}" LIMIT 1`);
 
   // If that user not exists then sigup
   // else close pool connection and return error
   if(query.length === 0) {
     const _uuid = uuid.v4();
-    await pool.query("INSERT INTO web.accounts SET ?", { uuid: _uuid, name: username, email: email, password: encrypt(password), rank: Level.User });
+    await pool.query(`INSERT INTO ${webTable}.accounts SET ?`, { uuid: _uuid, name: username, email: email, password: encrypt(password), rank: Level.User });
 
     logger.log(`[ACCOUNTS] New user register: ${_uuid}:${username} `);
     pool.end();
@@ -159,7 +161,7 @@ async function getUserInfo(db, uuid) {
   }
 
   const pool = db();
-  const query = await pool.query(`SELECT uuid, name, rank FROM web.accounts WHERE uuid = "${uuid}"`);
+  const query = await pool.query(`SELECT uuid, name, \`rank\` FROM ${webTable}.accounts WHERE uuid = "${uuid}"`);
   
   if(query.length === 1) {
     return {

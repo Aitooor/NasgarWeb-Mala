@@ -9,7 +9,6 @@
   "compilerOptions": {
     "declaration": true,
     "allowJs": false,
-    "watch": true,
     "target": "ES6",
     "module": "CommonJS",
     "resolveJsonModule": true,

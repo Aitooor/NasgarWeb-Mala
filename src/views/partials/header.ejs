@@ -22,19 +22,13 @@
 
 <!-- CSS -->
 <link rel="stylesheet" href="/css/normalize.min.css">
-<link rel="stylesheet" href="/css/partials/partials.css">
 
 <!-- ------ JS ------ -->
 <script src="/js/common/common.js" defer type="module"></script>
 
-<script>((location.hostname !== "localhost" && !location.hostname.match(/[0-9.]+/)) && location.protocol === "http:" && (window.location = "https://" + location.hostname + location.pathname + location.search));</script>
-
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-9MY04NMHTK"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-9MY04NMHTK');
+  if((location.hostname !== "localhost" && !location.hostname.match(/^[0-9.]+$/) ) && 
+      location.protocol === "http:") {
+    window.open("https://" + location.hostname + location.pathname + location.search, "_self");
+  }
 </script>

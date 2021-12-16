@@ -51,6 +51,7 @@ class Redis {
             }
             try {
                 yield this._client.connect();
+                logger.log("Redis connected");
             }
             catch (err) {
                 logger.error(err);

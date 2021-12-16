@@ -1,0 +1,276 @@
+.text-style-code {
+  padding: 0.1rem 0.3rem;
+  background-color: #272727;
+  color: #fff;
+  font-family: monospace;
+  font-size: 0.9em;
+  white-space: pre;
+}
+.text-style-code .code-active {
+  color: #03bd85;
+}
+.text-style-code .code-comment {
+  color: #ccc;
+  font-style: italic;
+}
+*,
+*::before,
+*::after {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 400;
+  box-sizing: border-box;
+}
+body {
+  background-color: #EEE;
+}
+a {
+  color: currentColor;
+  text-decoration: none;
+}
+input {
+  border: solid 1.5px #000;
+  border-radius: 2px;
+}
+input:hover {
+  border: solid 1.5px #3880be;
+}
+input:focus {
+  outline: none;
+  border: solid 2px #3880be;
+}
+select:focus,
+textarea:focus {
+  outline: none;
+}
+textarea::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar {
+  width: 10px;
+}
+body::-webkit-scrollbar {
+  width: 15px;
+}
+::-webkit-scrollbar-track {
+  background-color: #a8c6e1;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #6cabe2;
+  border-radius: 5px;
+  border: 6px solid transparent;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #4c7da9;
+}
+.material-icons,
+i.material {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+.material-icons-two-tone,
+i.material-two-tone {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+  font-family: 'Material Icons Two Tone';
+}
+body {
+  background: #EEE;
+}
+.app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.app > .msg {
+  width: calc(100% - 20px);
+  height: 0;
+  padding: 0 10px;
+  color: #FFF;
+  background: #ED4245;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  transition: height 0.3s ease;
+}
+.app > .msg.show {
+  height: 30px;
+}
+.app > .info {
+  width: calc(100% - 20px);
+  height: 100%;
+  padding: 10px;
+  padding-top: 5px;
+  background: #FFF;
+  box-shadow: 0px 2px 3px #0005;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.app > .info > .nick {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.app > .info > .nick > .title {
+  font-size: 1.4rem;
+}
+.app > .info > .nick > input {
+  width: 20ch;
+  height: 20px;
+  padding: 2px 5px;
+  color: #000;
+  border: solid 2px #212121;
+  border-radius: 5px;
+}
+.app > .info > .total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.app > .info > .total > .title {
+  font-size: 1.3rem;
+}
+.app > .info > .total > .cash {
+  font-size: 1.3rem;
+}
+.app > .info > .total > .cash::before {
+  content: "$";
+}
+.app > .info > .total > .cash::after {
+  content: "USD";
+  font-size: 0.7rem;
+  vertical-align: top;
+}
+.app > .info > .payment_method {
+  display: flex;
+  flex-direction: column;
+}
+.app > .info > .payment_method > .title {
+  font-size: 1.3rem;
+}
+.app > .info > .payment_method > .methods {
+  margin: 0;
+  padding: 10px 0 0 30px;
+  list-style: none;
+}
+.app > .info > .payment_method > .methods > .method {
+  margin-bottom: 5px;
+}
+.app > .info > .payment_method > .methods > .method > label {
+  display: flex;
+  align-items: center;
+}
+.app > .info > .payment_method > .methods > .method > label > input {
+  display: none;
+}
+.app > .info > .payment_method > .methods > .method > label > input:hover + .name {
+  cursor: pointer;
+}
+.app > .info > .payment_method > .methods > .method > label > input:hover + .name::before {
+  background: rgba(85, 153, 255, 0.5);
+}
+.app > .info > .payment_method > .methods > .method > label > input:checked + .name::before {
+  background: #59F;
+}
+.app > .info > .payment_method > .methods > .method > label > input + .name {
+  font-size: 1rem;
+}
+.app > .info > .payment_method > .methods > .method > label > input + .name::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  margin-right: 5px;
+  padding: 3px;
+  background-clip: content-box !important;
+  border: solid 2px #59F;
+  border-radius: 2px;
+  display: inline-flex;
+}
+.app > .info > .captcha {
+  width: 100%;
+  max-width: 304px;
+  height: 78px;
+  margin: 0 auto;
+  margin-top: 30px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+}
+.app > .info > .captcha > #recaptcha {
+  width: 100%;
+  transform: scale(0.94) translateX(4%);
+  transform-origin: 0 0;
+}
+@media screen and (max-width: 350px) {
+  .app > .info > .captcha > #recaptcha {
+    transform: scale(0.74) translateX(4%);
+  }
+}
+.app > .process {
+  width: 100%;
+  margin: 2rem 0;
+  display: flex;
+}
+.app > .process > button {
+  width: 95%;
+  margin: 0 auto;
+  padding: 15px;
+  color: #FFF;
+  background: #59F;
+  border: solid 2px #59F;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  box-shadow: 0px 2px 3px #0005;
+}
+@media screen and (min-width: 600px) {
+  .app {
+    width: 350px;
+    height: 90vh;
+    margin: 5vh auto;
+    background: #FFF;
+    box-shadow: 0px 2px 5px #0005;
+    border-radius: 4px;
+  }
+  .app > .info {
+    box-shadow: none;
+  }
+}

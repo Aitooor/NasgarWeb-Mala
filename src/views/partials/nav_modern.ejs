@@ -12,7 +12,7 @@ const _height       = typeof transparent_height === "number" ? transparent_heigh
 const _height_style = _height === -1 ? "0px" : `calc(50px + ${_height}rem)`;
 
 const tabs = [ "home", "updates", "shop", "bans", "vote", "profile" ]; 
-const _tab = tabs.indexOf(tab_) === -1 ? "home" : tab_;
+const _tab = tabs.indexOf(tab_.toLowerCase()) === -1 ? "home" : tab_.toLowerCase();
 function _tab_class(tab) { return _tab === tab ? "selected" : ""; }
 %>
 

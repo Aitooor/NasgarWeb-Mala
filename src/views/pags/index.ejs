@@ -1,18 +1,10 @@
-<!DOCTYPE html>
-<html lang="<%= global.langISO %>">
-  <head>
-    <%- include("../partials/header.ejs", { global }) -%>
-
-    <title>Nasgar Network</title>
+<%- include("../partials/head.ejs", { global, title: true, url: "/index" }) %>
 
     <link
       href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400;500&display=swap"
       rel="stylesheet"
     />
-
-    <!-- CSS -->
-    <%- include("../partials/less.ejs", { paths: ["pags/index"] }) %>
-  </head>
+</head>
   <body>
     <%- include("../partials/nav_modern.ejs", { global, transparent: true, transparent_height: -1 }) %> 
 

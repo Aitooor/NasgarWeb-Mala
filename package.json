@@ -15,17 +15,15 @@
   "scripts": {
     "start": "node bin/www",
     "start_forever": "( SET NODE_ENV=production || NODE_ENV=production ) && forever start -a -c \"node --no-warnings\" --uid \"web\" bin/www",
-    "dev": "node ./node_modules/nodemon/bin/nodemon.js bin/www",
-    "dev:ts": "tsc -p tsconfig.json",
-    "dev:ts-public": "tsc -p tsconfig-public.json",
+    "dev": "node ./node_modules/nodemon/bin/nodemon.js --no-warnings bin/www",
+    "dev:ts": "tsc -p tsconfig.json -w",
+    "dev:ts-public": "tsc -p tsconfig-public.json -w",
     "ts": "yarn run dev:ts",
     "tsp": "yarn run dev:ts-public",
-    "commit": "git add . && git commit -m \"$1\"",
-    "hub": "git push origin master && git push nasgar master",
-    "compile_less_common": "lessc ./src/public/less/common/super.less ./src/public/css/common.css -x --source-map",
-    "compile_less_components": "lessc ./src/public/less/components/select.less ./src/public/css/components/select.css -x --source-map",
-    "compile_less_partials": "cd src/public && lessc ./less/partials/partials.less ./css/partials/partials.css -x --source-map --source-map-url=/css/partials/partials.css.map",
-    "compile_less": "npm run compile_less_common && npm run compile_less_components && npm run compile_less_partials"
+    "build": "yarn run dev && yarn run build:ts && yarn run build:ts-public && yarn run build:less",
+    "build:ts": "tsc -p tsconfig.json",
+    "build:ts-public": "tsc -p tsconfig-public.json",
+    "build:less": "node ./compiler/less.js"
   },
   "keywords": [],
   "author": "Nasgar Network",
@@ -39,6 +37,7 @@
     "express-fileupload": "^1.2.1",
     "express-session": "^1.17.2",
     "hjson": "^3.2.2",
+    "html-minifier": "^4.0.0",
     "jsonwebtoken": "^8.5.1",
     "mysql": "^2.18.1",
     "node-fetch": "^3.0.0",
@@ -65,6 +64,8 @@
     "@types/uuid": "^8.3.1",
     "@types/winston": "^2.4.4",
     "dotenv": "^10.0.0",
+    "less": "^4.1.2",
+    "less-plugin-clean-css": "^1.5.1",
     "nodemon": "^2.0.7",
     "typescript": "^4.4.4"
   }

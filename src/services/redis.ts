@@ -36,6 +36,7 @@ export class Redis {
 
     try {
       await this._client.connect();
+      logger.log("Redis connected");
     } catch (err) {
       logger.error(err);
       throw err;

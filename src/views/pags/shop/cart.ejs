@@ -1,26 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head lang="es">
-	<%- include("../../partials/header.ejs") %> 
-	<title> Carrito - Nasgar Network </title>
-	
-  <%- include("../../partials/less.ejs", { paths: ["pags/shop/cart"] }) %> 
-	
-	<script src="https://unpkg.com/js-search@1.3.7/dist/umd/js-search.min.js" defer></script>
-	
-  <%- include("../../partials/script.ejs", { paths: ["pg/shop/cart"] }) %>
+<%- include("../../partials/head.ejs", { global, title: "cart", url: "/shop/cart" }) %>
 </head>
-<body>
-	<%- include("../../partials/nav.ejs", { userData, alert }) %> 
-	<div class="header-separator"></div>
+<%- include("../../partials/body.ejs", { global, transparent_height: 10 }) %>
 
-	<div class="app">
-		<ul class="products"></ul>
-		<footer>
-			<div class="cupon cupon-div">
+  <div class="app">
+    <ul class="products"></ul>
+    <footer>
+      <div class="cupon cupon-div">
         <div class="selected">
           <div class="left">
-			  	  <i class="material">confirmation_number</i>
+            <i class="material">confirmation_number</i>
             <span class="cupon-txt"></span>
           </div>
           <button class="cupon-clear-btn">
@@ -28,19 +16,19 @@
           </button>
         </div>
         <div class="selecting">
-				  <input class="cupon-input" type="text" placeholder="Cupon">
-				  <button class="cupon-btn redeem-btn">Canjear</button>
+          <input class="cupon-input" type="text" placeholder="Cupon">
+          <button class="cupon-btn redeem-btn">Canjear</button>
         </div>
-			</div>
-			<div class="info">
-				<span class="text">Total</span>
+      </div>
+      <div class="info">
+        <span class="text">Total</span>
         <div class="money">
           <span class="subtotal subtotal-count">-.--</span>
-				  <span class="total total-count">-.--</span>
+          <span class="total total-count">-.--</span>
         </div>
-			</div>
-			<button class="btn-pay" >Continuar compra</button>
-		</footer>
-	</div>
-</body>
-</html>
+      </div>
+      <button class="btn-pay" >Continuar compra</button>
+    </footer>
+  </div>
+
+<%- include("../../partials/body_end.ejs") %>

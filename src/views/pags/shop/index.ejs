@@ -7,21 +7,18 @@ function categoryDisplay(category, name) {
 
 %> 
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-	<%- include("../../partials/header.ejs") %> 
-	<title> Tienda - Nasgar Network </title>
-
-	<%- include("../../partials/less.ejs", { paths: ["pags/shop/index"] }) %> 
-
-	<script src="/js/pg/shop/index.js" type="module"></script>
-</head>
+<%- include("../../partials/head.ejs", {global, title: global.lang.menu.shop.title, url: "/shop/index"}) %>
+<!-- </head> -->
 <body>
 	<%- include("../../partials/nav_modern.ejs", { global, tab: "shop", solid: true, transparent_height: 3 }) %>
 	
 	<div class="body centered">
 		<aside>
+      <div class="cart">
+        <a href="/shop/cart" class="btn primary cart-btn">
+          <i class="material">shopping_cart</i>
+        </a>
+      </div>
 			<div class="categories">
 				<% for(const category of categories) { %>
 					<% if (category.subcategories?.length > 0) { %>
@@ -39,7 +36,9 @@ function categoryDisplay(category, name) {
               </div>
             </div>
 					<% } else { %>
-            <a href="/shop/category/<%= category.uuid %>" class="category"><%- categoryDisplay(category, global.lang.menu.shop[category.name] || category.name) %></a>
+            <a href="/shop/category/<%= category.uuid %>" class="category">
+              <%- categoryDisplay(category, global.lang.menu.shop[category.name] || category.name) %>
+            </a>
           <% } %>
         <% } %>
 			</div>

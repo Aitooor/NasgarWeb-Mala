@@ -4,6 +4,8 @@ const shop = require("../../lib/shop");
 const cacheCategory = require("../../lib/cacheCategory");
 const logger = require("../../lib/logger");
 const { v4: uuidv4 } = require("uuid");
+const CONFIG = require("../../../config");
+const webTable = CONFIG.DB.web;
 
 /**
  *
@@ -235,7 +237,7 @@ module.exports = require("../../lib/Routes/exports")(
 
     router.get("/updates", async (_req, res) => {
       const pool = await db();
-      const query = await pool.query( "SELECT * FROM web.update_posts ORDER BY date DESC");
+      const query = await pool.query( `SELECT * FROM ${webTable}.update_posts ORDER BY date DESC`);
       pool.end();
       
       res.status(200).send(query);
@@ -255,7 +257,7 @@ module.exports = require("../../lib/Routes/exports")(
         content,
         date: Date.now(),
       };
-      const query = await pool.query( "INSERT INTO web.update_posts SET ?", [ data ]);
+      const query = await pool.query( `INSERT INTO ${webTable}.update_posts SET ?`, [ data ]);
       pool.end();
 
       if (query) res.status(200).send(data);
@@ -277,7 +279,7 @@ module.exports = require("../../lib/Routes/exports")(
         date
       };
       const query = await pool.query(
-        "UPDATE web.update_posts SET ? WHERE uuid = ?",
+        `UPDATE ${webTable}.update_posts SET ? WHERE uuid = ?`,
         [ data, uuid ]
       );
       pool.end();

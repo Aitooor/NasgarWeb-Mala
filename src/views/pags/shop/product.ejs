@@ -1,33 +1,16 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<%- include("../../partials/header.ejs") %> 
+<%- include("../../partials/head.ejs", { global, title: "Cargando...", url: "/shop/product" }) %>
+  <link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/flickity-fullscreen@1/fullscreen.css">
 
-	<title> Cargando... </title>
-	
-	<link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css">
-	<link rel="stylesheet" href="https://unpkg.com/flickity-fullscreen@1/fullscreen.css">
-	<link rel="stylesheet/less" href="/less/pags/shop/product.less" />
-
-	<%- include("../../partials/less.ejs") %> 
-
-	<script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js" defer></script>
-	<script src="https://unpkg.com/flickity-fullscreen@1/fullscreen.js" defer></script>
-
-	<script type="module" src="/js/pg/shop/product.js" defer></script>
-
+  <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js" defer></script>
+  <script src="https://unpkg.com/flickity-fullscreen@1/fullscreen.js" defer></script>
 	<script>
 		window.productUUID = "<%- locals?.product %>";
 	</script>
-</head>
-<body>
-	<%- include("../../partials/nav.ejs", { userData, alert }) %> 
-	<div class="header-separator"></div>
-
+<%- include("../../partials/body.ejs", { global, transparent_height: 5 }) %>
 	<div class="app">
 		<main class="product loading">
 			<div class="fav-icon">
-				<i class="material">favorite_border</i>
 			</div>
 			<div class="images product-images">
 			</div>
@@ -45,23 +28,7 @@
 				<div class="desc product-description"></div>
 			</div>
 		</main>
-		
-    
-		<!-- <div class="others">
-			<h2>Other products</h2>
-			<div class="products" data-flickity='{ "freeScroll": true, "lazyLoad": 3, "pageDots": false, "prevNextButtons": false, "cellAlign": "left", "contain": true }'>
-				<div class="product">
-					<div class="img">
-						<img data-flickity-lazyload-src="/img/defaultKey.png">
-						<span></span>
-					</div>
-					<span class="name">Normal Key x5 hshdjsjssbzjjzbzsbbJsjsjshshs</span>
-					<span class="price">1.50</span>
-				</div>
-			</div>
-		</div> -->
 	</div>
 
 	<div class="toasts"></div>
-</body>
-</html>
+<%- include("../../partials/body_end.ejs") %>
