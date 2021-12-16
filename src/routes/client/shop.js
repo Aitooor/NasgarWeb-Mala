@@ -2,7 +2,7 @@ const shop = require("../../lib/shop");
 const cacheCategory = require("../../lib/cacheCategory");
 
 async function autoUpdate(db) {
-  if (Date.now() - cacheCategory.read()?.lastUpdate > 10000) {
+  if (Date.now() - cacheCategory.read()?.lastUpdate > 1_000_000) {
     await updateCache(db);
   }
 }
