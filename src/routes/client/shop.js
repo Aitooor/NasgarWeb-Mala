@@ -106,11 +106,12 @@ module.exports = require("../../lib/Routes/exports")(
   (router, waRedirect, db, rcons) => {
     router.get("/", async (req, res) => {
       const category = await getMain(db);
+      const categories = await getVisibleCategories(db);
 
       res.render("pags/shop/index", {
         category: category,
         products: [],
-        categories: category.subcategories,
+        categories: categories,
       });
     });
 

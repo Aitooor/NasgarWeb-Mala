@@ -34,7 +34,7 @@ var port = normalizePort(
 
 // @ts-ignore
 process.env.PORT = port;
-process.WEB_HREF = isProduction ? "https://web.nasgar.online" : "http://localhost:"+port
+process.WEB_HREF = isProduction ? "https://nasgar.online" : "http://localhost:"+port
 
 /**
  * Module dependencies.

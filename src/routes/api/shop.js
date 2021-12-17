@@ -5,6 +5,7 @@ const cacheCategory = require("../../lib/cacheCategory");
 const logger = require("../../lib/logger");
 const { v4: uuidv4 } = require("uuid");
 const CONFIG = require("../../../config");
+const { Level, middleware } = require("../../middlewares/userLevel");
 const webTable = CONFIG.DB.web;
 
 /**
@@ -52,9 +53,13 @@ module.exports = require("../../lib/Routes/exports")(
       res.type("json").send(data);
     });
 
+    const staffMiddleware = middleware([Level.Dev, Level.Admin, Level.Owner], {
+      redirect: true
+    });
+
     //#region Products
 
-    router.post("/add/product", async (req, res) => {
+    router.post("/add/product", staffMiddleware, async (req, res) => {
       try {
         if (await shop.addProduct(db, req.body)) res.sendStatus(200);
         else res.sendStatus(400);
@@ -63,7 +68,7 @@ module.exports = require("../../lib/Routes/exports")(
       }
     });
 
-    router.post("/delete/product", async (req, res) => {
+    router.post("/delete/product", staffMiddleware, async (req, res) => {
       if (req.body.confirmation !== "DELETE") {
         res.status(400).send("Invalid confirmation.");
         return;
@@ -77,7 +82,7 @@ module.exports = require("../../lib/Routes/exports")(
       }
     });
 
-    router.post("/update/product", async (req, res) => {
+    router.post("/update/product", staffMiddleware, async (req, res) => {
       try {
         if (await shop.updateProduct(db, req.body)) res.sendStatus(200);
         else res.sendStatus(400);
@@ -86,11 +91,11 @@ module.exports = require("../../lib/Routes/exports")(
       }
     });
 
-    router.get("/get/products", async (_req, res) => {
+    router.get("/get/products", staffMiddleware, async (_req, res) => {
       res.status(200).send(await shop.getAllProducts(db));
     });
 
-    router.get("/get/products/:category", async (req, res) => {
+    router.get("/get/products/:category", staffMiddleware, async (req, res) => {
       res
         .status(200)
         .send(await shop.getAllProductsFrom(db, req.params.category));
@@ -129,7 +134,7 @@ module.exports = require("../../lib/Routes/exports")(
 
     //#region Categories
 
-    router.get("/shop/categories", async (_req, res) => {
+    router.get("/shop/categories", staffMiddleware, async (_req, res) => {
       res.status(200).send(await shop.getAllCategories(db));
     });
 
@@ -149,7 +154,7 @@ module.exports = require("../../lib/Routes/exports")(
       res.type("json").status(status).send(_res);
     });
 
-    router.post("/shop/category", async (req, res) => {
+    router.post("/shop/category", staffMiddleware, async (req, res) => {
       try {
         if (await shop.addCategory(db, req.body)) {
           await updateCategoryCache();
@@ -160,7 +165,7 @@ module.exports = require("../../lib/Routes/exports")(
       }
     });
 
-    router.put("/shop/category", async (req, res) => {
+    router.put("/shop/category", staffMiddleware, async (req, res) => {
       try {
         if (await shop.updateCategory(db, req.body, req.body.uuid)) {
           await updateCategoryCache();
@@ -172,7 +177,7 @@ module.exports = require("../../lib/Routes/exports")(
       }
     });
 
-    router.delete("/shop/category", async (req, res) => {
+    router.delete("/shop/category", staffMiddleware, async (req, res) => {
       if (req.body.confirmation !== "DELETE") {
         res.status(400).send("Invalid confirmation.");
         return;
@@ -243,7 +248,7 @@ module.exports = require("../../lib/Routes/exports")(
       res.status(200).send(query);
     });
 
-    router.post("/updates", async (req, res) => {
+    router.post("/updates", staffMiddleware, async (req, res) => {
       const { title, content } = req.body;
       if (!title || !content) {
         res.status(400).send({ error: "Bad request" });
@@ -264,7 +269,7 @@ module.exports = require("../../lib/Routes/exports")(
       else res.status(500).send({ error: "Internal server error" });
     });
 
-    router.put("/updates", async (req, res) => {
+    router.put("/updates", staffMiddleware, async (req, res) => {
       const { uuid, title, content, date } = req.body;
       if (!uuid || !title || !content || !date) {
         res.status(400).send({ error: "Bad request" });

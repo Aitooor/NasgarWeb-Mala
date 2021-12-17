@@ -22,7 +22,7 @@
 
   <meta rel="canonical" href="<%- global.const.WEB_HREF %><%- _url %>">
 
-  <% if(global.PRODDUCTION) { %>
+  <% if(global.const.PRODUCTION) { %>
     <%- include("./css.ejs", { paths: less_paths }) %> 
   <% } else { %>
     <%- include("./less.ejs", { paths: less_paths }) %> 
