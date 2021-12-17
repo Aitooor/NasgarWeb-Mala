@@ -1,4 +1,5 @@
-const jwt = require("../../lib/jwt")
+const jwt = require("../../lib/jwt");
+const CONFIG = require("../../../config");
 
 module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, db, rcon) => {
 	router.get("/api/accounts/verify", async (req, res) => {
@@ -19,7 +20,7 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
 
 		const pool = db();
 
-		const query = await pool.query("SELECT * FROM web.accounts WHERE uuid = ? LIMIT 1", [uuid]);
+		const query = await pool.query(`SELECT * FROM ${CONFIG.DB.web}.accounts WHERE uuid = ? LIMIT 1`, [uuid]);
 
 		if(query.length === 0) {
 			pool.end();
@@ -36,7 +37,7 @@ module.exports = require("../../lib/Routes/exports")("/", (router, waRedirect, d
 				});
 		}
 
-		await pool.query("UPDATE web.accounts SET emailVerified = 1 WHERE uuid = ?", [uuid]);
+		await pool.query(`UPDATE ${CONFIG.DB.web}.accounts SET emailVerified = 1 WHERE uuid = ?`, [uuid]);
 
 		pool.end();
 

@@ -35,11 +35,11 @@ module.exports = require("../../lib/Routes/exports")(
             title: "Categories",
             icon: "reorder/v15",
           },
-          {
-            url: "/staff/assets",
-            title: "Assets",
-            icon: "collections/v12",
-          },
+          // {
+          //   url: "/staff/assets",
+          //   title: "Assets",
+          //   icon: "collections/v12",
+          // },
         ],
         back: "url",
         back_url: "/staff",
