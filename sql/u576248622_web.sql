@@ -143,7 +143,7 @@ CREATE TABLE IF NOT EXISTS `update_posts` (
   `uuid` varchar(36) NOT NULL,
   `title` tinytext NOT NULL,
   `content` longtext NOT NULL,
-  `date` int(18) NOT NULL
+  `date` BIGINT NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
