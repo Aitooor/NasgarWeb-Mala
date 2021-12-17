@@ -1,114 +1,124 @@
 const shop = require("../../lib/shop");
 const cacheCategory = require("../../lib/cacheCategory");
-const { getCategoryVisible, getSubcategories } = shop;
-
-async function asyncForEach(array, callback) {
-  for (let index = 0; index < array.length; index++) {
-    await callback(array[index], index, array);
-  }
-}
 
 async function autoUpdate(db) {
-  if (Date.now() - cacheCategory.read()?.lastUpdate > 1000) {
+  if (Date.now() - cacheCategory.read()?.lastUpdate > 1_000_000) {
     await updateCache(db);
   }
 }
 
+async function asyncForEach(array, callback) {
+  for (let index = 0; index < array.length; index++) {
+    array[index] = (await callback(array[index], index, array)) || array[index];
+  }
+  return array;
+}
+
 async function updateCache(db) {
   const main = (await shop.getCategoryByName(db, "MAIN"))[0];
+  const categories = await shop.getAllCategories(db);
 
-  const categories = await getCategoryVisible(db);
-  await asyncForEach(categories, async (category) => {
-    const subcategories = await getSubcategories(db, category.uuid);
-    category.subcategories = subcategories;
+  for (let i = 0; i < categories.length; i++) {
+    categories[i].subcategories = categories[i].subcategories.map((sub) =>
+      categories.find((category) => category.uuid === sub)
+    );
+  }
 
-    // Add subcategories data to subcategories
-    await asyncForEach(subcategories, async (subcategory) => {
-      const subcategoriesData = await shop.getSubcategories(
-        db,
-        subcategory.uuid
-      );
-      subcategory.subcategories = subcategoriesData;
-    });
+  const visible = await asyncForEach(main.subcategories, async (category) => {
+    return categories.find((c) => c.uuid === category);
   });
-
-  main.subcategories = categories;
 
   cacheCategory.save({
     lastUpdate: Date.now(),
     main,
     categories,
+    visible,
   });
 
   return {
     lastUpdate: Date.now(),
     main,
     categories,
+    visible,
   };
 }
 
 async function getMain(db) {
   autoUpdate(db);
 
+  let main = null;
+
   if (cacheCategory.read()?.main) {
-    return cacheCategory.read()?.main;
+    main = cacheCategory.read()?.main;
   }
 
-  return (await updateCache(db)).main;
-}
+  if (!main) main = (await updateCache(db)).main;
 
-async function getCategories(db) {
-  autoUpdate(db);
-
-  if (
-    cacheCategory.read()?.categories &&
-    cacheCategory.read()?.categories.length > 0
-  ) {
-    return cacheCategory.read()?.categories;
-  }
-
-  return (await updateCache(db)).categories;
+  return main;
 }
 
 async function getCategory(db, uuid) {
   autoUpdate(db);
 
+  let category = null;
+
   if (
     cacheCategory.read()?.categories &&
     cacheCategory.read()?.categories.length > 0
   ) {
-    const category = cacheCategory
+    const _category = cacheCategory
       .read()
-      ?.categories.find((category) => category.uuid === uuid);
-    if (category) {
-      return category;
+      .categories.find((category) => category.uuid === uuid);
+    if (_category) {
+      category = _category;
     }
   }
 
-  return (await updateCache(db)).categories.find(
-    (category) => category.uuid === uuid
-  );
+  if (!category)
+    category = (await updateCache(db)).categories.find(
+      (category) => category.uuid === uuid
+    );
+
+  if (!category) return null;
+
+  return category;
+}
+
+async function getVisibleCategories(db) {
+  autoUpdate(db);
+
+  let visible = null;
+
+  if (
+    cacheCategory.read()?.visible &&
+    cacheCategory.read()?.visible.length > 0
+  ) {
+    visible = cacheCategory.read()?.visible;
+  }
+
+  if (!visible) visible = (await updateCache(db)).visible;
+
+  return visible;
 }
 
 module.exports = require("../../lib/Routes/exports")(
   "/shop",
   (router, waRedirect, db, rcons) => {
     router.get("/", async (req, res) => {
-      const categories = await getCategories(db);
       const category = await getMain(db);
+      const categories = await getVisibleCategories(db);
 
-      // console.log(JSON.stringify(category, null, 2));
       res.render("pags/shop/index", {
         category: category,
         products: [],
-        categories,
+        categories: categories,
       });
     });
 
     router.get("/product/:uuid", async (req, res) => {
       const uuid = req.params.uuid;
-      const commands = exec_cmd.split(" [&&] ");
-      const all_params = exec_params.split(" [&&] ");
+      // const commands = exec_cmd.split(" [&&] ");
+      // const all_params = exec_params.split(" [&&] ");
 
       if (process.env.NODE_ENV !== "production" && false) {
         for (let i = 0; i < commands.length; i++) {
@@ -131,9 +141,9 @@ module.exports = require("../../lib/Routes/exports")(
       if (uuid.length !== 36) return next();
 
       const data = await getCategory(db, uuid);
-      if (data === null) return next();
+      if (data === null || !data) return next();
 
-      const categories = await getCategories(db);
+      const categories = await getVisibleCategories(db);
 
       const products = await data.order.reduce(async (promise, uuid) => {
         return [

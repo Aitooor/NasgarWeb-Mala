@@ -1,9 +1,10 @@
 @import "../../common/super.less";
 @import "../../common/colors.less";
 @import "../../components/toasts.less";
+@import "../../partials/nav_modern.less";
 
-body {
-	background: #eee;
+.body {
+  background-color: transparent;
 }
 
 .loading-text(@length, @size) {
@@ -169,6 +170,7 @@ body {
 				display: flex;
 				
 				> button {
+          cursor: pointer;
 					height: 50px;
 					margin:0;
 					padding: 5px auto;

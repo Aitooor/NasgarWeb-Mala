@@ -1,4 +1,6 @@
 const { v4 } = require("uuid");
+const CONFIG = require("../../config");
+const webTable = CONFIG.DB.web;
 
 /****************************************/
 /***             Products             ***/
@@ -35,7 +37,7 @@ function stringifyProduct(old) {
  */
 async function getAllProducts(db) {
   const pool = db();
-  const query = await pool.query("SELECT * FROM web.products");
+  const query = await pool.query(`SELECT * FROM ${webTable}.products`);
   pool.end();
 
   return query.map(parseProduct);
@@ -49,7 +51,7 @@ async function getAllProducts(db) {
 async function getAllProductsFrom(db, category) {
   const pool = db();
   const query = await pool.query(
-    `SELECT * FROM web.product WHERE category = "${category.toLowerCase()}"`
+    `SELECT * FROM ${webTable}.product WHERE category = "${category.toLowerCase()}"`
   );
   pool.end();
 
@@ -65,7 +67,7 @@ async function getProduct(db, uuid) {
   const pool = db();
   try {
     const query = await pool.query(
-      "SELECT * FROM web.products WHERE uuid = ?",
+      `SELECT * FROM ${webTable}.products WHERE uuid = ?`,
       uuid
     );
     pool.end();
@@ -89,7 +91,7 @@ async function getProduct(db, uuid) {
 async function updateProduct(db, data) {
   const pool = db();
   try {
-    await pool.query(`UPDATE web.products SET ? WHERE uuid = "${data.uuid}"`, [
+    await pool.query(`UPDATE ${webTable}.products SET ? WHERE uuid = "${data.uuid}"`, [
       stringifyProduct(data),
     ]);
 
@@ -112,7 +114,7 @@ async function addProduct(db, data) {
   try {
     data.uuid = v4();
     data.created = Date.now();
-    await pool.query(`INSERT INTO web.products SET ? `, [
+    await pool.query(`INSERT INTO ${webTable}.products SET ? `, [
       stringifyProduct(data),
     ]);
 
@@ -133,7 +135,7 @@ async function delProduct(db, uuid) {
   const pool = db();
   try {
     const res = await pool.query(
-      `DELETE FROM web.products WHERE uuid = "${uuid}"`
+      `DELETE FROM ${webTable}.products WHERE uuid = "${uuid}"`
     );
 
     if (res.length === 0) return false;
@@ -209,7 +211,7 @@ function stringifyCategory(category) {
  */
 async function getAllCategories(db) {
   const pool = db();
-  const query = await pool.query("SELECT * FROM web.categories");
+  const query = await pool.query(`SELECT * FROM ${webTable}.categories`);
   pool.end();
 
   return query.map(parseCategory);
@@ -224,7 +226,7 @@ async function getCategory(db, uuid) {
   const pool = db();
   try {
     const query = await pool.query(
-      "SELECT * FROM web.categories WHERE uuid = ?",
+      `SELECT * FROM ${webTable}.categories WHERE uuid = ?`,
       uuid
     );
     pool.end();
@@ -249,7 +251,7 @@ async function addCategory(db, data) {
   const pool = db();
   try {
     data.uuid = v4();
-    await pool.query(`INSERT INTO web.categories SET ? `, [
+    await pool.query(`INSERT INTO ${webTable}.categories SET ? `, [
       stringifyCategory(data),
     ]);
     pool.end();
@@ -272,7 +274,7 @@ async function addCategory(db, data) {
 async function updateCategory(db, data, uuid) {
   const pool = db();
   try {
-    await pool.query(`UPDATE web.categories SET ?  WHERE uuid = ?`, [
+    await pool.query(`UPDATE ${webTable}.categories SET ?  WHERE uuid = ?`, [
       stringifyCategory(data),
       uuid,
     ]);
@@ -295,7 +297,7 @@ async function updateCategory(db, data, uuid) {
 async function delCategory(db, uuid) {
   const pool = db();
   try {
-    await pool.query(`DELETE FROM web.categories WHERE uuid = ?`, [uuid]);
+    await pool.query(`DELETE FROM ${webTable}.categories WHERE uuid = ?`, [uuid]);
     pool.end();
 
     return true;
@@ -335,7 +337,7 @@ async function delCategory(db, uuid) {
 async function getCategoryByName(db, name) {
   const pool = db();
   try {
-    const res = await pool.query(`SELECT * FROM web.categories WHERE name = ?`, [name]);
+    const res = await pool.query(`SELECT * FROM ${webTable}.categories WHERE name = ?`, [name]);
     pool.end();
 
     return res.map(parseCategory);
@@ -360,7 +362,7 @@ async function getSubcategories(db, uuid) {
       pool.end();
       return [];
     }
-    const sub = await pool.query(`SELECT * FROM web.categories WHERE uuid IN (${category.subcategories.map(_ => `'${_}'`).join(", ")})`);
+    const sub = await pool.query(`SELECT * FROM ${webTable}.categories WHERE uuid IN (${category.subcategories.map(_ => `'${_}'`).join(", ")})`);
     pool.end();
 
     return sub.map(parseCategory);

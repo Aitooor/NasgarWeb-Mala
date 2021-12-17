@@ -1,7 +1,5 @@
 import winston from "winston";
-import Fs from "fs";
 import CONFIG from "../../config";
-import { instance } from "../api/paypal";
 
 /* If logger is not setted in process then
  * create it and set in process. */
@@ -258,7 +256,7 @@ export function error(...args: Error[] | (LogArgument | Error)[]): void {
 
 
 // -----------------------------------------------------------------------------
-//                                TEST
+//                                  TEST
 // -----------------------------------------------------------------------------
 if (require.main === module) {
   log(

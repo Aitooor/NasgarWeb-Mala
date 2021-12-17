@@ -10,9 +10,11 @@ export interface CategoryCache {
 }
 export declare type CategoriesMap = CategoryCache[];
 export interface CategoriesCache {
+    lastUpdate: number;
+    main: CategoryCache;
     categories: CategoriesMap;
+    visible?: CategoriesMap;
 }
 export declare function save(json: CategoriesCache): void;
 export declare function read(): CategoriesCache;
 export declare function set(...categories: CategoryCache[]): CategoriesCache;
-export declare function getByUUID(id: string): CategoryCache;

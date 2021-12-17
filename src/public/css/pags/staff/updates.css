@@ -1,0 +1,1245 @@
+.text-style-code {
+  padding: 0.1rem 0.3rem;
+  background-color: #272727;
+  color: #fff;
+  font-family: monospace;
+  font-size: 0.9em;
+  white-space: pre;
+}
+.text-style-code .code-active {
+  color: #03bd85;
+}
+.text-style-code .code-comment {
+  color: #ccc;
+  font-style: italic;
+}
+*,
+*::before,
+*::after {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 400;
+  box-sizing: border-box;
+}
+body {
+  background-color: #EEE;
+}
+a {
+  color: currentColor;
+  text-decoration: none;
+}
+input {
+  border: solid 1.5px #000;
+  border-radius: 2px;
+}
+input:hover {
+  border: solid 1.5px #3880be;
+}
+input:focus {
+  outline: none;
+  border: solid 2px #3880be;
+}
+select:focus,
+textarea:focus {
+  outline: none;
+}
+textarea::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar {
+  width: 10px;
+}
+body::-webkit-scrollbar {
+  width: 15px;
+}
+::-webkit-scrollbar-track {
+  background-color: #a8c6e1;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #6cabe2;
+  border-radius: 5px;
+  border: 6px solid transparent;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #4c7da9;
+}
+.material-icons,
+i.material {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+.material-icons-two-tone,
+i.material-two-tone {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+  font-family: 'Material Icons Two Tone';
+}
+.card-list-element {
+  cursor: pointer;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  background: #fff;
+  border: solid 2px transparent;
+  border-radius: 5px;
+  box-shadow: 0px 2px 3px -1px #999;
+  box-sizing: border-box;
+  display: flex;
+  row-gap: 5px;
+  flex-direction: column;
+  transition: background ease 0.3s;
+}
+.card-list-element:hover {
+  background: #ddd;
+}
+.card-list-element:active {
+  background: #ccc;
+}
+.card-list-element__title {
+  max-height: 5.4rem;
+  font-size: 1.65rem;
+  font-weight: 300;
+  text-overflow: ellipsis;
+  line-break: strict;
+  word-wrap: break-word;
+  overflow: hidden;
+}
+.card-list-element__footer {
+  padding: 0 1rem;
+}
+html {
+  height: 100vh;
+  background-color: #666666;
+  background-image: url(/img/background.png);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
+  background-blend-mode: multiply;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+body {
+  background: transparent;
+}
+.body {
+  width: 100%;
+  background: #EEEEEE;
+}
+.body-100 {
+  min-height: calc(100vh - 70px);
+}
+nav {
+  position: fixed;
+  top: -100px;
+  width: 100vw;
+  height: 70px;
+  margin: 0 0 70px 0;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  z-index: 100;
+  transition: top ease 0.3s;
+}
+nav.always {
+  top: 0;
+  background-color: transparent;
+}
+nav.always > .desktop {
+  display: flex;
+}
+nav.always > .desktop > .logo > img {
+  filter: drop-shadow(0px 2px 3px #0005);
+}
+nav.always > .desktop > .tabs > .tab {
+  color: #FFF;
+}
+nav.always > .desktop > .tabs > .tab.login {
+  color: #447fb2;
+}
+nav.always > .mobile > .header > a {
+  filter: drop-shadow(0px 2px 3px #0005);
+}
+nav.always > .mobile > .header > button.menu {
+  color: #FFF;
+}
+nav.always.solid {
+  background-color: #EEEEEE;
+  box-shadow: 0px 1px 1px #999;
+}
+nav.always.solid > .desktop > .tabs > .tab:not(.login) {
+  color: #000;
+}
+nav.always.solid > .mobile > .header > button.menu {
+  color: #000;
+}
+nav > .desktop {
+  width: 100%;
+  max-width: 1200px;
+  padding: 1rem 5rem;
+  display: none;
+  justify-content: space-between;
+  align-items: center;
+}
+nav > .desktop > .logo {
+  cursor: pointer;
+  width: 75px;
+}
+nav > .desktop > .logo > img {
+  width: 100%;
+}
+nav > .desktop > .tabs {
+  display: flex;
+  gap: 20px;
+}
+nav > .desktop > .tabs > .tab {
+  cursor: pointer;
+  position: relative;
+  padding: 0.2rem 0.4rem;
+  color: #FFF;
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+nav > .desktop > .tabs > .tab::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 0%;
+  height: 2px;
+  background-color: #3880be;
+  transition: width 0.2s ease, background-color 0.5s ease;
+}
+nav > .desktop > .tabs > .tab.selected::before {
+  width: 100%;
+  background-color: #767b81;
+}
+nav > .desktop > .tabs > .tab:hover::before {
+  width: 100%;
+  background-color: #3880be;
+}
+nav > .desktop > .tabs > .tab:is(div) {
+  position: relative;
+  margin-right: 7px;
+}
+nav > .desktop > .tabs > .tab:is(div)::after {
+  content: "expand_more";
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+  position: absolute;
+  top: 0;
+  right: -15px;
+  font-size: 20px;
+}
+nav > .desktop > .tabs > .tab:is(div) > .title {
+  pointer-events: none;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+nav > .desktop > .tabs > .tab:is(div) > .title > i {
+  font-size: 1.5rem;
+}
+nav > .desktop > .tabs > .tab:is(div) > .options {
+  pointer-events: none;
+  text-transform: none;
+  position: absolute;
+  width: fit-content;
+  padding: 5px 0;
+  background: #EEEEEE;
+  box-shadow: 0px 1px 1px #999;
+  color: #000;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+nav > .desktop > .tabs > .tab:is(div) > .options > .option {
+  position: relative;
+  padding: 0.2rem 1rem;
+  white-space: nowrap;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+nav > .desktop > .tabs > .tab:is(div) > .options > .option::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0rem;
+  height: 100%;
+  background-color: #3880be;
+  transition: width 0.3s ease, background-color 0.5s ease;
+}
+nav > .desktop > .tabs > .tab:is(div) > .options > .option.selected::before {
+  width: 0.5rem;
+  background-color: #767b81;
+}
+nav > .desktop > .tabs > .tab:is(div) > .options > .option:hover::before {
+  width: 0.5rem;
+  background-color: #3880be;
+}
+nav > .desktop > .tabs > .tab:is(div).active > .options {
+  pointer-events: all;
+  opacity: 1;
+}
+nav > .desktop > .tabs .login {
+  color: #5a99cf;
+}
+nav > .mobile {
+  width: 100vw;
+  position: relative;
+  display: none;
+}
+nav > .mobile > .header {
+  width: 100vw;
+  height: 75px;
+  padding: 1rem 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+nav > .mobile > .header > .logo {
+  cursor: pointer;
+  width: 75px;
+}
+nav > .mobile > .header > .logo > img {
+  width: 100%;
+}
+nav > .mobile > .header > button.menu {
+  background: transparent;
+  color: #FFF;
+  border: none;
+}
+nav > .mobile > .tabs {
+  pointer-events: none;
+  position: absolute;
+  top: 73px;
+  left: 0;
+  width: 100vw;
+  height: 0px;
+  background: #EEEEEE;
+  box-shadow: 0px 1px 3px #999;
+  opacity: 0;
+  display: flex;
+  gap: 5px;
+  flex-direction: column;
+  overflow: hidden;
+  transition: opacity ease 0.2s;
+}
+nav > .mobile > .tabs.active {
+  opacity: 1;
+}
+nav > .mobile > .tabs > .tab {
+  position: relative;
+  padding: 0.5rem 1rem;
+  font-size: 1.1rem;
+}
+nav > .mobile > .tabs > .tab:is(a) {
+  pointer-events: all;
+}
+nav > .mobile > .tabs > .tab:is(a)::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0rem;
+  height: 100%;
+  background-color: #3880be;
+  transition: width 0.3s ease, background-color 0.5s ease;
+}
+nav > .mobile > .tabs > .tab:is(a).selected::before {
+  width: 0.5rem;
+  background-color: #767b81;
+}
+nav > .mobile > .tabs > .tab:is(a):hover::before {
+  width: 0.5rem;
+  background-color: #3880be;
+}
+nav > .mobile > .tabs > .tab:is(div) {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+nav > .mobile > .tabs > .tab:is(div) > .title {
+  pointer-events: none;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+nav > .mobile > .tabs > .tab:is(div) > .title > i {
+  font-size: 1.5rem;
+}
+nav > .mobile > .tabs > .tab:is(div) > .options {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+}
+nav > .mobile > .tabs > .tab:is(div) > .options > .option {
+  position: relative;
+  padding: 5px 1rem;
+  pointer-events: all;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  transition: padding 0.3s ease, margin 0.3s ease;
+}
+nav > .mobile > .tabs > .tab:is(div) > .options > .option::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2px;
+  height: 100%;
+  background-color: #3880be;
+  transition: width 0.3s ease, background-color 0.5s ease;
+}
+nav > .mobile > .tabs > .tab:is(div) > .options > .option.selected::before {
+  width: 0.5rem;
+  background-color: #767b81;
+}
+nav > .mobile > .tabs > .tab:is(div) > .options > .option:hover {
+  padding: 2.5px 1rem;
+  margin: 2.5px 0;
+}
+nav > .mobile > .tabs > .tab:is(div) > .options > .option:hover::before {
+  width: 0.5rem;
+  background-color: #3880be;
+}
+nav > .mobile > .tabs .login {
+  background: #3880be;
+  color: #FFF;
+}
+nav > .mobile.active > .header {
+  background: #EEEEEE;
+}
+nav > .mobile.active > .header > a {
+  filter: drop-shadow(0px 2px 3px #0005);
+}
+nav > .mobile.active > .header > button.menu {
+  color: #000;
+}
+nav > .mobile.active > .tabs {
+  height: initial;
+  opacity: 1;
+  z-index: 1000;
+}
+nav.scrolled {
+  top: 0;
+  background-color: #EEEEEE;
+  box-shadow: 0px 1px 1px #999;
+}
+nav.scrolled > .desktop {
+  display: flex;
+}
+nav.scrolled > .desktop > .logo > img {
+  filter: drop-shadow(0px 2px 3px #0005);
+}
+nav.scrolled > .desktop > .tabs > .tab {
+  color: #000;
+}
+nav.scrolled > .desktop > .tabs > .tab.login {
+  color: #447fb2;
+}
+nav.scrolled > .mobile > .header > a {
+  filter: drop-shadow(0px 2px 3px #0005);
+}
+nav.scrolled > .mobile > .header > button.menu {
+  color: #000;
+}
+@media screen and (max-width: 768px) {
+  nav {
+    top: 0;
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+  nav > .desktop {
+    display: none !important;
+  }
+  nav > .mobile {
+    display: flex;
+  }
+}
+body > .modal-parent {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: none;
+  z-index: 1000;
+}
+body > .modal-parent > .modal {
+  z-index: 1001;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 95%;
+  height: 95%;
+  max-width: 700px;
+  max-height: 700px;
+  background: #FFF;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0px 2px 3px -1px #555;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  transform: translate(-50%, -50%);
+}
+body > .modal-parent > .modal > .modal-header {
+  padding: 0.5rem 1.25rem;
+  background: #3880be;
+  border: solid 2px transparent;
+  color: #FFF;
+  font-size: 1.5rem;
+  font-weight: 300;
+  text-overflow: ellipsis;
+  line-break: break-word;
+  overflow: hidden;
+}
+body > .modal-parent > .modal > .modal-header.outline {
+  background: #FFF;
+  color: #3880be;
+  border-bottom-color: #3880be;
+}
+body > .modal-parent > .modal > .modal-body {
+  padding: 0.25rem 0.7rem;
+  height: 100%;
+  display: flex;
+  row-gap: 10px;
+  flex-direction: column;
+  overflow: auto;
+}
+body > .modal-parent > .modal > .modal-body.image-select {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+body > .modal-parent > .modal > .modal-body.image-select > .upload-zone {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+body > .modal-parent > .modal > .modal-body.image-select > .upload-zone > .total {
+  font-size: 1.3rem;
+}
+body > .modal-parent > .modal > .modal-body.image-select > .upload-zone > .upload {
+  padding: 3px 6px;
+  color: #FFF;
+  background: #3880be;
+  border: solid 2px transparent;
+  border-radius: 3px;
+}
+body > .modal-parent > .modal > .modal-body.image-select > .images {
+  padding-top: 10px;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  justify-content: center;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fill, 150px);
+  grid-template-rows: repeat(auto-fill, 150px);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+body > .modal-parent > .modal > .modal-body.image-select > .images > .image {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  background: #EEE;
+  border: solid 5px #999;
+  border-radius: 2px;
+  box-sizing: border-box;
+  display: flex;
+}
+body > .modal-parent > .modal > .modal-body.image-select > .images > .image.selected {
+  position: relative;
+  border-color: #3880be;
+}
+body > .modal-parent > .modal > .modal-body.image-select > .images > .image.selected::after {
+  content: "done";
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+  position: absolute;
+  top: 0px;
+  left: 100%;
+  padding: 2px;
+  background: #3880be;
+  color: #FFF;
+  border-radius: 50%;
+  box-sizing: content-box;
+  overflow: hidden;
+  transform: translate(-50%, -50%);
+}
+body > .modal-parent > .modal > .modal-body.image-select > .images > .image > img {
+  width: 100%;
+  object-fit: contain;
+  object-position: center center;
+}
+body > .modal-parent > .modal > .modal-body > .placeholder {
+  display: flex;
+  font-size: 0.8rem;
+  color: #888;
+}
+body > .modal-parent > .modal > .modal-body > .field {
+  display: flex;
+  flex-direction: column;
+}
+body > .modal-parent > .modal > .modal-body > .field.required > .title:before {
+  content: "* ";
+  color: #ED4245;
+}
+body > .modal-parent > .modal > .modal-body > .field > .title {
+  color: #212121;
+  font-size: 1.1rem;
+}
+body > .modal-parent > .modal > .modal-body > .field > .title:after {
+  content: ":";
+}
+body > .modal-parent > .modal > .modal-body > .field > .input:is(input),
+body > .modal-parent > .modal > .modal-body > .field > .input:is(textarea),
+body > .modal-parent > .modal > .modal-body > .field > .input:is(button),
+body > .modal-parent > .modal > .modal-body > .field > .input:is(select) {
+  margin-left: 10px;
+  padding: 0.2rem 0.5rem;
+  border: solid 2px #57A;
+  border-radius: 2px;
+  background: transparent;
+}
+body > .modal-parent > .modal > .modal-body > .field > .input:is(button),
+body > .modal-parent > .modal > .modal-body > .field > .input:is(select) {
+  cursor: pointer;
+}
+body > .modal-parent > .modal > .modal-body > .field > .input:is(button) {
+  background: #3880be;
+  color: #FFF;
+  border-color: transparent;
+}
+body > .modal-parent > .modal > .modal-body > .field > .input:is(textarea) {
+  height: 5rem;
+  min-height: 2rem;
+  min-width: calc(100% - 40px - 0.7rem);
+  max-width: calc(100% - 20px - 0.7rem);
+}
+body > .modal-parent > .modal > .modal-body > .field.list > .title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+body > .modal-parent > .modal > .modal-body > .field.list > .title:before {
+  content: none;
+}
+body > .modal-parent > .modal > .modal-body > .field.list > .title:after {
+  content: none;
+}
+body > .modal-parent > .modal > .modal-body > .field.list > .title > .title {
+  color: #212121;
+}
+body > .modal-parent > .modal > .modal-body > .field.list > .title > .title:after {
+  content: ":";
+}
+body > .modal-parent > .modal > .modal-body > .field.list > .title > .actions {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+body > .modal-parent > .modal > .modal-body > .field.list > .title > .actions > button,
+body > .modal-parent > .modal > .modal-body > .field.list > .title > .actions > a {
+  cursor: pointer;
+  padding: 2px 5px;
+  margin: 0;
+  color: #3880be;
+  background: transparent;
+  border: solid 2px transparent;
+  border-radius: 5px;
+}
+body > .modal-parent > .modal > .modal-body > .field.list > .title > .actions > button:hover,
+body > .modal-parent > .modal > .modal-body > .field.list > .title > .actions > a:hover {
+  color: #6ea5d4;
+}
+body > .modal-parent > .modal > .modal-body > .field.list > .title > .actions > button:active,
+body > .modal-parent > .modal > .modal-body > .field.list > .title > .actions > a:active {
+  color: #96bee0;
+}
+body > .modal-parent > .modal > .modal-body > .field.list > .title > .actions > button > i,
+body > .modal-parent > .modal > .modal-body > .field.list > .title > .actions > a > i {
+  font-size: 1.4rem;
+}
+body > .modal-parent > .modal > .modal-body > .field.list > .list {
+  display: flex;
+  row-gap: 15px;
+  flex-direction: column;
+}
+body > .modal-parent > .modal > .modal-body > .field.list > .list > .item {
+  margin-left: 10px;
+  padding: 0 0.2rem 0 0;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+body > .modal-parent > .modal > .modal-body > .field.list > .list > .item > .input {
+  width: 100%;
+  height: 100%;
+  padding: 0.1rem 0.3rem;
+  border: solid 2px #57A;
+  border-radius: 2px;
+}
+body > .modal-parent > .modal > .modal-body > .field.list > .list > .item > .delete {
+  cursor: pointer;
+  height: 100%;
+  color: #ED4245;
+  background: transparent;
+  border: solid 2px transparent;
+  line-height: 1;
+}
+body > .modal-parent > .modal > .modal-actions {
+  padding: 0.5rem 1rem;
+  display: flex;
+  gap: 10px;
+  justify-content: right;
+  align-items: center;
+}
+body > .modal-parent > .modal > .modal-actions > button,
+body > .modal-parent > .modal > .modal-actions > a {
+  cursor: pointer;
+  padding: 2.5px 5px;
+  color: #3880be;
+  background: transparent;
+  border: solid 2px transparent;
+  border-radius: 5px;
+}
+body > .modal-parent > .modal > .modal-actions > button.secondary,
+body > .modal-parent > .modal > .modal-actions > a.secondary {
+  color: #878787;
+}
+body > .modal-parent > .modal > .modal-actions > button.danger,
+body > .modal-parent > .modal > .modal-actions > a.danger {
+  color: #ED4245;
+}
+body > .modal-parent > .modal > .modal-actions > button.warning,
+body > .modal-parent > .modal > .modal-actions > a.warning {
+  color: #f0b503;
+}
+body > .modal-parent > .modal > .modal-actions > button.disabled,
+body > .modal-parent > .modal > .modal-actions > a.disabled {
+  cursor: default;
+  pointer-events: none;
+}
+body > .modal-parent > .modal.active {
+  display: flex;
+}
+body > .modal-parent.active {
+  display: flex;
+}
+body > .modal-parent.active::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: #5559;
+}
+.page-header {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.page-title {
+  font-size: 2.5rem;
+  font-weight: 300;
+  margin-bottom: 1rem;
+}
+.body {
+  padding: 1rem;
+}
+.page-header {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  justify-content: space-between;
+}
+.page-header-actions {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+.page-header-actions__action {
+  cursor: pointer;
+  padding: 2px 5px;
+  margin: 0;
+  color: #3880be;
+  background: transparent;
+  border: solid 2px transparent;
+  border-radius: 5px;
+}
+@media screen and (min-width: 900px) {
+  .page-header-actions__action.hover {
+    color: #6ea5d4;
+  }
+}
+.page-header-actions__action:active {
+  color: #96bee0;
+}
+.page-header-actions__action i {
+  font-size: 1.4rem;
+}
+.page-header-actions__action.anim {
+  color: #6ea5d4;
+}
+.page-header-actions__action.anim.refresh i {
+  animation: refresh-anim 1s ease infinite;
+}
+.page-header-actions__action.anim.filter i {
+  animation: filter-anim 1s ease;
+}
+.page-header-actions__action.anim.add i {
+  transform-origin: center center;
+  animation: add-anim 1s ease;
+}
+@keyframes refresh-anim {
+  from {
+    transform: rotateZ(0deg);
+  }
+  to {
+    transform: rotateZ(360deg);
+  }
+}
+@keyframes filter-anim {
+  from {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+  to {
+    transform: translateY(0px);
+  }
+}
+@keyframes add-anim {
+  from {
+    transform: rotateZ(0deg);
+  }
+  to {
+    transform: rotateZ(180deg);
+  }
+}
+.mde-icons__bold::before {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+  content: 'format_bold';
+}
+.mde-icons__italic::before {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+  content: 'format_italic';
+}
+.mde-icons__strikethrough::before {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+  content: 'strikethrough_s';
+}
+.mde-icons__code::before {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+  content: 'code';
+}
+.mde-icons__heading::before {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+  content: 'title';
+}
+.mde-icons__quote::before {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+  content: 'format_quote';
+}
+.mde-icons__unordered-list::before {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+  content: 'format_list_bulleted';
+}
+.mde-icons__ordered-list::before {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+  content: 'format_list_numbered';
+}
+.mde-icons__link::before {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+  content: 'link';
+}
+.mde-icons__image::before {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+  content: 'image';
+}
+.mde-icons__table::before {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+  content: 'border_all';
+}
+.mde-icons__preview::before {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+  content: 'visibility';
+}
+.mde-icons__side-by-side::before {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+  content: 'compare';
+}
+.mde-icons__fullscreen::before {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+  content: 'fullscreen';
+}
+.mde-icons__guide::before {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+  content: 'book';
+}

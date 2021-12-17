@@ -53,6 +53,10 @@ module.exports = require("../../lib/Routes/exports")(
       res.render("pags/index", { serverData: lastRequest });
     });
 
+    router.get("/updates", async (req, res) => {
+      res.render("pags/updates");
+    });
+
     router.get("/pay/return", async (req, res) => {
       const qk = Array.from(Object.keys(req.query));
 

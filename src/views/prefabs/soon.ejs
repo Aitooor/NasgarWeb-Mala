@@ -7,7 +7,7 @@
   <%- include("../partials/less.ejs", { paths: ["partials/nav_modern"] }) %> 
 </head>
 <body>
-	<%- include("../partials/nav_modern.ejs", { global, solid: true }) %>
+	<%- include("../partials/nav_modern.ejs", { global, solid: true, tab: typeof tab === "string" ? tab : "home" }) %>
 
 	<div class="body body-100" style="text-align: center;">
 		<div style="font-size: 3rem;font-weight: 100;padding-top: 2rem;">

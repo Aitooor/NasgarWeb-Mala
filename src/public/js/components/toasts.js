@@ -37,7 +37,7 @@
  */
 
 /** @type {HTMLDivElement} */
-const ToastMain = document.querySelector("body > div.toasts");
+const ToastMain = document.querySelector("div.toasts");
 let TotalToasts = 0;
 /** @type {Toast[]} */
 const allToasts = [];

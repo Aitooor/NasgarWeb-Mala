@@ -5,6 +5,7 @@
  */
 
 const CONFIG = require("../config");
+const logger = require("../src/lib/logger");
 const isProduction = process.env.NODE_ENV === "production" || CONFIG.ENV === "prod";
 
 if(isProduction) {
@@ -33,7 +34,7 @@ var port = normalizePort(
 
 // @ts-ignore
 process.env.PORT = port;
-process.WEB_HREF = isProduction ? "https://web.nasgar.online" : "http://localhost:"+port
+process.WEB_HREF = isProduction ? "https://nasgar.online" : "http://localhost:"+port
 
 /**
  * Module dependencies.
@@ -117,7 +118,7 @@ function onListening() {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  console.log(`Listening on ${bind}. ${process.WEB_HREF}`);
+  logger.log(`Listening on ${bind}. ${process.WEB_HREF}`);
 }
 
 // vim: set ft=javascript

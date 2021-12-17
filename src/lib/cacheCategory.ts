@@ -3,10 +3,12 @@ import * as Path from "path";
 
 const file: string = Path.join(Utils.cacheDir, "category.json");
 
-Utils.touchIf(file, JSON.stringify(<CategoriesCache>{
+Utils.touchIf(file, JSON.stringify({
   lastUpdate: 0,
+  main: {},
   categories: [],
-}, undefined, 2))
+  visible: [],
+} as CategoriesCache, undefined, 2))
 
 export interface CategoryCache {
   uuid: string;
@@ -22,7 +24,10 @@ export interface CategoryCache {
 export type CategoriesMap = CategoryCache[];
 
 export interface CategoriesCache {
+  lastUpdate: number;
+  main: CategoryCache;
   categories: CategoriesMap;
+  visible?: CategoriesMap;
 }
 
 export function save(json: CategoriesCache) {
@@ -43,29 +48,16 @@ export function read(): CategoriesCache {
 export function set(...categories: CategoryCache[]): CategoriesCache {
   const oldJson: CategoriesCache = read();
   const newJson: CategoriesCache = {
+    lastUpdate: Date.now(),
+    main: oldJson.main,
     categories: {
       ...oldJson.categories, 
       ...categories
     },
+    visible: oldJson.visible
   };
 
   save(newJson);
 
   return newJson;
 }
-
-export function getByUUID(id: string): CategoryCache {
-  return (
-    read().categories[id] || null
-  );
-}
-
-// export function getByUsername(username: string): CategoryCache {
-//   for (const id in read().categories) {
-//     if (Object.prototype.hasOwnProperty.call(read().categories, id)) {
-//       const element = read().categories[id];
-//       if(element.username === username)
-//         return element
-//     }
-//   }
-// }
