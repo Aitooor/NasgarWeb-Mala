@@ -20,7 +20,7 @@
     "dev:ts-public": "tsc -p tsconfig-public.json -w",
     "ts": "yarn run dev:ts",
     "tsp": "yarn run dev:ts-public",
-    "build": "yarn run dev && yarn run build:ts && yarn run build:ts-public && yarn run build:less",
+    "build": "yarn run build:ts && yarn run build:ts-public && yarn run build:less",
     "build:ts": "tsc -p tsconfig.json",
     "build:ts-public": "tsc -p tsconfig-public.json",
     "build:less": "node ./compiler/less.js"
