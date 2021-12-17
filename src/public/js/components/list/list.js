@@ -108,12 +108,21 @@ export class ElementList {
             const slot = elmWithSlot.getAttribute("slot");
             const hasSlotFormatter = elmWithSlot.hasAttribute("data-slot-formatter");
             const slotFormatter = elmWithSlot.dataset.slotFormatter;
+            const hasSlotAttribute = elmWithSlot.hasAttribute("data-slot-attribute");
+            const slotAttribute = elmWithSlot.dataset.slotAttribute;
             elmWithSlot.removeAttribute("slot");
             if (hasSlotFormatter)
                 elmWithSlot.removeAttribute("data-slot-formatter");
+            if (hasSlotAttribute)
+                elmWithSlot.removeAttribute("data-slot-attribute");
             const prop = getFromProperty(data, slot);
-            const formatted = hasSlotFormatter ? this._customFunctions[slotFormatter](prop) : prop;
-            if (elmWithSlot instanceof HTMLInputElement) {
+            const formatted = hasSlotFormatter
+                ? this._customFunctions[slotFormatter](prop)
+                : prop;
+            if (hasSlotAttribute) {
+                elmWithSlot.setAttribute(slotAttribute, formatted);
+            }
+            else if (elmWithSlot instanceof HTMLInputElement) {
                 elmWithSlot.value = formatted;
             }
             else {
