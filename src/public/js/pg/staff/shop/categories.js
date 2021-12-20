@@ -111,8 +111,6 @@ const rankSelect = new Select({
     dom: modalCategory.getBody()._.rank._.select.dom,
     options: Object.keys(UserRank).filter((_) => typeof UserRank[_] === "number"),
 });
-const tmCategoryListModal = (querySelector("template#list-category").content
-    .firstElementChild);
 const productsList = new OrdenedElementList(document.querySelector("#product_list"), OrdenedElementList.NO_URL, {
     autoRefresh: true,
     idTarget: "uuid",
@@ -330,7 +328,7 @@ function SetOrderCategories(order) {
 function LoadCategoriesOnCategoryModal(actual) {
     categoriesList.deleteAll();
     for (let [category, i] of ArrayIndex(actual)) {
-        const prod = categoriesList
+        const prod = category_list
             .getData()
             .find((_) => _.uuid === category);
         const name = (prod === null || prod === void 0 ? void 0 : prod.name) || "";
@@ -425,13 +423,6 @@ function OpenCategoryModal(data) {
     uuid_s.dom.innerHTML = "UUID: " + data.uuid;
     uuid_s.classes.remove("hidden");
     modalCategory.getActions()._.Delete.classes.remove("hidden");
-    let image_selector_waiting = false;
-    body._.image._.button.events.add("click", () => __awaiter(this, void 0, void 0, function* () {
-        if (image_selector_waiting)
-            return;
-        image_selector_waiting = true;
-        image_selector_waiting = false;
-    }));
     UpdateData([actual_category_data, "name"], body._.name._.input, actual_category_data.name);
     UpdateData([actual_category_data, "display"], body._.display._.input, actual_category_data.display);
     const updateDisplay = () => {
