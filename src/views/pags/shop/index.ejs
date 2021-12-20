@@ -63,7 +63,11 @@ function categoryDisplay(category, name) {
 				<div class="products">
 					<% products.forEach((product, id) => { %> 
 						<div class="product" title="<%= product.name %>" data-product-id="<%= product.uuid %>" data-commons-onclick="link, /shop/product/<%= product.uuid %> ">
-							<div class="img"><img src="/img/<%= (product.img ?? "defaultKey.png") %> "></div>
+							<div class="img">
+                <object data="<%= product.images[0] %>" type="image/png">
+                  <img src="https://cdn-143.anonfiles.com/hdW2H7t7wf/b5a7d6db-1639939755/imagen_2021-12-19_113801.png">
+                </object>
+              </div>
 							<div class="product-name"><%= product.name %></div>
 							<div class="footer">
 								<div class="product-price"><%= product.price %></div>

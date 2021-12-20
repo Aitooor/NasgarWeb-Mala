@@ -65,6 +65,7 @@ class Redis {
      */
     publish(channel, message) {
         return __awaiter(this, void 0, void 0, function* () {
+            logger.log(`Publishing message to channel ${channel}: ${message}`);
             return yield this._client.publish(channel, message);
         });
     }

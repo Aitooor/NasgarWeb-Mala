@@ -48,6 +48,7 @@ export class Redis {
    * @returns  All clients that received the message
    */
   public async publish(channel: string, message: string): Promise<number> {
+    logger.log(`Publishing message to channel ${channel}: ${message}`);
     return await this._client.publish(channel, message)
   }
 
