@@ -33,6 +33,9 @@ const header_actions_div = querySelector(".app .header .actions");
 const categories_list = querySelector(".app .categories");
 const category_template = querySelector("template#category");
 const category_list = new ElementList(categories_list, "/api/shop/categories", { idTarget: "uuid" })
+    .setOrderByFunction((a, b) => {
+    return a.name.localeCompare(b.name);
+})
     .setTemplate(category_template.content.firstElementChild)
     .setOnClick((_, elm, data) => {
     OpenCategoryModal(data);

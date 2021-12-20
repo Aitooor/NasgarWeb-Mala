@@ -376,7 +376,7 @@ function OpenAddModal() {
       "New Item"
     );
 
-    if (!success) return;
+    if (!success) return modal.undisableActions();
 
     try {
       await AddItem({
@@ -393,6 +393,7 @@ function OpenAddModal() {
     } catch (err) {
       alert(err);
       console.error(err);
+      modal.undisableActions();
       return;
     }
 
@@ -515,7 +516,7 @@ function OpenItemModal(data) {
       data.name
     );
 
-    if (!success) return;
+    if (!success) return modal.undisableActions();;
 
     try {
       await UpdateItem({
@@ -531,6 +532,8 @@ function OpenItemModal(data) {
       });
     } catch (err) {
       alert(err);
+      console.error(err);
+      modal.undisableActions();
       return;
     }
 
@@ -728,7 +731,7 @@ async function FetchItems() {
   }, {});
 
   cache_ordened_uuid.sort((a, b) => {
-    return cache_items[a].created - cache_items[b].created;
+    return cache_items[a].name.localeCompare(cache_items[b].name);
   });
 
   return cache_items;

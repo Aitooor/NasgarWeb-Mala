@@ -29,12 +29,17 @@ export class ElementList {
         this.Events = Events;
         this._pipes = [];
         this._onclickEvent = null;
+        this.orderByFunction = (a, b) => { return 0; };
         this._execPipes = (method, ...args) => {
             for (const pipe of this._pipes) {
                 pipe(method, ...args);
             }
         };
         this._options = Object.assign({}, DefaultElementList_Options, options);
+    }
+    setOrderByFunction(fn) {
+        this.orderByFunction = fn;
+        return this;
     }
     setTemplate(template) {
         if (typeof template === "string") {
@@ -141,7 +146,7 @@ export class ElementList {
             throw new ReferenceError("`template` is not defined.");
         }
         const elms = [];
-        for (const oneData of this.data) {
+        for (const oneData of this.data.sort(this.orderByFunction)) {
             elms.push(this._renderElement(oneData));
         }
         return elms;

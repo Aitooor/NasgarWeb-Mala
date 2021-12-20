@@ -64,6 +64,9 @@ const category_list = new ElementList<Category, HTMLDivElement>(
   "/api/shop/categories",
   { idTarget: "uuid" }
 )
+  .setOrderByFunction((a, b) => {
+    return a.name.localeCompare(b.name);
+  })
   .setTemplate(<HTMLDivElement>category_template.content.firstElementChild)
   .setOnClick((_, elm: HTMLDivElement, data: Category) => {
     OpenCategoryModal(data);
