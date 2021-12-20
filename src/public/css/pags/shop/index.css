@@ -1076,6 +1076,19 @@ nav.scrolled > .mobile > .header > button.menu {
   gap: 5px;
   justify-content: center;
 }
+.cart-btn::after {
+  content: "Cart";
+  width: 0;
+  padding-left: 0rem;
+  opacity: 0;
+  overflow: hidden;
+  transition: opacity 0.3s ease, padding 0.2s ease-out;
+}
+.cart-btn:hover::after {
+  width: initial;
+  padding-left: 0.5rem;
+  opacity: 1;
+}
 aside {
   background-color: #fff;
   border-radius: 2px;

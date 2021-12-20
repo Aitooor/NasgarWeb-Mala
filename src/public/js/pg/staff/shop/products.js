@@ -1,11 +1,6 @@
 import Modal from "../../../components/modal.js";
-import Select from "../../../components/select.js";
-import {
-  monetize,
-  wait,
-  capitalize,
-  applyFilter,
-} from "../../../common/shop.js";
+import { OrdenedElementList } from "../../../components/list/order.js";
+import { monetize, wait } from "../../../common/shop.js";
 
 /**
  * @typedef {{ uuid?: string, name: string, description: string, price: number, exec_cmd: string, exec_params: string, images: string[], category: string, created: number }} ItemData
@@ -166,6 +161,7 @@ const modalItem = new Modal({
 const tm_item_list_modal =
   document.querySelector("template#list-item").content.firstElementChild;
 
+//#region Commands
 /**
  * @param {ItemData} data
  * @param {string[]} actual_cmds
@@ -264,6 +260,7 @@ function SetCommandActions(cmds) {
 
   AddEvent("click", addBtn, modalItem_Vars.cmd_fn);
 }
+//#endregion
 
 /**
  * @param {[object, string]} property
@@ -278,27 +275,6 @@ function UpdateData(property, elm, _default, pre) {
 
   elm.events.add("change", () => {
     property[0][property[1]] = pre(elm.dom.value);
-  });
-}
-
-/**
- * @param {[object, string]} property
- * @param {import("../../../common/html").json_html<HTMLSelectElement>} elm
- * @param {Select} select
- * @param {number | string} [_default]
- * @param {(value: string) => any} [pre]
- */
-function UpdateDataSelect(property, elm, select, _default, pre) {
-  pre = pre || ((_) => _);
-
-  if (typeof _default !== "undefined") {
-    select.select(_default);
-  }
-
-  property[0][property[1]] = pre(select.selectedValue);
-
-  elm.events.add("change", () => {
-    property[0][property[1]] = pre(select.selectedValue);
   });
 }
 
@@ -325,6 +301,48 @@ function OpenAddModal() {
   modalItem.getActions()._.Delete.classes.add("hidden");
 
   // Fields of modal
+  const imageListDOM = body._.images._.list.dom;
+  imageListDOM.innerHTML = "";
+  /** @type {OrdenedElementList<{ url: string }>} */
+  const imageList = new OrdenedElementList(
+    imageListDOM,
+    OrdenedElementList.NO_URL,
+    {
+      autoRefresh: true,
+      idTarget: "url",
+    }
+  ).setCustomFunctions({
+    inputFn(ctx) {
+      ctx.usePipe("custom:change", ctx.data);
+    },
+  }).setTemplate(/*html*/ `
+    <div class="list-item list__item--image">
+      <div class="input-zone">
+        <img class="list-item__img" slot="url" data-slot-attribute="src">
+        <input type="text" data-slot-events="input" data-oninput="this.custom.inputFn(this);" slot="url" placeholder="URL">
+      </div>
+      <button class="delete" >
+        <i class="material" data-slot-events="click" data-onclick="this.fn.delete(); this.usePipe('custom:change', this.data);">delete</i> 
+      </button>
+      <div class="ord-btns">
+        <button class="up" data-slot-events="click" data-onclick="this.fn.goUp(); this.usePipe('custom:change', this.data);"><i class="material">keyboard_arrow_up</i></button>
+        <button class="down" data-slot-events="click" data-onclick="this.fn.goDown(); this.usePipe('custom:change', this.data);"><i class="material">keyboard_arrow_down</i></button>
+      </div>
+    </div>
+  `);
+
+  imageList.pipe((method, data) => {
+    if (method === "custom:change") {
+      const img = imageListDOM.querySelector(".list-item__img");
+      const input = imageListDOM.querySelector("input");
+
+      img.src = input.value;
+      data.url = input.value;
+
+      actual_item_data.images = imageList.getData().map(v => v.url);
+    }
+  });
+
   // @ts-ignore
   UpdateData([actual_item_data, "category"], body._.category._.input, "def");
 
@@ -368,7 +386,7 @@ function OpenAddModal() {
         price: actual_item_data.price,
         exec_cmd: exec_cmd,
         exec_params: exec_params,
-        images: [],
+        images: actual_item_data.images,
         created: actual_item_data.created,
         category: actual_item_data.category,
       });
@@ -406,17 +424,64 @@ function OpenItemModal(data) {
   modalItem.getActions()._.Delete.classes.remove("hidden");
 
   // Fields of modal
-  let image_selector_waiting = false;
+  const imageListDOM = body._.images._.list.dom;
+  imageListDOM.innerHTML = "";
+  /** @type {OrdenedElementList<{ url: string }>} */
+  const imageList = new OrdenedElementList(
+    imageListDOM,
+    OrdenedElementList.NO_URL,
+    {
+      autoRefresh: true,
+      idTarget: "url",
+    }
+  ).setCustomFunctions({
+    inputFn(ctx) {
+      ctx.usePipe("custom:change", ctx.data);
+    },
+  }).setTemplate(/*html*/ `
+    <div class="list-item list__item--image">
+      <div class="input-zone">
+        <img class="list-item__img" slot="url" data-slot-attribute="src">
+        <input type="text" data-slot-events="input" data-oninput="this.custom.inputFn(this);" slot="url" placeholder="URL">
+      </div>
+      <button class="delete" >
+        <i class="material" data-slot-events="click" data-onclick="this.fn.delete(); this.usePipe('custom:change');">delete</i> 
+      </button>
+      <div class="ord-btns">
+        <button class="up" data-slot-events="click" data-onclick="this.fn.goUp(); this.usePipe('custom:change');"><i class="material">keyboard_arrow_up</i></button>
+        <button class="down" data-slot-events="click" data-onclick="this.fn.goDown(); this.usePipe('custom:change');"><i class="material">keyboard_arrow_down</i></button>
+      </div>
+    </div>
+  `);
 
-  body._.image._.button.events.add("click", async () => {
-    if (image_selector_waiting) return;
-    image_selector_waiting = true;
-    actual_item_data.images = await OpenImageModal(actual_item_data.images);
-    image_selector_waiting = false;
+  for (const image of data.images) {
+    imageList.add({ url: image });
+  }
+
+  imageList.pipe((method, data) => {
+    if (method === "custom:change") {
+      const img = imageListDOM.querySelector(".list-item__img");
+      const input = imageListDOM.querySelector("input");
+
+      img.src = input.value;
+      data.url = input.value;
+
+      actual_item_data.images = imageList.getData().map(v => v.url);
+    }
+  });
+
+  body._.images._.header._.actions._.button.events.add("click", () => {
+    imageList.add({
+      url: "",
+    });
   });
 
   // @ts-ignore
-  UpdateData([actual_item_data, "category"], body._.category._.input, data.category);
+  UpdateData(
+    [actual_item_data, "category"],
+    body._.category._.input,
+    data.category
+  );
 
   // @ts-ignore
   UpdateData([actual_item_data, "name"], body._.name._.input, data.name);
@@ -461,7 +526,7 @@ function OpenItemModal(data) {
         exec_cmd: exec_cmd,
         exec_params: exec_params,
         images: actual_item_data.images,
-        created: 0,
+        created: Date.now(),
         category: actual_item_data.category,
       });
     } catch (err) {
@@ -489,152 +554,7 @@ function OpenItemModal(data) {
   modalItem.open();
 }
 
-/*********** Image selector modal ***********/
-
-/**
- * @typedef {{ uuid: string, name: string, image: string, created: number }} imageData
- */
-
-const imageModal_body = document.querySelector("#image-selector");
-
-const imageModal_events = {
-  /** @param {Modal} _ */
-  _save: (_) => {},
-  /** @param {Modal} _ */
-  _close: (_) => {},
-};
-
-const imageModal = new Modal({
-  title: "Image Selector",
-  headerStyle: Modal.HeaderStyle.Outline,
-  // @ts-ignore
-  body: imageModal_body,
-  cloneBody: true,
-  actions: [
-    {
-      name: "Cancel",
-      onClick: (modal) => {
-        imageModal_events._close(modal);
-      },
-    },
-    {
-      name: "Save",
-      onClick: (modal) => {
-        imageModal_events._save(modal);
-      },
-    },
-  ],
-});
-
-/**
- * @param {string[]} selected
- * @returns {Promise<string[]>}
- */
-function OpenImageModal(selected) {
-  return new Promise(async (res) => {
-    const actual_images = selected.slice(0);
-
-    let imageList_crude;
-    let imageList;
-
-    const body = imageModal.getBody();
-    const selectorList = body._.images.dom;
-
-    await refreshImages();
-
-    /** @type {import("../../../common/html").json_html<HTMLInputElement>} */
-    // @ts-ignore
-    const fileInput = body._.upload._.input;
-
-    body._.upload._.button.events.add("click", () => {
-      fileInput.dom.click();
-    });
-
-    fileInput.events.add("change", async () => {
-      const form = new FormData();
-      form.append("total", fileInput.dom.files.length.toFixed(0));
-
-      for (const file of fileInput.dom.files) {
-        form.append(`images`, file);
-      }
-
-      fetch("/api/staff/images", {
-        method: "POST",
-        body: form,
-      }).then(() => refreshImages());
-    });
-
-    imageModal_events._close = (modal) => {
-      modal.drainEvents();
-      modal.close();
-      res(selected);
-    };
-
-    imageModal_events._save = (modal) => {
-      modal.drainEvents();
-      modal.close();
-      res(actual_images);
-    };
-
-    imageModal.open();
-
-    async function refreshImages() {
-      imageList_crude = await GetImages();
-      if (imageList_crude === null) return;
-      imageList = imageList_crude.map((image) => {
-        const dom = imageModal_image(image, actual_images);
-
-        dom.addEventListener("click", () => {
-          const i = actual_images.indexOf(image.uuid);
-          if (i !== -1) {
-            actual_images.splice(i, 1);
-          } else {
-            actual_images.push(image.uuid);
-          }
-
-          dom.classList.toggle("selected");
-        });
-
-        return dom;
-      });
-
-      selectorList.innerHTML = "";
-      selectorList.append(...imageList);
-
-      body._.upload._.span._.span.dom.innerText =
-        imageList_crude.length.toString();
-    }
-  });
-}
-
-/**
- * @param {imageData} data
- * @param {string[]} selected
- */
-function imageModal_image(data, selected) {
-  const div = document.createElement("div");
-
-  div.className = "image";
-
-  if (selected.includes(data.uuid)) div.classList.add("selected");
-
-  div.append(newImage(data.image));
-
-  return div;
-}
-
-/**
- * @param {string} src
- * @param {number} [width]
- * @param {number} [height]
- * @returns {HTMLImageElement}
- */
-function newImage(src, width, height) {
-  const img = new Image(width, height);
-  img.src = src;
-  return img;
-}
-
+//#region Helpers
 /**
  * @param {string} ev
  * @param {Element} elm
@@ -701,30 +621,15 @@ function* ArrayIndex(arr) {
   }
 }
 
+//#endregion
+
 /**
  * @param {ItemData} data
  */
 function PrePostItem(data) {
   if (data.name.length > 30) throw new RangeError("Name is very long. Max 30.");
-  if (data.price < 0)
-    throw new RangeError("Price is negative. only accept positive");
-}
-
-/**
- * @returns {Promise<imageData[]>}
- */
-async function GetImages() {
-  const res = await fetch("/api/staff/images", {
-    credentials: "same-origin",
-  });
-
-  if (!res.ok) {
-    alert("Error fetching images.");
-    console.log(res);
-    return null;
-  }
-
-  return await res.json();
+  if (data.price <= 0)
+    throw new RangeError("Price is negative or zero. only accept positive");
 }
 
 /**

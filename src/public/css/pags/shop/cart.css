@@ -490,12 +490,19 @@ nav.scrolled > .mobile > .header > button.menu {
   list-style: none;
   overflow-y: auto;
 }
+.app > .products.empty::after {
+  content: "No hay productos en el carrito";
+  display: block;
+  text-align: center;
+  font-size: 1.2rem;
+  color: #999;
+}
 .app > .products > .product {
   margin-top: 5px;
   background: #fff;
   display: grid;
   grid-template-columns: 75px 1fr;
-  grid-template-rows: 75px 1fr;
+  grid-template-rows: 80px 1fr;
   grid-column-gap: 0px;
   grid-row-gap: 0px;
 }
@@ -623,7 +630,7 @@ footer {
   right: 0px;
   padding: 10px 15px 15px 15px;
   background: #fff;
-  box-shadow: 0px 0px 20px 10px #0005;
+  box-shadow: 0px 0px 10px 10px #0001;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -778,5 +785,17 @@ footer > button:active {
   }
   button {
     cursor: pointer;
+  }
+}
+@media screen and (max-width: 800px) {
+  nav {
+    background-color: #eeeeee !important;
+    box-shadow: 0px 1px 1px #999;
+  }
+  nav button.menu {
+    color: #000 !important;
+  }
+  .nav_transparent_height {
+    height: 70px !important;
   }
 }

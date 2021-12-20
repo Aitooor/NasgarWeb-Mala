@@ -27,3 +27,4 @@ export interface ShopPaymentOptions {
     };
 }
 export declare function createShopPayment(options: ShopPaymentOptions): Promise<paypal.PaymentResponse>;
+export declare function verifyPayment(payID: string): Promise<Boolean>;

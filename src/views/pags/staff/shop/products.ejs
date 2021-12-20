@@ -26,9 +26,16 @@
 	<div id="item-editor-body" hidden >
 		<div class="placeholder hidden" data-name="uuid">UUID: -</div>
 		
-		<div class="field" data-name="image">
-			<span>Image selector (<span id="total-images">N</span> images):</span>
-			<button class="input primary hover-anim-ball"><span>Select images</span></button>
+		<div class="field list list--images" data-name="images">
+      <div class="title" data-name="header">
+				<span class="title" >Images</span>
+				<div class="actions" data-name="actions">
+					<button>
+						<i class="material" >add_circle_outline</i>
+					</button>
+				</div>
+			</div>
+			<div class="list" data-name="list"></div>
 		</div>
 
     <div class="field" data-name="category">
@@ -61,17 +68,6 @@
 				</div>
 			</div>
 			<div class="list" data-name="list"></div>
-		</div>
-	</div>
-	
-	<div id="image-selector" class="hidden image-select" >
-		<div class="upload-zone" data-name="upload">
-			<span class="total" ><span>-</span> images</span>
-			<button class="upload" >Upload images</button>
-			<input hidden multiple type="file" name="images" accept="image/*" />
-		</div>
-		<div class="images" data-name="images">
-			<div class="image selected" ><img src="/img/logo-128x.png" ></div>
 		</div>
 	</div>
 

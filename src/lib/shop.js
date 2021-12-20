@@ -51,7 +51,7 @@ async function getAllProducts(db) {
 async function getAllProductsFrom(db, category) {
   const pool = db();
   const query = await pool.query(
-    `SELECT * FROM ${webTable}.product WHERE category = "${category.toLowerCase()}"`
+    `SELECT * FROM ${webTable}.product WHERE category = "${category.toLowerCase()}" ORDER BY date DESC`
   );
   pool.end();
 
