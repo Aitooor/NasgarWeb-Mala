@@ -64,6 +64,9 @@ const category_list = new ElementList<Category, HTMLDivElement>(
   "/api/shop/categories",
   { idTarget: "uuid" }
 )
+  .setOrderByFunction((a, b) => {
+    return a.name.localeCompare(b.name);
+  })
   .setTemplate(<HTMLDivElement>category_template.content.firstElementChild)
   .setOnClick((_, elm: HTMLDivElement, data: Category) => {
     OpenCategoryModal(data);
@@ -164,11 +167,6 @@ const rankSelect: Select = new Select({
   dom: <HTMLSelectElement>modalCategory.getBody()._.rank._.select.dom,
   options: Object.keys(UserRank).filter((_) => typeof UserRank[_] === "number"),
 });
-
-const tmCategoryListModal = <HTMLDivElement>(
-  querySelector<HTMLTemplateElement>("template#list-category").content
-    .firstElementChild
-);
 
 //#region Product list
 const productsList = new OrdenedElementList<Product>(
@@ -451,9 +449,10 @@ function SetOrderCategories(order: string[]) {
 function LoadCategoriesOnCategoryModal(actual: string[]) {
   categoriesList.deleteAll();
   for (let [category, i] of ArrayIndex<string>(actual)) {
-    const prod: CategoryOnList | undefined = categoriesList
+
+    const prod: CategoryOnList | undefined = category_list
       .getData()
-      .find((_: CategoryOnList) => _.uuid === category);
+      .find((_: Category) => _.uuid === category);
     const name = prod?.name || "";
     categoriesList.add({ uuid: category, name: name });
 
@@ -613,16 +612,6 @@ function OpenCategoryModal(data: Category) {
   uuid_s.dom.innerHTML = "UUID: " + data.uuid;
   uuid_s.classes.remove("hidden");
   modalCategory.getActions()._.Delete.classes.remove("hidden");
-
-  // Fields of modal
-  let image_selector_waiting = false;
-
-  body._.image._.button.events.add("click", async () => {
-    if (image_selector_waiting) return;
-    image_selector_waiting = true;
-    // actual_item_data.images = await OpenImageModal(actual_item_data.images);
-    image_selector_waiting = false;
-  });
 
   UpdateData(
     [actual_category_data, "name"],

@@ -226,7 +226,7 @@ function createProductDom({ product = null, i = 0 } = {}) {
         ],
       },
       {
-        attr: { class: "actions" },
+        attr: { class: "actions", style: "display: none;" },
         childs: [
           {
             attr: { class: `gift${product.gift ? " gifted" : ""}` },
@@ -263,7 +263,7 @@ function updateProductDom(product, response, i) {
   const me = createProductDom({ product, i });
   products_ul.append(me);
   me.querySelector(".product-icon").append(
-    img("/api/img/" + response?.images?.[0])
+    img(response?.images?.[0])
   );
   me.querySelector(".product-name").innerHTML = response.name;
   const total_span = me.querySelector(".product-total");

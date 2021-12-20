@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createShopPayment = exports.createPayment = exports.configure = exports.instance = void 0;
+exports.verifyPayment = exports.createShopPayment = exports.createPayment = exports.configure = exports.instance = void 0;
 const paypal_rest_sdk_1 = __importDefault(require("paypal-rest-sdk"));
 const config_1 = __importDefault(require("../../config"));
 const logger = __importStar(require("../lib/logger"));
@@ -34,12 +34,11 @@ function configure(sandbox = true) {
     paypal_rest_sdk_1.default.configure({
         mode: "sandbox",
         client_id: config_1.default.PAYPAL.SANDBOX.ID,
-        client_secret: config_1.default.PAYPAL.SANDBOX.SECRET
+        client_secret: config_1.default.PAYPAL.SANDBOX.SECRET,
     });
     logger.log(PREFIX + "Paypal is configured.\x1b[0m");
 }
 exports.configure = configure;
-;
 function createPayment(options) {
     const has_cupon = typeof options.discount === "object";
     const cart = options.items;
@@ -50,34 +49,36 @@ function createPayment(options) {
             name: `Discount by cupon - ${Math.floor(options.discount.modify * 100)}%`,
             quantity: 1,
             price: cart_total * -options.discount.modify,
-            gift: false
+            gift: false,
         });
     }
     const payment = {
         intent: "sale",
         payer: {
-            payment_method: "paypal"
+            payment_method: "paypal",
         },
         redirect_urls: options.redirect_urls,
-        transactions: [{
+        transactions: [
+            {
                 item_list: {
-                    items: cart.map(item => ({
+                    items: cart.map((item) => ({
                         name: item.name + (item.gift ? ` <${item.gift}>` : ""),
                         sku: item.uuid,
                         quantity: item.quantity,
                         currency: "USD",
-                        price: item.price.toFixed(2)
-                    }))
+                        price: item.price.toFixed(2),
+                    })),
                 },
                 amount: {
                     currency: "USD",
-                    total: (cart_total * (1 - options.discount.modify)).toFixed(2)
+                    total: (cart_total * (has_cupon ? 1 - options.discount.modify : 1)).toFixed(2),
                 },
                 description: "Nasgar Network - " +
                     cart.reduce((a, { quantity, uuid }) => a + (uuid === "discount" ? 0 : quantity), 0) +
                     " item(s)" +
-                    (!has_cupon ? "" : ` - with cupon`)
-            }]
+                    (!has_cupon ? "" : ` - with cupon`),
+            },
+        ],
     };
     return new Promise((res, rej) => {
         paypal_rest_sdk_1.default.payment.create(payment, (err, _res) => {
@@ -86,7 +87,7 @@ function createPayment(options) {
                 rej(err);
                 return;
             }
-            logger.log(PREFIX + green_flag + "Payment success.");
+            logger.log(PREFIX + green_flag + "Payment Success.");
             res(_res);
         });
     });
@@ -95,11 +96,27 @@ exports.createPayment = createPayment;
 function createShopPayment(options) {
     return createPayment({
         redirect_urls: {
-            return_url: `${process.WEB_HREF}/pay/return?cart=${options.cart_string}`,
-            cancel_url: `${process.WEB_HREF}/pay/cancel`
+            return_url: `${process.WEB_HREF}/pay/return`,
+            cancel_url: `${process.WEB_HREF}/pay/cancel`,
         },
         items: options.cart,
-        discount: options.discount
+        discount: options.discount,
     });
 }
 exports.createShopPayment = createShopPayment;
+function verifyPayment(payID) {
+    return new Promise((res, rej) => {
+        paypal_rest_sdk_1.default.payment.get(payID, (err, _res) => {
+            if (err && err.httpStatusCode !== 404) {
+                rej(err);
+                return;
+            }
+            if (err && err.httpStatusCode === 404) {
+                res(false);
+                return;
+            }
+            res(true);
+        });
+    });
+}
+exports.verifyPayment = verifyPayment;

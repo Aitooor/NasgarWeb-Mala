@@ -46,7 +46,7 @@ module.exports = require("../../lib/Routes/exports")("/paypal", (router, waRedir
     try {
       const payment = await paypal.createShopPayment({
         cart: cart,
-        cart_string: body.shopCart,
+        cart_string: body.shop_cart,
         discount: cupon_valid ? {
           modify: cupon_modify
         } : undefined

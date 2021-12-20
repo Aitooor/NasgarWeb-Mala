@@ -53,12 +53,19 @@ export class ElementList<
 
   protected _onclickEvent: ClickEvent<this, T, K> = null;
 
+  protected orderByFunction: (a: T, b: T) => number = (a, b) => { return 0; };
+
   constructor(
     public parent: HTMLDivElement,
     protected url: string,
     options: ElementList_Options = DefaultElementList_Options
   ) {
     this._options = Object.assign({}, DefaultElementList_Options, options);
+  }
+
+  setOrderByFunction(fn: (a: T, b: T) => number): this {
+    this.orderByFunction = fn;
+    return this;
   }
 
   setTemplate(template: string | K): this {
@@ -207,7 +214,7 @@ export class ElementList<
 
     const elms: K[] = [];
 
-    for (const oneData of this.data) {
+    for (const oneData of this.data.sort(this.orderByFunction)) {
       elms.push(this._renderElement(oneData));
     }
 
