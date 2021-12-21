@@ -293,6 +293,31 @@ module.exports = require("../../lib/Routes/exports")(
       else res.status(500).send({ error: "Internal server error" });
     });
 
+    router.delete("/updates", async (req, res) => {
+      if (req.body.confirmation !== "DELETE") {
+        res.status(400).send("Invalid confirmation.");
+        return;
+      }
+      
+      const { uuid } = req.body;
+      if (!uuid) {
+        res.status(400).send({ error: "Bad request" });
+        return;
+      }
+
+      const pool = await db();
+
+      const query = await pool.query(
+        `DELETE FROM ${webTable}.update_posts WHERE uuid = ?`,
+        [ uuid ]
+      );
+
+      pool.end();
+
+      if (query) res.status(200).send("Deleted");
+      else res.status(500).send({ error: "Internal server error" });
+    })
+
     //#endregion
   }
 );
