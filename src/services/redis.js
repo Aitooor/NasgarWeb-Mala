@@ -39,6 +39,7 @@ var ERRORS;
 class Redis {
     constructor(settings) {
         this._settings = settings;
+        // @ts-expect-error - modules is not exported
         this._client = NodeRedis.createClient({
             url: `redis://${this._settings.host}:${this._settings.port}`,
             password: this._settings.password,

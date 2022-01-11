@@ -52,6 +52,7 @@ function getData(publicId) {
             .execute()
             .then((res) => {
             logger.log(PREFIX, `Getted data: ${publicId}`);
+            // @ts-expect-error - just for preventing error
             if (res.resources.length === 0) {
                 return null;
             }

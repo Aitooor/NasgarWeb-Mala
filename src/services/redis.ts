@@ -1,5 +1,4 @@
 import * as NodeRedis from "redis";
-import type { modules } from "redis";
 import type { RedisClientType } from "@node-redis/client/dist/lib/client/index";
 import * as logger from "../lib/logger";
 
@@ -19,10 +18,11 @@ export interface IRedisSettings {
 
 export class Redis {
   protected _settings: IRedisSettings;
-  protected _client: RedisClientType<typeof modules>;
+  protected _client: RedisClientType;
 
   constructor(settings: IRedisSettings) {
     this._settings = settings;
+    // @ts-expect-error - modules is not exported
     this._client = NodeRedis.createClient({
       url: `redis://${this._settings.host}:${this._settings.port}`,
       password: this._settings.password,
@@ -44,16 +44,16 @@ export class Redis {
   }
 
   /**
-   * 
+   *
    * @returns  All clients that received the message
    */
   public async publish(channel: string, message: string): Promise<number> {
     logger.log(`Publishing message to channel ${channel}: ${message}`);
-    return await this._client.publish(channel, message)
+    return await this._client.publish(channel, message);
   }
 
   /**
-   * 
+   *
    * @returns All clients that received the message
    */
   public async send(message: string): Promise<number> {

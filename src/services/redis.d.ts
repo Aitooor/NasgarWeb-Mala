@@ -1,4 +1,3 @@
-import type { modules } from "redis";
 import type { RedisClientType } from "@node-redis/client/dist/lib/client/index";
 export interface IRedisSettings {
     host: string;
@@ -9,7 +8,7 @@ export interface IRedisSettings {
 }
 export declare class Redis {
     protected _settings: IRedisSettings;
-    protected _client: RedisClientType<typeof modules>;
+    protected _client: RedisClientType;
     constructor(settings: IRedisSettings);
     connect(): Promise<void>;
     /**

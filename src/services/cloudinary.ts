@@ -43,6 +43,7 @@ export function getData(publicId: string): Promise<CLDResult> {
       .execute()
       .then((res: cloudinary.ResourceApiResponse) => {
         logger.log(PREFIX, `Getted data: ${publicId}`);
+        // @ts-expect-error - just for preventing error
         if(res.resources.length === 0) {
           return null;
         }
