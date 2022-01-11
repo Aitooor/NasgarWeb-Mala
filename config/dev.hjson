@@ -5,8 +5,8 @@
 // Database data
   DB: {
     web: "u576248622_web"
-    USER: "root"
-    PASS: "Apika#1234"
+    USER: "user"
+    PASS: "ROOT"
   }
 
 // Nodemailer auth
