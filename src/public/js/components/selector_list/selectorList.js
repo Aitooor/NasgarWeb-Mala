@@ -115,11 +115,18 @@ export class RecomendedSelectorList {
         });
         return listItem;
     }
-    _setPos(e) {
-        const x = e.pageX;
-        const y = e.pageY;
-        this.element.style.top = `${y - window.scrollY}px`;
-        this.element.style.left = `${x - window.scrollX}px`;
+    _setPos() {
+        const e = this.lastMouseEvent;
+        const xMouse = e.pageX - window.scrollX;
+        const yMouse = e.pageY - window.scrollY;
+        const widthWindow = window.innerWidth;
+        const heightWindow = window.innerHeight;
+        const widthElement = this.element.offsetWidth;
+        const heightElement = this.element.offsetHeight;
+        const x = Math.min(widthWindow - widthElement - 10, xMouse);
+        const y = Math.min(heightWindow - heightElement - 10, yMouse);
+        this.element.style.top = `${y}px`;
+        this.element.style.left = `${x}px`;
     }
     _loadData(data) {
         const list = this.structure.childs[1].childs[2];
@@ -200,7 +207,14 @@ export class RecomendedSelectorList {
         this.isOpen = true;
         this.inputCard.dom.value = "";
         this.structure.classes.add("active");
-        this._setPos(event);
+        this.lastMouseEvent = event;
+        let lastHeight = 0;
+        setInterval(() => {
+            if (window.innerHeight !== lastHeight) {
+                this._setPos();
+                lastHeight = window.innerHeight;
+            }
+        }, 100);
     }
     close() {
         this.isOpen = false;
