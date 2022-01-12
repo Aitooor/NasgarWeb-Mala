@@ -4,7 +4,7 @@
 	<%- include("../partials/header.ejs") %> 
 	<title> Comming Soon </title>
 
-  <%- include("../partials/less.ejs", { paths: ["partials/nav_modern"] }) %> 
+  <%- include("../partials/less.ejs", { paths: ["partials/nav_modern", "partials/body_end"] }) %> 
 </head>
 <body>
 	<%- include("../partials/nav_modern.ejs", { global, solid: true, tab: typeof tab === "string" ? tab : "home" }) %>
@@ -13,6 +13,5 @@
 		<div style="font-size: 3rem;font-weight: 100;padding-top: 2rem;">
 			Cooming Soon...
 		</div>
-	</div>
-</body>
-</html>
+    
+<%- include("../partials/body_end.ejs") %>
