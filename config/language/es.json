@@ -7,8 +7,8 @@
     },
 
     "menu": {
-        "home": "Principal",
-        "updates": "Actualizaciones",
+        "home": "Inicio",
+        "updates": "Novedades",
         "bans": "Sanciones",
         "vote": "Votar",
         "login": "Ingresar",
