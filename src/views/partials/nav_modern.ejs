@@ -1,7 +1,7 @@
 <% 
 const tab_         = typeof tab === 'string' ? tab : "home";
 const _transparent = typeof transparent === "boolean" ? transparent : false;  
-const _solid       = typeof solid === "boolean" ? solid : false;  
+const _solid       = typeof solid === "boolean" ? solid : false || true;  
 const _style       = typeof style === "string" ? style : "";  
 const _nav_class   = (
     (_transparent  ? "" : "always") + 

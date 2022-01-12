@@ -1,5 +1,7 @@
 -- Create with some datos
 
+DROP DATABASE IF EXISTS `u576248622_web`;
+
 CREATE DATABASE IF NOT EXISTS u576248622_web;
 
 USE u576248622_web;
@@ -58,7 +60,7 @@ CREATE TABLE IF NOT EXISTS `categories` (
   `description` longtext DEFAULT NULL,
   `image` varchar(36) NOT NULL,
   `min_rank` int(11) NOT NULL DEFAULT 0,
-  `subcategories` text NOT NULL DEFAULT '[]',
+  `subcategories` text NOT NULL,
   `order` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -67,14 +69,7 @@ CREATE TABLE IF NOT EXISTS `categories` (
 --
 
 INSERT INTO `categories` (`uuid`, `name`, `display`, `description`, `image`, `min_rank`, `subcategories`, `order`) VALUES
-('179aa820-3451-41ae-914d-5b17914a466f', 'SURVIVAL', '<b>{{NAME}}</b>', '', '', 1, '[]', '[\"9cdaf61d-8fe6-4d75-8f8c-ee49a62d2a37\"]'),
-('19ffa2dd-46aa-4b2a-af40-808731a438eb', 'RANGOS GLOBALES', '{{NAME}}', '', '', 1, '[]', '[\"2b231e14-9e5d-4f76-85ef-6247fa788a99\"]'),
-('280ca4c6-8ebf-4de9-b5d6-281f13d11da6', 'MICRO BATTLES', '<b>{{NAME}}</b>', '', '', 1, '[]', '[\"2b231e14-9e5d-4f76-85ef-6247fa788a99\"]'),
-('387c5743-c4f2-42ab-be24-ecd7d7ac00a2', 'MAIN', '{{NAME}}', 'Descripcion principal', '', 1, '[\"9aaf38ea-fe11-4c84-99ce-c717d7b1158e\",\"179aa820-3451-41ae-914d-5b17914a466f\"]', '[]'),
-('964c1ece-5ffc-4e83-aeb3-929bacfa9cd0', 'SKYBLOCK', '{{NAME}}', 'AUN NO', '', 1, '[]', '[]'),
-('9aaf38ea-fe11-4c84-99ce-c717d7b1158e', 'BEDWARS', '<b>{{NAME}}</b>', '', '', 1, '[\"e973fe09-b2b5-4ed8-828c-720201f954d4\"]', '[\"9cdaf61d-8fe6-4d75-8f8c-ee49a62d2a37\",\"c585bd69-bdbb-4d87-9a52-9be285068479\"]'),
-('ad28ada4-0647-4146-9381-7846dca00529', 'PRACTICE', '<b>{{NAME}}</b>', '', '', 1, '[]', '[\"2b231e14-9e5d-4f76-85ef-6247fa788a99\"]'),
-('e973fe09-b2b5-4ed8-828c-720201f954d4', 'BEDWARS-LLAVES', 'LLAVES', '', '', 1, '[]', '[\"9cdaf61d-8fe6-4d75-8f8c-ee49a62d2a37\",\"3330045c-a362-40b0-b56c-75e7966e587b\"]');
+('387c5743-c4f2-42ab-be24-ecd7d7ac00a2', 'MAIN', '{{NAME}}', 'Descripcion principal', '', 1, '[]', '[]');
 
 -- --------------------------------------------------------
 
@@ -130,7 +125,6 @@ CREATE TABLE IF NOT EXISTS `products` (
 INSERT INTO `products` (`uuid`, `name`, `price`, `description`, `images`, `category`, `created`, `exec_cmd`, `exec_params`, `sale`, `sale_expires`) VALUES
 ('3330045c-a362-40b0-b56c-75e7966e587b', 'Normal Key x5', '3.00', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quo plebiscito decreta a senatu est consuli quaestio Cn. Duarum enim vitarum nobis erunt instituta capienda. Duo Reges: constructio interrete. Qualem igitur hominem natura inchoavit? Huius, Lyco, oratione locuples, rebus ipsis ielunior. \nPrimum in nostrane potestate est, quid meminerimus? An vero, inquit, quisquam potest probare, quod perceptfum, quod. Itaque vides, quo modo loquantur, nova verba fingunt, deserunt usitata. Quae quo sunt excelsiores, eo dant clariora indicia naturae. At certe gravius. Quid dubitas igitur mutare principia naturae? ', '[]', 'KEY', '0', 'scrate [&&] tellraw', 'givekey Normal {{PlayerName}} 1 [&&] {{PlayerName}} {\"text\": \"{{PlayerName}} compraste: {{ItemName}}\"}', 0.0, '0'),
 ('9cdaf61d-8fe6-4d75-8f8c-ee49a62d2a37', 'Epic key x5', '3.00', '.\n', '[\"51df16b9-eac7-4d17-8717-970a73e10181\"]', 'KEY', '0', '', '', 0.0, '0'),
-('9fb6cac1-1b14-4e2a-930b-0eb3428937db', 'Lee la descripcion!', '0.00', 'Ya puedes poner comandos pero primero prueba si te funciona antes de poner los finales.\nEl producto que es raro contiene los limites de las casillas.\nSi sucede algún bug visual solo recarga con el botón que puse, si no funciona recarga la página completa e informame que fue lo que pasó.\n\nAtte.\nApika Luca', '[]', 'DEV', '0', 'tellraw', '{{PlayerName}} {\"text\": \"{{PlayerName}} compraste {{ItemName}}.\"}', 0.0, '0'),
 ('c585bd69-bdbb-4d87-9a52-9be285068479', 'Rare Key x5', '3.00', '.', '[\"51df16b9-eac7-4d17-8717-970a73e10181\"]', 'KEY', '0', '', '', 0.0, '0');
 
 -- --------------------------------------------------------

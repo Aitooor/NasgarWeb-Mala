@@ -6,19 +6,7 @@
 @import "../partials/nav_modern.less";
 
 html {
-  height: 100vh;
-
-  background-color: darken(@white, 60%);
-  background-image: url(/img/background.png);
-  background-repeat: no-repeat;
   background-position: center;
-  background-size: cover;
-  background-attachment: fixed;
-  background-blend-mode: multiply;
-
-  scroll-behavior: smooth;
-
-  overflow-x: hidden;
 }
 
 body {
@@ -506,6 +494,16 @@ body {
       }
     }
   }
+}
+
+footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 1rem;
+
+  color: @white;
+  text-align: center;
 }
 
 @media screen and (max-width: 550px) {

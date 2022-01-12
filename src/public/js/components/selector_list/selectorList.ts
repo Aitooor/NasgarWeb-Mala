@@ -71,6 +71,8 @@ export class RecomendedSelectorList<T = any> {
   protected selectors: { [key: string]: jsonHtml<HTMLDivElement> } = {};
   protected _actualIndex: number = 0;
 
+  protected lastMouseEvent: MouseEvent;
+
   isOpen: boolean = false;
 
   #RegExp(regex: string | RegExp): RegExp {
@@ -213,12 +215,22 @@ export class RecomendedSelectorList<T = any> {
     return listItem;
   }
 
-  private _setPos(e: MouseEvent) {
-    const x: number = e.pageX;
-    const y: number = e.pageY;
+  private _setPos() {
+    const e = this.lastMouseEvent;
+    const xMouse: number = e.pageX - window.scrollX;
+    const yMouse: number = e.pageY - window.scrollY;
 
-    this.element.style.top = `${y - window.scrollY}px`;
-    this.element.style.left = `${x - window.scrollX}px`;
+    const widthWindow: number = window.innerWidth;
+    const heightWindow: number = window.innerHeight;
+
+    const widthElement: number = this.element.offsetWidth;
+    const heightElement: number = this.element.offsetHeight;
+
+    const x = Math.min(widthWindow - widthElement - 10, xMouse);
+    const y = Math.min(heightWindow - heightElement - 10, yMouse);
+
+    this.element.style.top = `${y}px`;
+    this.element.style.left = `${x}px`;
   }
 
   protected _loadData(data: T[]) {
@@ -315,7 +327,14 @@ export class RecomendedSelectorList<T = any> {
     this.inputCard.dom.value = "";
 
     this.structure.classes.add("active");
-    this._setPos(event);
+    this.lastMouseEvent = event;
+    let lastHeight = 0;
+    setInterval(() => {
+      if(window.innerHeight !== lastHeight) {
+        this._setPos();
+        lastHeight = window.innerHeight;
+      }
+    }, 100);
   }
 
   /**

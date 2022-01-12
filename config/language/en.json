@@ -8,7 +8,7 @@
 
     "menu": {
         "home": "Home",
-        "updates": "Updates",
+        "updates": "News",
         "bans": "Bans",
         "vote": "Vote",
         "login": "Login",
@@ -27,5 +27,5 @@
         "team": "Team"
     },
     
-    "footer": "<span>This server is <b>not</b> associated with <b>Mojang, Minecraft or Microsoft</b> this website isn't associated with this companys and is owner by <b>Nasgar Network</b>.</span><br><span>© Copyright 2021 <b>Nasgar Network</b>.</span>"
+    "footer": "<span>This server is <b>not</b> associated with <b>Mojang, Minecraft or Microsoft</b> this website isn't associated with this companys and is owner by <b>Nasgar Network</b>.</span><br><span>© Copyright 2022 <b>Nasgar Network</b>.</span>"
 }
