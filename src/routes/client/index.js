@@ -122,6 +122,8 @@ module.exports = require("../../lib/Routes/exports")(
         }
       }
 
+      console.log(commands);
+
       // Execute the commands
       await executeCommands(redis, commands, {
         PlayerName: req.session.nick,
