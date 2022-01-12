@@ -431,10 +431,10 @@ body.dark .card > .card-body > .card-separator::before {
 }
 html {
   height: 100vh;
-  background-color: #666666;
-  background-image: url(/img/background.png);
+  background-color: #7e7e7e;
+  background-image: url(/img/fantasy_spawn.png);
   background-repeat: no-repeat;
-  background-position: center;
+  background-position: center -250px;
   background-size: cover;
   background-attachment: fixed;
   background-blend-mode: multiply;
@@ -802,16 +802,7 @@ nav.scrolled > .mobile > .header > button.menu {
   }
 }
 html {
-  height: 100vh;
-  background-color: #666666;
-  background-image: url(/img/background.png);
-  background-repeat: no-repeat;
   background-position: center;
-  background-size: cover;
-  background-attachment: fixed;
-  background-blend-mode: multiply;
-  scroll-behavior: smooth;
-  overflow-x: hidden;
 }
 body {
   background: transparent;
@@ -1324,6 +1315,14 @@ body {
   height: 24px;
   filter: brightness(0) invert(1);
   transform: translate(-25%, -25%);
+}
+footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 1rem;
+  color: #FFF;
+  text-align: center;
 }
 @media screen and (max-width: 550px) {
   .landing > .ip {
