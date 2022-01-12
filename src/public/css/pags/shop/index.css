@@ -699,10 +699,10 @@ button.hover-anim-ball span,
 }
 html {
   height: 100vh;
-  background-color: #666666;
-  background-image: url(/img/background.png);
+  background-color: #7e7e7e;
+  background-image: url(/img/fantasy_spawn.png);
   background-repeat: no-repeat;
-  background-position: center;
+  background-position: center -250px;
   background-size: cover;
   background-attachment: fixed;
   background-blend-mode: multiply;
@@ -1069,12 +1069,19 @@ nav.scrolled > .mobile > .header > button.menu {
     display: flex;
   }
 }
+html {
+  background-position: center;
+}
 .centered {
+  min-height: 70vh;
   padding: 2rem 1rem;
   background-color: transparent;
   display: flex;
   gap: 5px;
   justify-content: center;
+}
+.cart-btn {
+  border-radius: 7px 7px 0 0;
 }
 .cart-btn::after {
   content: "Cart";
@@ -1091,7 +1098,7 @@ nav.scrolled > .mobile > .header > button.menu {
 }
 aside {
   background-color: #fff;
-  border-radius: 2px;
+  border-radius: 7px;
 }
 aside .categories {
   padding: 0.5rem;
@@ -1147,16 +1154,37 @@ aside .categories .category-content .subcategory:hover {
   width: 100%;
   max-width: 900px;
   padding: 0.5rem;
-  border-radius: 2px;
+  border-radius: 7px;
   background-color: #fff;
   box-shadow: 0px 2px 3px -1px #0005;
   display: flex;
   flex-direction: column;
 }
+.mainbox .btn {
+  border-radius: 7px;
+}
 .mainbox main {
   width: 100%;
 }
 .mainbox main .title {
+  display: grid;
+  grid-template-columns: 5rem auto 5rem;
+}
+.mainbox main .title .buttons {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+.mainbox main .title .buttons a {
+  padding: 5px;
+  height: fit-content;
+  background-color: transparent;
+  color: #3880be;
+}
+.mainbox main .title .buttons a:hover {
+  box-shadow: inset 0 0 10px 0px #999;
+}
+.mainbox main .title span {
   font-size: 3.5rem;
   font-weight: 400;
   text-align: center;

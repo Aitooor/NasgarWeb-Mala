@@ -1,6 +1,7 @@
 @import "../../common/super.less";
 @import "../../common/colors.less";
 @import "../../partials/nav_modern.less";
+@import "../../components/toasts.less";
 
 .body {
   padding-top: 1rem;
@@ -357,6 +358,24 @@ footer {
   }
 }
 
+.copyright {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  width: 100%;
+
+  font-size: 0.8rem;
+  color: #212121;
+  border: none;
+  border-top: solid 2px #ccc;
+
+  display: flex;
+  gap: 1ch;
+  justify-content: center;
+  align-items: center;
+}
+.toast-body span:last-child {
+  display: none;
+}
 @media screen and (min-width: 800px) {
   .app {
     width: 95vw;

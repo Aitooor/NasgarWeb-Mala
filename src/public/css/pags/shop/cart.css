@@ -111,10 +111,10 @@ i.material-two-tone {
 }
 html {
   height: 100vh;
-  background-color: #666666;
-  background-image: url(/img/background.png);
+  background-color: #7e7e7e;
+  background-image: url(/img/fantasy_spawn.png);
   background-repeat: no-repeat;
-  background-position: center;
+  background-position: center -250px;
   background-size: cover;
   background-attachment: fixed;
   background-blend-mode: multiply;
@@ -759,6 +759,7 @@ footer > button:active {
     display: flex;
   }
   .app > .products {
+    padding-bottom: 5px;
     width: calc(100%);
     display: flex;
     flex-direction: column;

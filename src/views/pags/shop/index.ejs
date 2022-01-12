@@ -46,12 +46,19 @@ function categoryDisplay(category, name) {
 		<div class="mainbox">
 			<main>
 				<div class="title">
-					<%- categoryDisplay(category, global.lang.menu.shop[category.name] || category.name) %>
+					<div class="buttons">
+            <% if(category.name !== "MAIN") { %>
+              <a href="#" onclick="history.back()" class="btn"><i class="material">arrow_back</i></a>
+              <a href="/shop" class="btn"><i class="material">home</i></a>
+            <% } %>
+          </div>
+          <span><%- categoryDisplay(category, global.lang.menu.shop[category.name] || category.name) %></span>
+          <div class="sep"></div>
 				</div>
 				<div class="info-text">
 					<%- category.description %>
 				</div>
-        <% if (category.subcategories?.length > 0) { %>
+        <!-- <% if (category.subcategories?.length > 0) { %>
           <div class="subcategories">
             <% for(const subcategory of category.subcategories) { %>
               <a href="/shop/category/<%- subcategory.uuid %>" class="btn subcategory" >
@@ -59,7 +66,7 @@ function categoryDisplay(category, name) {
               </a>
             <% } %>
           </div>
-        <% } %>
+        <% } %> -->
 				<div class="products">
 					<% products.forEach((product, id) => { %> 
 						<div class="product" title="<%= product.name %>" data-product-id="<%= product.uuid %>" data-commons-onclick="link, /shop/product/<%= product.uuid %> ">
@@ -81,6 +88,10 @@ function categoryDisplay(category, name) {
 			</main>
 		</div>
 	</div>
+
+  <footer class="copyright">
+    <%- global.lang.footer %>
+  </footer>
 
 	<div class="toasts"></div>
 </body>

@@ -1,5 +1,7 @@
 <%- include("../../partials/head.ejs", { global, title: "Cart", url: "/shop/cart" }) %>
-</head>
+  <script>
+    window.global$copyright = `<%- global.lang.footer %>`;
+  </script>
 <%- include("../../partials/body.ejs", { global, tab: "shop", transparent_height: 10 }) %>
 
   <div class="app">
@@ -28,7 +30,12 @@
         </div>
       </div>
       <button class="btn-pay" >Continuar compra</button>
+      <div class="copyright">
+        <b>©</b> Copyright 2022 <b>Nasgar</b>
+      </div>
     </footer>
   </div>
 
-<%- include("../../partials/body_end.ejs") %>
+  <div class="toasts"></div>
+
+<!-- <%- include("../../partials/body_end.ejs") %> -->

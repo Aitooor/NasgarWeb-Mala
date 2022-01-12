@@ -11,15 +11,15 @@
     <div class="landing-header">
       <div class="tabs">
         <div class="left">
-          <a href="/" class="tab"><%= global.lang.menu.home %></a>
-          <a href="/bans" class="tab"><%= global.lang.menu.bans %></a>
+          <a href="/updates" class="tab"><%= global.lang.menu.updates %></a>
+          <a href="/shop" class="tab"><%= global.lang.menu.shop.title %></a>
         </div>
         <div class="logo">
           <img src="/img/logo-128x.png" alt="Nasgar Network">
         </div>
         <div class="right">
-          <a href="/shop" class="tab"><%= global.lang.menu.shop.title %></a>
-          <a href="/updates" class="tab"><%= global.lang.menu.updates %></a>
+          <a href="/bans" class="tab"><%= global.lang.menu.bans %></a>
+          <a href="/vote" class="tab"><%= global.lang.menu.vote %></a>
         </div>
       </div>
     </div>
@@ -64,7 +64,10 @@
 
     <!--———————— Bottom ————————-->
 
-    <div class="container-full">
+    <footer>
+      <%- global.lang.footer %>
+    </footer>
+    <!-- <div class="container-full">
       <div class="body">
         <div id="about" class="solid d-block">
           <div class="title"><%- global.lang.landing.about.title %></div>
@@ -106,7 +109,7 @@
           </span>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <div class="toasts"></div>
   </body>
