@@ -20,13 +20,16 @@ const PREFABS_CSS = join(PUBLIC, "css", "prefabs");
 function compileFile(file, dir, level = 0) {
   return new Promise((resolve, reject) => {
     const spaces = " ".repeat(level * 2);
-    console.log(`${spaces}\x1b[0;33m|\x1b[0;32m ${file.replace(dir.input, "").replaceAll("\\", "/")}\x1b[0m`);
+    console.log(
+      `${spaces}\x1b[0;33m|\x1b[0;32m ${file
+        .replace(dir.input, "")
+        .replaceAll("\\", "/")}\x1b[0m`
+    );
     Less.render(
       fs.readFileSync(file, "utf8"),
       {
         plugins: [LessCleanCss],
         paths: [dir.input],
-        sourceMap: true,
       },
       async (err, output) => {
         if (err) {
@@ -35,7 +38,6 @@ function compileFile(file, dir, level = 0) {
           const _target = join(dir.output, file.replace(dir.input, ""));
           const ext = _target.split(".").pop();
           const target = _target.replace(new RegExp(ext + "$"), "css");
-          const targetMap = target + ".map";
 
           try {
             await fsPromises.mkdir(dir.output, { recursive: true });
@@ -44,12 +46,7 @@ function compileFile(file, dir, level = 0) {
           fsPromises
             .writeFile(target, output.css)
             .then(() => {
-              fsPromises
-                .writeFile(targetMap, output.map)
-                .then(() => {
-                  resolve();
-                })
-                .catch(reject);
+              resolve();
             })
             .catch(reject);
         }
@@ -66,7 +63,11 @@ function compileFile(file, dir, level = 0) {
  */
 async function compileDir(input, output, top, level = 0) {
   const spaces = " ".repeat(level * 2);
-  console.log(`${spaces}\x1b[0;1;33m|-\x1b[0;1;36m ${input.replace(top, "").replaceAll("\\", "/")}\x1b[0m`);
+  console.log(
+    `${spaces}\x1b[0;1;33m|-\x1b[0;1;36m ${input
+      .replace(top, "")
+      .replaceAll("\\", "/")}\x1b[0m`
+  );
 
   const files = await fsPromises.readdir(input);
 
@@ -92,14 +93,31 @@ async function compileDir(input, output, top, level = 0) {
   console.log(`${spaces}\x1b[0;1;33m|- \x1b[0;1;36m\x1b[0m`);
 }
 
-console.log(`\x1b[0;33mCompiling ${PAGS.replace(ROOT, "").replaceAll("\\", "/")}\x1b[0m`);
+console.log(
+  `\x1b[0;33mCompiling ${PAGS.replace(ROOT, "").replaceAll("\\", "/")}\x1b[0m`
+);
 compileDir(PAGS, PAGS_CSS, PUBLIC, 0.5)
   .then(() => {
-    console.log(`\x1b[0;33mCompiled ${PAGS.replace(ROOT, "").replaceAll("\\", "/")}\x1b[0m\n`);
-    console.log(`\x1b[0;33mCompiling ${PREFABS.replace(ROOT, "").replaceAll("\\", "/")}\x1b[0m`);
+    console.log(
+      `\x1b[0;33mCompiled ${PAGS.replace(ROOT, "").replaceAll(
+        "\\",
+        "/"
+      )}\x1b[0m\n`
+    );
+    console.log(
+      `\x1b[0;33mCompiling ${PREFABS.replace(ROOT, "").replaceAll(
+        "\\",
+        "/"
+      )}\x1b[0m`
+    );
   })
   .then(() => {
     compileDir(PREFABS, PREFABS_CSS, PUBLIC, 0.5).then(() => {
-      console.log(`\x1b[0;33mCompiled ${PREFABS.replace(ROOT, "").replaceAll("\\", "/")}\x1b[0m\n`);
+      console.log(
+        `\x1b[0;33mCompiled ${PREFABS.replace(ROOT, "").replaceAll(
+          "\\",
+          "/"
+        )}\x1b[0m\n`
+      );
     });
   });
