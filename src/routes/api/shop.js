@@ -109,9 +109,16 @@ module.exports = require("../../lib/Routes/exports")(
 
       try {
         const json = await shop.getProduct(db, uuid);
-
-        _res = json;
-        status = 200;
+        if(json) {
+          _res = {
+            uuid: json.uuid,
+            name: json.name,
+            description: json.description,
+            price: json.price,
+            images: json.images,
+          };
+          status = 200;
+        }
       } catch {}
 
       res.type("json").status(status).send(_res);
@@ -147,7 +154,13 @@ module.exports = require("../../lib/Routes/exports")(
       try {
         const json = await shop.getCategory(db, uuid);
 
-        _res = json;
+        _res = {
+          uuid: json.uuid,
+          name: json.name,
+          description: json.description,
+          display: json.display,
+          products: json.order,
+        };
         status = 200;
       } catch {}
 
