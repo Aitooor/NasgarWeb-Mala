@@ -1,6 +1,6 @@
 /**
  * @typedef {AddActionOptions} ToastAction
- * 
+ *
  * @typedef {{
  * 		title: string;
  * 		body: string;
@@ -9,9 +9,9 @@
  * 			[key: string]: any
  * 		};
  * }} ToastOptions
- * 
+ *
  * @typedef {(...args: any[]) => void} ActionFunction
- * 
+ *
  * @typedef {{
  * 		isOutline?: boolean;
  * 		color?: "primary" | "success" | "info" | "warning" | "danger";
@@ -19,7 +19,7 @@
  * 		actionArgs?: Array | string | null;
  * 		html?: string | HTMLElement[];
  * }} AddActionOptions
- * 
+ *
  * @typedef {{
  * 		main: HTMLDivElement;
  * 		parts: {
@@ -44,165 +44,194 @@ const allToasts = [];
 let maxToasts = 5;
 
 class Toast {
-	/**
-	 * 
-	 * @param {ToastOptions} options 
-	 */
-	constructor(options) {
-		options = Object.assign({
-			title: "Tittle",
-			body: "Body",
-			actions: null,
-			data: {}
-		}, options);
+  /**
+   *
+   * @param {ToastOptions} options
+   */
+  constructor(options) {
+    options = Object.assign(
+      {
+        title: "Tittle",
+        body: "Body",
+        actions: null,
+        data: {},
+      },
+      options
+    );
 
-		const dom = this._create();
-		dom.f.setTitle(options.title);
-		dom.f.setBody(options.body);
-		if(options?.actions) {
-			for(const action of options.actions) {
-				dom.f.addAction(action);
-			}
-		} else {
-			dom.f.addAction({ color: "danger", html: "Close", action: "close", actionArgs: "@me"});
-		}
+    const dom = this._create();
+    dom.f.setTitle(options.title);
+    dom.f.setBody(options.body);
+    if (options?.actions) {
+      for (const action of options.actions) {
+        dom.f.addAction(action);
+      }
+    } else {
+      dom.f.addAction({
+        color: "danger",
+        html: "Close",
+        action: "close",
+        actionArgs: "@me",
+      });
+    }
 
-		this.dom = dom;
-		this.data = options.data;
+    this.dom = dom;
+    this.data = options.data;
 
-		this._init();
+    this._init();
 
-		allToasts.push(this);
+    allToasts.push(this);
 
-		if(allToasts.length >= maxToasts) {
-			while(allToasts.length >= maxToasts) allToasts.shift().close();
-		}
-	}
+    if (allToasts.length >= maxToasts) {
+      while (allToasts.length >= maxToasts) allToasts.shift().close();
+    }
+  }
 
-	_init() {
-		const actions = [...this.dom.parts.actions.querySelectorAll("button[class*=\"action-\"]")];
+  _init() {
+    const actions = [
+      ...this.dom.parts.actions.querySelectorAll('button[class*="action-"]'),
+    ];
 
-		for(const actionD of actions) {
-			/** @type {string} */
-			const action = actionD.dataset.action?.toLowerCase?.();
-			/** @type {string[]} */
-			const actionArgs = actionD.dataset.actionParams?.split?.(",");
+    for (const actionD of actions) {
+      /** @type {string} */
+      const action = actionD.dataset.action?.toLowerCase?.();
+      /** @type {string[]} */
+      const actionArgs = actionD.dataset.actionParams?.split?.(",");
 
-			actionD.addEventListener("click", () => {
-				if(action === "close") {
-					if(actionArgs[0] === "@me") {
-						this.close();
-					}
-				} else 
-				if(action === "link") {
-					window.open(...actionArgs);
-				}
-			})
-		}
-	}
+      actionD.addEventListener("click", () => {
+        if (action === "close") {
+          if (actionArgs[0] === "@me") {
+            this.close();
+          }
+        } else if (action === "link") {
+          window.open(...actionArgs);
+        }
+      });
+    }
+  }
 
-	show() {
-		ToastMain.append(this.dom.main);
-	}
+  /**
+   * Show a toast
+   * @param {number} msToClose miliseconds to close automatically
+   */
+  show(msToClose = 5000) {
+    ToastMain.append(this.dom.main);
+    if (msToClose >= 1) {
+      setTimeout(() => {
+        this.close();
+      }, msToClose);
+    }
+  }
 
-	close() {
-		this.dom.main.style.animationDuration = ".2s";
-		this.dom.main.style.animationName = "ToastOut";
-		this.dom.main.addEventListener("animationend", () => {
-			ToastMain.removeChild(this.dom.main);
-		});
-	}
+  close() {
+    this.dom.main.style.animationDuration = ".2s";
+    this.dom.main.style.animationName = "ToastOut";
+    this.dom.main.addEventListener("animationend", () => {
+      ToastMain.removeChild(this.dom.main);
+    });
+  }
 
-	/**
-	 * 
-	 * @param {string} [id] 
-	 * @returns {ToastCreate}
-	 */
-	_create(id = null) {
-		const main = document.createElement("div");
-		const header = document.createElement("div");
-		const body = document.createElement("div");
-		const actions = document.createElement("div");
+  /**
+   *
+   * @param {string} [id]
+   * @returns {ToastCreate}
+   */
+  _create(id = null) {
+    const main = document.createElement("div");
+    const header = document.createElement("div");
+    const body = document.createElement("div");
+    const actions = document.createElement("div");
 
-		main.className = "toast";
-		header.className = "toast-header";
-		body.className = "toast-body";
-		actions.className = "toast-actions";
+    main.className = "toast";
+    header.className = "toast-header";
+    body.className = "toast-body";
+    actions.className = "toast-actions";
 
-		main.append(header);
-		main.append(body);
-		main.append(actions);
+    main.append(header);
+    main.append(body);
+    main.append(actions);
 
-		main.dataset["toastId"] = id = id || "Toast-" + (++TotalToasts);
+    main.dataset["toastId"] = id = id || "Toast-" + ++TotalToasts;
 
-		return {
-			main, 
-			parts: {main, header, body, actions},
-			f: {
-				setTitle(newTitle) {header.innerHTML = newTitle;},
-				setBody(newBody) {body.innerHTML = newBody;},
-				/**
-				 * 
-				 * @param {AddActionOptions} param0 
-				 * @returns {HTMLButtonElement} 
-				 */
-				addAction({ isOutline = false, color = "primary", action = null, actionArgs = [], html = "" } = {}) {
-					const button = document.createElement("button");
-					
-					let g = "action-";
-					if(isOutline) g += "out-";
-					g += color;
+    return {
+      main,
+      parts: { main, header, body, actions },
+      f: {
+        setTitle(newTitle) {
+          header.innerHTML = newTitle;
+        },
+        setBody(newBody) {
+          body.innerHTML = newBody;
+        },
+        /**
+         *
+         * @param {AddActionOptions} param0
+         * @returns {HTMLButtonElement}
+         */
+        addAction({
+          isOutline = false,
+          color = "primary",
+          action = null,
+          actionArgs = [],
+          html = "",
+        } = {}) {
+          const button = document.createElement("button");
 
-					button.className = g;
+          let g = "action-";
+          if (isOutline) g += "out-";
+          g += color;
 
-					action = action.toLowerCase();
-					button.dataset.action = action;
-					if(action === "link") {button.title = "link: " + actionArgs;}
-					
-					if(typeof actionArgs === 'string') {
-						button.dataset.actionParams = actionArgs.replace(/^\s+/, "").replace(/\s+$/, "");
-					} else 
-					if(actionArgs instanceof Array) {
-						button.dataset.actionParams = actionArgs.join(",");
-					} else {
-						button.dataset.actionParams = "";
-					}
+          button.className = g;
 
-					const btn_append = (_html) => {
-						if(typeof _html === "string") {
-							button.innerHTML = _html;
-						} else 
-						if(_html instanceof HTMLElement) {
-							button.append(_html);
-						} else 
-						if(_html instanceof Array) {
-							for(const _htmlElement of _html) btn_append(_htmlElement);
-						}
-					};
+          action = action.toLowerCase();
+          button.dataset.action = action;
+          if (action === "link") {
+            button.title = "link: " + actionArgs;
+          }
 
-					btn_append(html);
+          if (typeof actionArgs === "string") {
+            button.dataset.actionParams = actionArgs
+              .replace(/^\s+/, "")
+              .replace(/\s+$/, "");
+          } else if (actionArgs instanceof Array) {
+            button.dataset.actionParams = actionArgs.join(",");
+          } else {
+            button.dataset.actionParams = "";
+          }
 
-					actions.append(button);
+          const btn_append = (_html) => {
+            if (typeof _html === "string") {
+              button.innerHTML = _html;
+            } else if (_html instanceof HTMLElement) {
+              button.append(_html);
+            } else if (_html instanceof Array) {
+              for (const _htmlElement of _html) btn_append(_htmlElement);
+            }
+          };
 
-					return button;
-				}
-			}
-		};
-	}
+          btn_append(html);
 
-	static async all(callback) {
-		for(let _ of allToasts) await callback?.(_, [...allToasts]);
-	}
+          actions.append(button);
+
+          return button;
+        },
+      },
+    };
+  }
+
+  static async all(callback) {
+    for (let _ of allToasts) await callback?.(_, [...allToasts]);
+  }
 }
 
-window.addEventListener("resize", (ui) => {
-	const w = window.innerWidth;
+window.addEventListener("resize", () => {
+  const w = window.innerWidth;
 
-	if(w <= 600) {
-		maxToasts = 3;
-	} else {
-		maxToasts = 5;
-	}
-})
+  if (w <= 600) {
+    maxToasts = 3;
+  } else {
+    maxToasts = 5;
+  }
+});
 
 export default Toast;

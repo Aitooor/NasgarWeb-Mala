@@ -1,34 +1,44 @@
-<%- include("../../partials/head.ejs", { global, title: "Cargando...", url: "/shop/product" }) %>
-  <link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css">
-  <link rel="stylesheet" href="https://unpkg.com/flickity-fullscreen@1/fullscreen.css">
+<%- include("../../partials/head.ejs", { global, title: "Cargando...", url:
+"/shop/product" }) %>
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/flickity@2/dist/flickity.min.css" />
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/flickity-fullscreen@1/fullscreen.css" />
 
-  <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js" defer></script>
-  <script src="https://unpkg.com/flickity-fullscreen@1/fullscreen.js" defer></script>
-	<script>
-		window.productUUID = "<%- locals?.product %>";
-	</script>
+<script
+  src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"
+  defer></script>
+<script
+  src="https://unpkg.com/flickity-fullscreen@1/fullscreen.js"
+  defer></script>
+<script>
+  window.productUUID = "<%- locals?.product %>"
+</script>
 <%- include("../../partials/body.ejs", { global, transparent_height: 5 }) %>
-	<div class="app">
-		<main class="product loading">
-			<div class="fav-icon">
-			</div>
-			<div class="images product-images">
-			</div>
-			<div class="body">
-				<div class="info">
-					<div class="name product-name"></div>
-					<div class="price product-price"></div>
-				</div>
-				<div class="actions">
-					<button class="buy buy-btn">Buy</button>
-					<button class="cart cart-btn">
-						<i class="material">add_shopping_cart</i>
-					</button>
-				</div>
-				<div class="desc product-description"></div>
-			</div>
-		</main>
-	</div>
+<div class="app">
+  <main class="product loading">
+    <div class="back-buttons">
+      <a href="javascript:void(0)" onclick="window.history.back()"><i class="material">arrow_back</i></a>
+      <a href="/shop/cart"><i class="material">shopping_cart</i></a>
+    </div>
+    <div class="images product-images"></div>
+    <div class="body">
+      <div class="info">
+        <div class="name product-name"></div>
+        <div class="price product-price"></div>
+      </div>
+      <div class="actions">
+        <button class="buy buy-btn">Buy</button>
+        <button class="cart cart-btn">
+          <i class="material">add_shopping_cart</i>
+        </button>
+      </div>
+      <div class="desc product-description"></div>
+    </div>
+  </main>
+</div>
 
-	<div class="toasts"></div>
+<div class="toasts"></div>
 <%- include("../../partials/body_end.ejs") %>

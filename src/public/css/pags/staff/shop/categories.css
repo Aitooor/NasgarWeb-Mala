@@ -658,7 +658,7 @@ body {
   background: #EEEEEE;
 }
 .body-100 {
-  min-height: calc(100vh - 70px);
+  min-height: calc(100vh - 70px - 45px);
 }
 nav {
   position: fixed;
