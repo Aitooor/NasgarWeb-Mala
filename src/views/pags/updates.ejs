@@ -1,5 +1,6 @@
-<%- include("../partials/head.ejs", { global, url: "/updates", title: "Updates" }) %>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"></script>
+<%- include("../partials/head.ejs", { global, url: "/updates", title: "Updates"
+}) %>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"></script>
 
 <%- include("../partials/body.ejs", { global, tab: "updates" }) %>
 
@@ -8,6 +9,15 @@
 </div>
 <div class="page-body">
   <div id="update-list"></div>
+  <div class="list-paginator">
+    <button class="list-paginator__prev">
+      <i class="material">arrow_back_ios</i>
+    </button>
+    <div class="list-paginator__pages"></div>
+    <button class="list-paginator__next">
+      <i class="material">arrow_forward_ios</i>
+    </button>
+  </div>
 </div>
 
 <%- include("../partials/body_end.ejs") %>

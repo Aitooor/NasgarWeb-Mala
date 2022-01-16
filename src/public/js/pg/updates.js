@@ -1,4 +1,6 @@
-import ElementList from "../components/list/list.js";
+var _a;
+import { ElementListPaginator } from "../components/list/listPaginator.js";
+const paginationClass = "list-paginator__";
 function normalizeNumber(num) {
     if (num < 10) {
         return "0" + num;
@@ -9,9 +11,25 @@ const showdown = window.showdown;
 const markdownConverter = new showdown.Converter();
 markdownConverter.setOption("openLinksInNewWindow", true);
 markdownConverter.setOption("noHeaderId", true);
+const url = new URL(location.href);
+const page = parseInt(((_a = url.hash.match(/^#page:(\d+)$/)) === null || _a === void 0 ? void 0 : _a[1]) || "0");
 const updatesList_Element = (document.getElementById("update-list"));
-const updatesList = new ElementList(updatesList_Element, "/api/news", {
+const updatesList = new ElementListPaginator(updatesList_Element, "/api/news", {
     idTarget: "uuid",
+    elements: {
+        prev: document.querySelector(`.${paginationClass}prev`),
+        next: document.querySelector(`.${paginationClass}next`),
+        list: document.querySelector(`.${paginationClass}pages`),
+    },
+    page: page,
+    pageSize: 4,
+    maxButtons: 8,
+    classes: {
+        page: paginationClass + "page",
+        dots: paginationClass + "dots",
+        selected: paginationClass + "page--selected",
+        disabled: paginationClass + "disabled",
+    },
 }).setCustomFunctions({
     formatDate: (date) => {
         const d = new Date(date);
@@ -42,6 +60,13 @@ const updatesList = new ElementList(updatesList_Element, "/api/news", {
     },
     formatHref: (uuid) => {
         return "/news/" + uuid;
+    },
+}).pipe((ev, args) => {
+    if (ev === "page:change") {
+        console.log(args);
+        window.history.pushState({}, "", "/news#page:" + args);
+        updatesList.setPage(args);
+        window.scrollTo(0, 0);
     }
 }).setTemplate(`
 <a slot="uuid" data-slot-attribute="href" data-slot-formatter="formatHref" class="post">
@@ -56,5 +81,12 @@ const updatesList = new ElementList(updatesList_Element, "/api/news", {
   <div class="post-content" slot="content" data-slot-formatter="formatContent">
   </div>
 </a>`);
+window.onpopstate = () => {
+    var _a;
+    const url = new URL(location.href);
+    const page = parseInt(((_a = url.hash.match(/^#page:(\d+)$/)) === null || _a === void 0 ? void 0 : _a[1]) || "0");
+    updatesList.setPage(page);
+    window.scrollTo(0, 0);
+};
 updatesList.refresh();
 //# sourceMappingURL=updates.js.map

@@ -1,26 +1,7 @@
-import ElementList from "../components/list/list.js";
+import { ElementListPaginator } from "../components/list/listPaginator.js";
+import { Pagination } from "../components/pagination.js";
 
-/** Template
- *
- * <div class="post" id="post1">
- *   <div class="post-header">
- *     <h2 class="post-title">
- *       <a href="/updates#post1">
- *         <%= post.title %>
- *       </a>
- *     </h2>
- *     <div class="post-meta">
- *       <span class="post-date">
- *         <%= post.date %>
- *       </span>
- *     </div>
- *   </div>
- *   <div class="post-content">
- *     <%- post.content.replace(/\n/g, "<br>") %>
- *   </div>
- * </div>
- *
- */
+const paginationClass = "list-paginator__";
 
 function normalizeNumber(num: number): string {
   if (num < 10) {
@@ -38,12 +19,33 @@ markdownConverter.setOption("openLinksInNewWindow", true);
 markdownConverter.setOption("noHeaderId", true);
 //#endregion
 
+const url = new URL(location.href);
+const page = parseInt(url.hash.match(/^#page:(\d+)$/)?.[1] || "0");
+
 //#region List
 const updatesList_Element: HTMLDivElement = <HTMLDivElement>(
   document.getElementById("update-list")
 );
-const updatesList = new ElementList(updatesList_Element, "/api/news", {
+const updatesList = new ElementListPaginator(updatesList_Element, "/api/news", {
   idTarget: "uuid",
+  elements: {
+    prev: document.querySelector(
+      `.${paginationClass}prev`
+    ) as HTMLButtonElement,
+    next: document.querySelector(
+      `.${paginationClass}next`
+    ) as HTMLButtonElement,
+    list: document.querySelector(`.${paginationClass}pages`) as HTMLDivElement,
+  },
+  page: page,
+  pageSize: 4,
+  maxButtons: 8,
+  classes: {
+    page: paginationClass + "page",
+    dots: paginationClass + "dots",
+    selected: paginationClass + "page--selected",
+    disabled: paginationClass + "disabled",
+  },
 }).setCustomFunctions({
   formatDate: (date: number) => {
     const d = new Date(date);
@@ -79,6 +81,13 @@ const updatesList = new ElementList(updatesList_Element, "/api/news", {
   },
   formatHref: (uuid: string) => {
     return "/news/" + uuid;
+  },
+}).pipe((ev, args) => {
+  if(ev === "page:change") {
+    console.log(args);
+    window.history.pushState({}, "", "/news#page:" + args);
+    updatesList.setPage(args);
+    window.scrollTo(0, 0);
   }
 }).setTemplate(/*html*/ `
 <a slot="uuid" data-slot-attribute="href" data-slot-formatter="formatHref" class="post">
@@ -93,6 +102,13 @@ const updatesList = new ElementList(updatesList_Element, "/api/news", {
   <div class="post-content" slot="content" data-slot-formatter="formatContent">
   </div>
 </a>`);
+
+window.onpopstate = () => {
+  const url = new URL(location.href);
+  const page = parseInt(url.hash.match(/^#page:(\d+)$/)?.[1] || "0");
+  updatesList.setPage(page);
+  window.scrollTo(0, 0);
+};
 
 updatesList.refresh();
 //#endregion
