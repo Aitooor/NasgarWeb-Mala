@@ -49,7 +49,7 @@ export class Pagination {
                 attrs: {
                     "data-page": i.toString(),
                 },
-                childs: [pages > 1 ? `${i + 1}` : ""],
+                childs: [`${i + 1}`],
             });
             elm.events.add("click", () => {
                 var _a, _b;
