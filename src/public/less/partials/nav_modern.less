@@ -101,7 +101,7 @@ nav {
 
     display: none;
     align-items: center;
-    grid-template-columns: 100px 1fr auto;
+    grid-template-columns: 1fr 3fr 1fr;
 
     @tab: {
       cursor: pointer;
@@ -170,6 +170,8 @@ nav {
 
     > .login {
       @tab();
+      width: fit-content;
+      justify-self: end;
       color: @details;
       height: fit-content;
 
