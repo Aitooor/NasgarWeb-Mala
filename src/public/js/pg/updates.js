@@ -1,4 +1,6 @@
-import ElementList from "../components/list/list.js";
+var _a;
+import { ElementListPaginator } from "../components/list/listPaginator.js";
+const paginationClass = "list-paginator__";
 function normalizeNumber(num) {
     if (num < 10) {
         return "0" + num;
@@ -9,9 +11,25 @@ const showdown = window.showdown;
 const markdownConverter = new showdown.Converter();
 markdownConverter.setOption("openLinksInNewWindow", true);
 markdownConverter.setOption("noHeaderId", true);
+const url = new URL(location.href);
+const page = parseInt(((_a = url.hash.match(/^#page:(\d+)$/)) === null || _a === void 0 ? void 0 : _a[1]) || "0");
 const updatesList_Element = (document.getElementById("update-list"));
-const updatesList = new ElementList(updatesList_Element, "/api/updates", {
+const updatesList = new ElementListPaginator(updatesList_Element, "/api/news", {
     idTarget: "uuid",
+    elements: {
+        prev: document.querySelector(`.${paginationClass}prev`),
+        next: document.querySelector(`.${paginationClass}next`),
+        list: document.querySelector(`.${paginationClass}pages`),
+    },
+    page: page,
+    pageSize: 4,
+    maxButtons: 8,
+    classes: {
+        page: paginationClass + "page",
+        dots: paginationClass + "dots",
+        selected: paginationClass + "page--selected",
+        disabled: paginationClass + "disabled",
+    },
 }).setCustomFunctions({
     formatDate: (date) => {
         const d = new Date(date);
@@ -32,17 +50,26 @@ const updatesList = new ElementList(updatesList_Element, "/api/updates", {
         return `${normalizeNumber(d.getDate())}/${months[d.getMonth()]}/${d.getFullYear()}`;
     },
     formatContent: (content) => {
-        let inside = false;
-        const md = markdownConverter.makeHtml(content
+        const toRender = content
             .replace(/\n/g, "<br>\n")
             .replace(/\`\`\`.*\`\`\`/gm, (match) => {
-            console.log(match);
             return match.replace(/\<br\>\n/gm, "\n");
-        }));
+        });
+        const md = markdownConverter.makeHtml(toRender.length < 500 ? toRender : toRender.substring(0, 500) + "...");
         return md;
     },
+    formatHref: (uuid) => {
+        return "/news/" + uuid;
+    },
+}).pipe((ev, args) => {
+    if (ev === "page:change") {
+        console.log(args);
+        window.history.pushState({}, "", "/news#page:" + args);
+        updatesList.setPage(args);
+        window.scrollTo(0, 0);
+    }
 }).setTemplate(`
-<div class="post">
+<a slot="uuid" data-slot-attribute="href" data-slot-formatter="formatHref" class="post">
   <div class="post-header">
     <h2 class="post-title" slot="title">
     </h2>
@@ -53,6 +80,13 @@ const updatesList = new ElementList(updatesList_Element, "/api/updates", {
 
   <div class="post-content" slot="content" data-slot-formatter="formatContent">
   </div>
-</div>`);
+</a>`);
+window.onpopstate = () => {
+    var _a;
+    const url = new URL(location.href);
+    const page = parseInt(((_a = url.hash.match(/^#page:(\d+)$/)) === null || _a === void 0 ? void 0 : _a[1]) || "0");
+    updatesList.setPage(page);
+    window.scrollTo(0, 0);
+};
 updatesList.refresh();
 //# sourceMappingURL=updates.js.map

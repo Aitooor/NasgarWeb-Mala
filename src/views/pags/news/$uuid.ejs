@@ -1,0 +1,26 @@
+<%- include("../../partials/head.ejs", { global, url: "/news/update", title:
+"Update" }) %>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"></script>
+<script>
+  window.updateUUID = "<%= uuid %>"
+</script>
+<%- include("../../partials/body.ejs", { global, tab: "updates" }) %>
+
+<div class="post">
+  <div class="post-header">
+    <div class="buttons">
+      <a href="javascript:void(0)" onclick="window.history.back()"
+        ><i class="material">arrow_back</i></a
+      >
+    </div>
+    <h2 class="post-title"></h2>
+    <div></div>
+    <div class="post-meta">
+      <span class="post-date"></span>
+    </div>
+  </div>
+
+  <div class="post-content"></div>
+</div>
+
+<%- include("../../partials/body_end.ejs") %>

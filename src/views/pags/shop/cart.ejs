@@ -1,41 +1,49 @@
-<%- include("../../partials/head.ejs", { global, title: "Cart", url: "/shop/cart" }) %>
-  <script>
-    window.global$copyright = `<%- global.lang.footer %>`;
-  </script>
-<%- include("../../partials/body.ejs", { global, tab: "shop", transparent_height: 10 }) %>
+<%- include("../../partials/head.ejs", { global, title: "Cart", url:
+"/shop/cart" }) %>
+<script>
+  window.global$copyright = `<%- global.lang.footer %>`
+</script>
+<%- include("../../partials/body.ejs", { global, tab: "shop",
+transparent_height: 10 }) %>
 
-  <div class="app">
-    <ul class="products"></ul>
-    <footer>
-      <div class="cupon cupon-div">
-        <div class="selected">
-          <div class="left">
-            <i class="material">confirmation_number</i>
-            <span class="cupon-txt"></span>
-          </div>
-          <button class="cupon-clear-btn">
-            <i class="material">close</i>
-          </button>
-        </div>
-        <div class="selecting">
-          <input class="cupon-input" type="text" placeholder="Cupon">
-          <button class="cupon-btn redeem-btn">Canjear</button>
-        </div>
-      </div>
-      <div class="info">
-        <span class="text">Total</span>
-        <div class="money">
-          <span class="subtotal subtotal-count">-.--</span>
-          <span class="total total-count">-.--</span>
-        </div>
-      </div>
-      <button class="btn-pay" >Continuar compra</button>
-      <div class="copyright">
-        <b>©</b> Copyright 2022 <b>Nasgar</b>
-      </div>
-    </footer>
+<div class="app">
+  <div class="header">
+    <div class="buttons">
+      <a href="javascript:void(0)" onclick="window.history.back()"
+        ><i class="material">arrow_back</i></a
+      >
+    </div>
+    <div class="title">Cart</div>
   </div>
+  <ul class="products"></ul>
+  <footer>
+    <div class="cupon cupon-div">
+      <div class="selected">
+        <div class="left">
+          <i class="material">confirmation_number</i>
+          <span class="cupon-txt"></span>
+        </div>
+        <button class="cupon-clear-btn">
+          <i class="material">close</i>
+        </button>
+      </div>
+      <div class="selecting">
+        <input class="cupon-input" type="text" placeholder="Cupon" />
+        <button class="cupon-btn redeem-btn">Canjear</button>
+      </div>
+    </div>
+    <div class="info">
+      <span class="text">Total</span>
+      <div class="money">
+        <span class="subtotal subtotal-count">-.--</span>
+        <span class="total total-count">-.--</span>
+      </div>
+    </div>
+    <button class="btn-pay">Continuar compra</button>
+    <div class="copyright"><b>©</b> Copyright 2022 <b>Nasgar</b></div>
+  </footer>
+</div>
 
-  <div class="toasts"></div>
+<div class="toasts"></div>
 
 <!-- <%- include("../../partials/body_end.ejs") %> -->

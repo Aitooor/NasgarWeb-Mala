@@ -109,9 +109,16 @@ module.exports = require("../../lib/Routes/exports")(
 
       try {
         const json = await shop.getProduct(db, uuid);
-
-        _res = json;
-        status = 200;
+        if(json) {
+          _res = {
+            uuid: json.uuid,
+            name: json.name,
+            description: json.description,
+            price: json.price,
+            images: json.images,
+          };
+          status = 200;
+        }
       } catch {}
 
       res.type("json").status(status).send(_res);
@@ -147,7 +154,13 @@ module.exports = require("../../lib/Routes/exports")(
       try {
         const json = await shop.getCategory(db, uuid);
 
-        _res = json;
+        _res = {
+          uuid: json.uuid,
+          name: json.name,
+          description: json.description,
+          display: json.display,
+          products: json.order,
+        };
         status = 200;
       } catch {}
 
@@ -240,7 +253,7 @@ module.exports = require("../../lib/Routes/exports")(
 
     //#region Updates
 
-    router.get("/updates", async (_req, res) => {
+    router.get("/news", async (_req, res) => {
       const pool = await db();
       const query = await pool.query( `SELECT * FROM ${webTable}.update_posts ORDER BY date DESC`);
       pool.end();
@@ -248,7 +261,20 @@ module.exports = require("../../lib/Routes/exports")(
       res.status(200).send(query);
     });
 
-    router.post("/updates", staffMiddleware, async (req, res) => {
+    router.get("/news/:uuid", async (req, res) => {
+      const pool = await db();
+      const query = await pool.query( `SELECT * FROM ${webTable}.update_posts WHERE uuid = ?`, [req.params.uuid]);
+      pool.end();
+
+      if (query.length === 0) {
+        res.status(404).send({ error: "ERRNOUUID: Bad uuid" });
+        return;
+      }
+
+      res.status(200).send(query[0]);
+    });
+
+    router.post("/news", staffMiddleware, async (req, res) => {
       const { title, content } = req.body;
       if (!title || !content) {
         res.status(400).send({ error: "Bad request" });
@@ -269,7 +295,7 @@ module.exports = require("../../lib/Routes/exports")(
       else res.status(500).send({ error: "Internal server error" });
     });
 
-    router.put("/updates", staffMiddleware, async (req, res) => {
+    router.put("/news", staffMiddleware, async (req, res) => {
       const { uuid, title, content, date } = req.body;
       if (!uuid || !title || !content || !date) {
         res.status(400).send({ error: "Bad request" });
@@ -293,7 +319,7 @@ module.exports = require("../../lib/Routes/exports")(
       else res.status(500).send({ error: "Internal server error" });
     });
 
-    router.delete("/updates", async (req, res) => {
+    router.delete("/news", async (req, res) => {
       if (req.body.confirmation !== "DELETE") {
         res.status(400).send("Invalid confirmation.");
         return;

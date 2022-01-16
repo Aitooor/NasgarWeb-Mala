@@ -717,7 +717,7 @@ body {
   background: #EEEEEE;
 }
 .body-100 {
-  min-height: calc(100vh - 70px);
+  min-height: calc(100vh - 70px - 45px);
 }
 nav {
   position: fixed;
@@ -1267,6 +1267,10 @@ aside .categories .category-content .subcategory:hover {
   padding: 1rem;
   text-align: center;
   background-color: #3880be;
+}
+footer.copyright {
+  color: #FFF;
+  text-align: center;
 }
 @media screen and (max-width: 990px) {
   .mainbox {

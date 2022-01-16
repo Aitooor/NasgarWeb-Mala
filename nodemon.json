@@ -4,7 +4,8 @@
     "*.test.js",
     "__tests__/*",
     "node_modules/*",
-    "src/public/*"
+    "src/public/*",
+    "cache/*"
   ],
   "ext": "js,json",
   "quiet": true,

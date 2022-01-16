@@ -8,6 +8,7 @@ const toast = new Toast({
       action: "close",
       color: "success",
       html: "Close",
+      actionArgs: ["@me"],
     },
   ],
 }).show();

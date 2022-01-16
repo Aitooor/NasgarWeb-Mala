@@ -34,7 +34,6 @@ body {
   min-height: calc(100vh - 70px - 45px);
 }
 
-
 nav {
   position: fixed;
   top: -100px;
@@ -49,14 +48,14 @@ nav {
 
   z-index: 100;
 
-  transition: top ease .3s;
+  transition: top ease 0.3s;
 
   &.always {
     top: 0;
     background-color: transparent;
 
     > .desktop {
-      display: flex;
+      display: grid;
 
       > .logo > img {
         filter: drop-shadow(0px 2px 3px #0005);
@@ -84,11 +83,11 @@ nav {
     &.solid {
       background-color: @white-bg;
       box-shadow: 0px 1px 1px #999;
-      
-      > .desktop > .tabs > .tab:not(.login){
+
+      > .desktop > .tabs > .tab:not(.login) {
         color: @black;
       }
-  
+
       > .mobile > .header > button.menu {
         color: @black;
       }
@@ -98,144 +97,164 @@ nav {
   > .desktop {
     width: 100%;
     max-width: 1200px;
-    padding: 1rem 5rem;
+    padding: 0 3rem;
 
     display: none;
-    justify-content: space-between;
     align-items: center;
+    grid-template-columns: 100px 1fr auto;
 
-    > .logo {
+    @tab: {
       cursor: pointer;
-      width: 75px;
+      position: relative;
+      padding: 0.2rem 0.4rem;
+      color: @black;
+      text-transform: uppercase;
 
-      > img {
-        width: 100%;
+      line-height: 1.5;
+
+      &::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -3px;
+        width: 0%;
+        height: 2px;
+
+        background-color: @details;
+
+        transition: width 0.2s ease, background-color 0.5s ease;
       }
-    }
+
+      &.selected::before {
+        width: 100%;
+        background-color: desaturate(@details, 50%);
+      }
+
+      &:hover::before {
+        width: 100%;
+        background-color: @details;
+      }
+    };
 
     > .tabs {
       display: flex;
-      gap: 20px;
+      gap: 1rem;
+      justify-content: center;
+      align-items: center;
 
-      > .tab {
-        cursor: pointer;
+      > .logo {
+        transform: scale(1.2);
+        
+        img {
+          height: 70px;
+        }
+      }
+
+      > .right {
+        @side();
+      }
+
+      > .left {
+        @side();
+      }
+
+      @side: {
+        display: flex;
+        gap: 1rem;
+
+        > .tab {
+          @tab();
+        }
+      };
+    }
+
+    > .login {
+      @tab();
+      color: @details;
+      height: fit-content;
+
+      &:is(div) {
         position: relative;
-        padding: 0.2rem 0.4rem;
-        color: @white;
-        text-transform: uppercase;
+        margin-right: 7px;
 
-        line-height: 1.5;
-
-        &::before {
-          content: "";
+        &::after {
+          content: "expand_more";
+          .material-icons();
           position: absolute;
-          left: 0;
-          bottom: -3px;
-          width: 0%;
-          height: 2px;
+          top: 0;
+          right: -15px;
 
-          background-color: @details;
-
-          transition: width 0.2s ease, background-color 0.5s ease;
+          font-size: 20px;
         }
 
-        &.selected::before {
-          width: 100%;
-          background-color: desaturate(@details, 50%);
-        }
+        > .title {
+          pointer-events: none;
 
-        &:hover::before {
-          width: 100%;
-          background-color: @details;
-        }
+          display: flex;
+          gap: 5px;
+          align-items: center;
 
-        &:is(div) {
-          position: relative;
-          margin-right: 7px;
-
-          &::after {
-            content: "expand_more";
-            .material-icons();
-            position: absolute;
-            top: 0;
-            right: -15px;
-
-            font-size: 20px;
+          > i {
+            font-size: 1.5rem;
           }
+        }
 
-          > .title {
-            pointer-events: none;
+        > .options {
+          pointer-events: none;
+          text-transform: none;
+          position: absolute;
+          width: fit-content;
+          padding: 5px 0;
+
+          background: @white-bg;
+          box-shadow: 0px 1px 1px #999;
+          color: @black;
+
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+          opacity: 0;
+
+          transition: opacity 0.3s ease;
+
+          > .option {
+            position: relative;
+            padding: 0.2rem 1rem;
+            white-space: nowrap;
 
             display: flex;
             gap: 5px;
             align-items: center;
 
-            > i {
-              font-size: 1.5rem;
+            &::before {
+              content: "";
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 0rem;
+              height: 100%;
+
+              background-color: @details;
+
+              transition: width 0.3s ease, background-color 0.5s ease;
             }
-          }
 
-          > .options {
-            pointer-events: none;
-            text-transform: none;
-            position: absolute;
-            width: fit-content;
-            padding: 5px 0;
-
-            background: @white-bg;
-            box-shadow: 0px 1px 1px #999;
-            color: @black;
-
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            opacity: 0;
-
-            transition: opacity 0.3s ease;
-
-            > .option {
-              position: relative;
-              padding: 0.2rem 1rem;
-              white-space: nowrap;
-
-              display: flex;
-              gap: 5px;
-              align-items: center;
-
-              &::before {
-                content: "";
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 0rem;
-                height: 100%;
-
-                background-color: @details;
-
-                transition: width 0.3s ease, background-color 0.5s ease;
-              }
-
-              &.selected::before {
-                width: 0.5rem;
-                background-color: desaturate(@details, 50%);
-              }
-
-              &:hover::before {
-                width: 0.5rem;
-                background-color: @details;
-              }
+            &.selected::before {
+              width: 0.5rem;
+              background-color: desaturate(@details, 50%);
             }
-          }
 
-          &.active > .options {
-            pointer-events: all;
-            opacity: 1;
+            &:hover::before {
+              width: 0.5rem;
+              background-color: @details;
+            }
           }
         }
-      }
 
-      .login {
-        color: lighten(@details, 10%);
+        &.active > .options {
+          pointer-events: all;
+          opacity: 1;
+        }
       }
     }
   }
@@ -289,7 +308,7 @@ nav {
 
       overflow: hidden;
 
-      transition: opacity ease .2s;
+      transition: opacity ease 0.2s;
 
       &.active {
         opacity: 1;
@@ -358,7 +377,7 @@ nav {
               gap: 5px;
               align-items: center;
 
-              transition: padding .3s ease, margin .3s ease;
+              transition: padding 0.3s ease, margin 0.3s ease;
 
               &::before {
                 content: "";
