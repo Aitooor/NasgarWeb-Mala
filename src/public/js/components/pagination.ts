@@ -91,7 +91,7 @@ export class Pagination<T> {
         attrs: {
           "data-page": i.toString(),
         },
-        childs: [pages > 1 ? `${i + 1}` : ""],
+        childs: [`${i + 1}`],
       });
 
       elm.events.add("click", () => {
