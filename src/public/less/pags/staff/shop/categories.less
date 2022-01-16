@@ -30,9 +30,33 @@ template,
       margin: 0 1rem;
       padding: 0 1rem;
 
-      display: flex;
+      display: grid;
       align-items: center;
-      justify-content: space-between;
+      grid-template-columns: auto 1fr auto;
+
+      > .buttons {
+        padding: 0 1rem 0 0;
+        a {
+          height: 100%;
+
+          color: @primary;
+
+          display: flex;
+          transition: filter 0.2s;
+
+          &:hover {
+            filter: drop-shadow(0 0 2px #999);
+            > * {
+              transform: scale(1.1);
+            }
+          }
+
+          > * {
+            font-size: 1.8rem;
+            transition: transform 0.2s ease-in-out;
+          }
+        }
+      }
 
       > .title {
         > .text {
@@ -245,50 +269,49 @@ template,
 
   .field.list .list {
     padding-top: 1rem;
-		overflow: hidden auto;
+    overflow: hidden auto;
 
     .item {
-
       row-gap: 0;
 
       .input-zone {
-				position: relative;
+        position: relative;
         width: 100%;
         height: 100%;
         padding: 0;
 
         border: none;
 
-				display: flex;
-				flex-direction: column;
+        display: flex;
+        flex-direction: column;
 
         input {
           width: 100%;
-					height: 100%;
-					min-height: 3rem;
+          height: 100%;
+          min-height: 3rem;
           padding: 0.1rem 0.3rem;
 
           border: solid 2px #57a;
           border-radius: 2px;
         }
 
-				.name {
-					position: absolute;
-					left: 3rem;
-					font-size: 1.4rem;
-					background: @white;
-					transform: translateY(-50%);
-				}
+        .name {
+          position: absolute;
+          left: 3rem;
+          font-size: 1.4rem;
+          background: @white;
+          transform: translateY(-50%);
+        }
 
-				&.blank {
-					.name {
-						display: none;
-					}
-				}
+        &.blank {
+          .name {
+            display: none;
+          }
+        }
       }
 
       .ord-btns {
-				height: 100%;
+        height: 100%;
         display: flex;
         gap: 0;
         flex-direction: column;

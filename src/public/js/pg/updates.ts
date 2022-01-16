@@ -42,7 +42,7 @@ markdownConverter.setOption("noHeaderId", true);
 const updatesList_Element: HTMLDivElement = <HTMLDivElement>(
   document.getElementById("update-list")
 );
-const updatesList = new ElementList(updatesList_Element, "/api/updates", {
+const updatesList = new ElementList(updatesList_Element, "/api/news", {
   idTarget: "uuid",
 }).setCustomFunctions({
   formatDate: (date: number) => {
@@ -67,20 +67,21 @@ const updatesList = new ElementList(updatesList_Element, "/api/updates", {
   },
 
   formatContent: (content: string) => {
-    let inside = false;
+    const toRender = content
+      .replace(/\n/g, "<br>\n")
+      .replace(/\`\`\`.*\`\`\`/gm, (match) => {
+        return match.replace(/\<br\>\n/gm, "\n");
+      });
     const md = markdownConverter.makeHtml(
-      content
-        .replace(/\n/g, "<br>\n")
-        .replace(/\`\`\`.*\`\`\`/gm, (match) => {
-          console.log(match);
-          
-          return match.replace(/\<br\>\n/gm, "\n");
-        })
+      toRender.length < 500 ? toRender : toRender.substring(0, 500) + "..."
     );
     return md;
   },
-}).setTemplate(`
-<div class="post">
+  formatHref: (uuid: string) => {
+    return "/news/" + uuid;
+  }
+}).setTemplate(/*html*/ `
+<a slot="uuid" data-slot-attribute="href" data-slot-formatter="formatHref" class="post">
   <div class="post-header">
     <h2 class="post-title" slot="title">
     </h2>
@@ -91,7 +92,7 @@ const updatesList = new ElementList(updatesList_Element, "/api/updates", {
 
   <div class="post-content" slot="content" data-slot-formatter="formatContent">
   </div>
-</div>`);
+</a>`);
 
 updatesList.refresh();
 //#endregion

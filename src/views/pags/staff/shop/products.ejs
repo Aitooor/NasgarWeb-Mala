@@ -1,94 +1,99 @@
-<%- include("../../../partials/head.ejs", { global, url: "/staff/shop/products", title: "Shop Products" }) %> 
-<%- include("../../../partials/body.ejs", { global }) %>
-	
-	<div class="app" >
-		<div class="header" >
-			<span class="title" > 
-				<span class="text" > Shop Items </span> 
-				<span class="modifiers" >All</span> 
-			</span>
-			<div class="actions" >
-				<button class="action refresh" >
-					<i class="material" >refresh</i>
-				</button>
-				<button class="action filter" >
-					<i class="material" >filter_list</i>
-				</button>
-				<button class="action add" >
-					<i class="material" >add_circle_outline</i>
-				</button>
-			</div>
-		</div>
-		<div class="items" >	
-		</div>
-	</div>
-	
-	<div id="item-editor-body" hidden >
-		<div class="placeholder hidden" data-name="uuid">UUID: -</div>
-		
-		<div class="field list list--images" data-name="images">
-      <div class="title" data-name="header">
-				<span class="title" >Images</span>
-				<div class="actions" data-name="actions">
-					<button>
-						<i class="material" >add_circle_outline</i>
-					</button>
-				</div>
-			</div>
-			<div class="list" data-name="list"></div>
-		</div>
+<%- include("../../../partials/head.ejs", { global, url: "/staff/shop/products",
+title: "Shop Products" }) %> <%- include("../../../partials/body.ejs", { global
+}) %>
 
-    <div class="field" data-name="category">
-      <span class="title">Product Category</span>
-      <input class="input" type="text" placeholder="Product category">
+<div class="app">
+  <div class="header">
+    <div class="buttons">
+      <a href="javascript:void(0)" onclick="window.history.back()"
+        ><i class="material">arrow_back</i></a
+      >
     </div>
+    <span class="title">
+      <span class="text"> Shop Items </span>
+      <span class="modifiers">All</span>
+    </span>
+    <div class="actions">
+      <button class="action refresh">
+        <i class="material">refresh</i>
+      </button>
+      <button class="action filter">
+        <i class="material">filter_list</i>
+      </button>
+      <button class="action add">
+        <i class="material">add_circle_outline</i>
+      </button>
+    </div>
+  </div>
+  <div class="items"></div>
+</div>
 
-		<div class="field required" data-name="name">
-			<span class="title" >Name</span>
-			<input class="input" placeholder="Name of product"  >
-		</div>
-		
-		<div class="field required" data-name="price">
-			<span class="title">Price</span>
-			<input class="input" type="number" placeholder="Price">
-		</div>
-		
-		<div class="field required" data-name="description">
-			<span class="title" >Description</span>
-			<textarea class="input" placeholder="Description" ></textarea>
-		</div>
-		
-		<div class="field list" data-name="commands">
-			<div class="title" data-name="header">
-				<span class="title" >Commands</span>
-				<div class="actions" data-name="actions">
-					<button>
-						<i class="material" >add_circle_outline</i>
-					</button>
-				</div>
-			</div>
-			<div class="list" data-name="list"></div>
-		</div>
-	</div>
+<div id="item-editor-body" hidden>
+  <div class="placeholder hidden" data-name="uuid">UUID: -</div>
 
-	<template id="item" >
-		<div class="item card primary">
-			<div class="top" >
-				<span class="name" >Normal Key x5</span>
-			</div>
-			<div class="bottom" >
-				<span class="price" >1.50</span>
-			</div>
-		</div>
-	</template>
+  <div class="field list list--images" data-name="images">
+    <div class="title" data-name="header">
+      <span class="title">Images</span>
+      <div class="actions" data-name="actions">
+        <button>
+          <i class="material">add_circle_outline</i>
+        </button>
+      </div>
+    </div>
+    <div class="list" data-name="list"></div>
+  </div>
 
-	<template id="list-item" >
-		<div class="item" >
-			<input class="input" placeholder="Value"  >
-			<button class="delete" >
-				<i class="material">delete</i> 
-			</button>
-		</div>
-	</template>
+  <div class="field" data-name="category">
+    <span class="title">Product Category</span>
+    <input class="input" type="text" placeholder="Product category" />
+  </div>
+
+  <div class="field required" data-name="name">
+    <span class="title">Name</span>
+    <input class="input" placeholder="Name of product" />
+  </div>
+
+  <div class="field required" data-name="price">
+    <span class="title">Price</span>
+    <input class="input" type="number" placeholder="Price" />
+  </div>
+
+  <div class="field required" data-name="description">
+    <span class="title">Description</span>
+    <textarea class="input" placeholder="Description"></textarea>
+  </div>
+
+  <div class="field list" data-name="commands">
+    <div class="title" data-name="header">
+      <span class="title">Commands</span>
+      <div class="actions" data-name="actions">
+        <button>
+          <i class="material">add_circle_outline</i>
+        </button>
+      </div>
+    </div>
+    <div class="list" data-name="list"></div>
+  </div>
+</div>
+
+<template id="item">
+  <div class="item card primary">
+    <div class="top">
+      <span class="name">Normal Key x5</span>
+    </div>
+    <div class="bottom">
+      <span class="price">1.50</span>
+    </div>
+  </div>
+</template>
+
+<template id="list-item">
+  <div class="item">
+    <input class="input" placeholder="Value" />
+    <button class="delete">
+      <i class="material">delete</i>
+    </button>
+  </div>
+</template>
 
 <%- include("../../../partials/body_end.ejs") %>

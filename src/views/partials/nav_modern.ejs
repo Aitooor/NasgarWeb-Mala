@@ -11,7 +11,7 @@ const _nav_class   = (
 const _height       = typeof transparent_height === "number" ? transparent_height : 17; 
 const _height_style = _height === -1 ? "0px" : `calc(50px + ${_height}rem)`;
 
-const tabs = [ "home", "updates", "shop", "bans", "vote", "profile" ]; 
+const tabs = [ "home", "news", "shop", "bans", "vote", "profile" ]; 
 const _tab = tabs.indexOf(tab_.toLowerCase()) === -1 ? "home" : tab_.toLowerCase();
 function _tab_class(tab) { return _tab === tab ? "selected" : ""; }
 %>
@@ -23,7 +23,7 @@ function _tab_class(tab) { return _tab === tab ? "selected" : ""; }
     </a>
     <div class="tabs">
       <a href="/" class="tab <%- _tab_class("home") %>"><%= global.lang.menu.home %></a>
-      <a href="/updates" class="tab <%- _tab_class("updates") %>"><%= global.lang.menu.updates %></a>
+      <a href="/news" class="tab <%- _tab_class("news") %>"><%= global.lang.menu.updates %></a>
       <a href="/shop" class="tab <%- _tab_class("shop") %>"><%= global.lang.menu.shop.title %></a>
       <a href="/bans" class="tab <%- _tab_class("bans") %>"><%= global.lang.menu.bans %></a>
       <a href="/vote" target="_blank" class="tab <%- _tab_class("vote") %>"><%= global.lang.menu.vote %></a>
@@ -79,11 +79,11 @@ function _tab_class(tab) { return _tab === tab ? "selected" : ""; }
       </button>
     </div>
     <div class="tabs">
-      <a href="/" class="tab selected"><%= global.lang.menu.home %></a>
-      <a href="/updates" class="tab"><%= global.lang.menu.updates %></a>
-      <a href="/shop" class="tab"><%= global.lang.menu.shop.title %></a>
-      <a href="/bans" class="tab"><%= global.lang.menu.bans %></a>
-      <a href="/vote" class="tab"><%= global.lang.menu.vote %></a>
+      <a href="/" class="tab <%- _tab_class("home") %>"><%= global.lang.menu.home %></a>
+      <a href="/news" class="tab <%- _tab_class("news") %>"><%= global.lang.menu.updates %></a>
+      <a href="/shop" class="tab <%- _tab_class("shop") %>"><%= global.lang.menu.shop.title %></a>
+      <a href="/bans" class="tab <%- _tab_class("bans") %>"><%= global.lang.menu.bans %></a>
+      <a href="/vote" class="tab <%- _tab_class("vote") %>"><%= global.lang.menu.vote %></a>
       <% if (global.user !== null) { %>
 
         <div class="tab login">

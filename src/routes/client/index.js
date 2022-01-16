@@ -8,6 +8,7 @@ const shop = require("../../lib/shop");
 const redis = require("../../services/redis");
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
+const webTable = require("../../../config").DB.web;
 
 /**
  * @param {redis.Redis} redis
@@ -63,9 +64,14 @@ module.exports = require("../../lib/Routes/exports")(
       res.render("pags/index", { serverData: lastRequest });
     });
 
-    router.get("/updates", async (req, res) => {
+    router.get("/news", async (req, res) => {
       res.render("pags/updates");
     });
+
+    router.get("/news/:uuid", async (req, res) => {
+      const uuid = req.params.uuid;
+      res.render("pags/news/$uuid", { uuid });
+    })
 
     router.get("/pay/return", async (req, res) => {
       const qk = Array.from(Object.keys(req.query));

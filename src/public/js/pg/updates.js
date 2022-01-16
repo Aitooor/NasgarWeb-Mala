@@ -10,7 +10,7 @@ const markdownConverter = new showdown.Converter();
 markdownConverter.setOption("openLinksInNewWindow", true);
 markdownConverter.setOption("noHeaderId", true);
 const updatesList_Element = (document.getElementById("update-list"));
-const updatesList = new ElementList(updatesList_Element, "/api/updates", {
+const updatesList = new ElementList(updatesList_Element, "/api/news", {
     idTarget: "uuid",
 }).setCustomFunctions({
     formatDate: (date) => {
@@ -32,17 +32,19 @@ const updatesList = new ElementList(updatesList_Element, "/api/updates", {
         return `${normalizeNumber(d.getDate())}/${months[d.getMonth()]}/${d.getFullYear()}`;
     },
     formatContent: (content) => {
-        let inside = false;
-        const md = markdownConverter.makeHtml(content
+        const toRender = content
             .replace(/\n/g, "<br>\n")
             .replace(/\`\`\`.*\`\`\`/gm, (match) => {
-            console.log(match);
             return match.replace(/\<br\>\n/gm, "\n");
-        }));
+        });
+        const md = markdownConverter.makeHtml(toRender.length < 500 ? toRender : toRender.substring(0, 500) + "...");
         return md;
     },
+    formatHref: (uuid) => {
+        return "/news/" + uuid;
+    }
 }).setTemplate(`
-<div class="post">
+<a slot="uuid" data-slot-attribute="href" data-slot-formatter="formatHref" class="post">
   <div class="post-header">
     <h2 class="post-title" slot="title">
     </h2>
@@ -53,6 +55,6 @@ const updatesList = new ElementList(updatesList_Element, "/api/updates", {
 
   <div class="post-content" slot="content" data-slot-formatter="formatContent">
   </div>
-</div>`);
+</a>`);
 updatesList.refresh();
 //# sourceMappingURL=updates.js.map

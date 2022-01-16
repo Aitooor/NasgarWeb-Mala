@@ -19,7 +19,7 @@ function normalizeNumber(n) {
 }
 const updates_list = querySelector(".card-list.updates");
 const update_template = querySelector("template#update");
-const update_list = new ElementList(updates_list, "/api/updates", { idTarget: "uuid" })
+const update_list = new ElementList(updates_list, "/api/news", { idTarget: "uuid" })
     .setCustomFunctions({
     formatDate: (date) => {
         const d = new Date(date);
@@ -231,6 +231,7 @@ function OpenAddModal() {
     modalUpdate.setHeader("New Update");
     body._.uuid.classes.add("hidden");
     modalUpdate.getActions()._.Delete.classes.add("hidden");
+    updateMDE.value(" ");
     UpdateData([actual_update_data, "title"], body._.title._.input, "");
     modalUpdate_events._save = (modal) => __awaiter(this, void 0, void 0, function* () {
         modal.disableActions();
@@ -242,6 +243,7 @@ function OpenAddModal() {
                 content: updateMDE.value(),
                 date: actual_update_data.date,
             });
+            updateMDE.value(" ");
         }
         catch (err) {
             alert(err);
@@ -264,7 +266,6 @@ function OpenUpdateModal(data) {
     uuid_s.classes.remove("hidden");
     modalUpdate.getActions()._.Delete.classes.remove("hidden");
     updateMDE.value(data.content);
-    window.codemirror = updateMDE.codemirror;
     UpdateData([actual_update_data, "title"], body._.title._.input, actual_update_data.title);
     modalUpdate_events._save = (modal) => __awaiter(this, void 0, void 0, function* () {
         modal.disableActions();
@@ -276,6 +277,7 @@ function OpenUpdateModal(data) {
                 content: updateMDE.value(),
                 date: actual_update_data.date,
             });
+            updateMDE.value(" ");
         }
         catch (err) {
             alert(err);
@@ -305,7 +307,7 @@ function UpdateItem(data) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
         PrePostItem(data);
-        const res = yield fetch("/api/updates", {
+        const res = yield fetch("/api/news", {
             method: "PUT",
             credentials: "same-origin",
             headers: {
@@ -322,7 +324,7 @@ function UpdateItem(data) {
 function AddUpdate(data) {
     return __awaiter(this, void 0, void 0, function* () {
         PrePostItem(data);
-        const res = yield fetch("/api/updates", {
+        const res = yield fetch("/api/news", {
             method: "POST",
             credentials: "same-origin",
             headers: {
@@ -337,7 +339,7 @@ function AddUpdate(data) {
 }
 function RemItem(uuid, confirmation) {
     return __awaiter(this, void 0, void 0, function* () {
-        const res = yield fetch("/api/updates", {
+        const res = yield fetch("/api/news", {
             method: "DELETE",
             credentials: "same-origin",
             headers: {
