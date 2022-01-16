@@ -18,55 +18,59 @@ function _tab_class(tab) { return _tab === tab ? "selected" : ""; }
 
 <nav class="<%= _nav_class %>">
   <div class="desktop">
-    <a href="/" class="logo">
-      <img src="/img/logo-128x.png" alt="Nasgar Network" />
-    </a>
+    <div></div>
     <div class="tabs">
-      <a href="/" class="tab <%- _tab_class("home") %>"><%= global.lang.menu.home %></a>
-      <a href="/news" class="tab <%- _tab_class("news") %>"><%= global.lang.menu.updates %></a>
-      <a href="/shop" class="tab <%- _tab_class("shop") %>"><%= global.lang.menu.shop.title %></a>
-      <a href="/bans" class="tab <%- _tab_class("bans") %>"><%= global.lang.menu.bans %></a>
-      <a href="/vote" target="_blank" class="tab <%- _tab_class("vote") %>"><%= global.lang.menu.vote %></a>
-      <% if (global.user !== null) { %>
-
-        <div class="tab <%- _tab_class("profile") %> login">
-          <div class="title">
-            <i class="material">account_circle</i> 
-            <%= global.user.name %>
-          </div>
-          <div class="options">
-            <a href="/profile" class="option">
-              <i class="material">person</i> 
-              <span>Profile</span>
-            </a>
-
-            <% if (global.user.rank >= global.const.LEVEL.Staff) { %>
-
-              <a href="/staff" class="option">
-                <i class="material">admin_panel_settings</i> 
-                <span>Staff</span>
-              </a>
-            <% } %>  
-
-            <a href="/settings" class="option">
-              <i class="material">settings</i> 
-              <span>Settings</span>
-            </a>
-            <a href="/logout" class="option">
-              <i class="material">logout</i> 
-              <span>Log Out</span>
-            </a>
-          </div>
-        </div>
-
-      <% } else { %>
-
-        <a href="/login" class="tab login">
-          <%= global.lang.menu.login %>
-        </a>
-
-      <% } %>
+      <div class="left">
+        <a href="/news" class="tab <%- _tab_class("news") %>"><%= global.lang.menu.updates %></a>
+        <a href="/shop" class="tab <%- _tab_class("shop") %>"><%= global.lang.menu.shop.title %></a>
+      </div>
+      <a href="/" class="logo">
+        <img src="/img/logo-128x.png" alt="Nasgar Network">
+      </a>
+      <div class="right">
+        <a href="/bans <%- _tab_class("bans") %>" class="tab"><%= global.lang.menu.bans %></a>
+        <a href="/vote <%- _tab_class("vote") %>" class="tab"><%= global.lang.menu.vote %></a>
+      </div>
     </div>
+    <% if (global.user !== null) { %>
+
+      <div class="<%- _tab_class("profile") %> login">
+        <div class="title">
+          <i class="material">account_circle</i> 
+          <%= global.user.name %>
+        </div>
+        <div class="options">
+          <a href="/profile" class="option">
+            <i class="material">person</i> 
+            <span>Profile</span>
+          </a>
+
+          <% if (global.user.rank >= global.const.LEVEL.Staff) { %>
+
+            <a href="/staff" class="option">
+              <i class="material">admin_panel_settings</i> 
+              <span>Staff</span>
+            </a>
+          <% } %>  
+
+          <a href="/settings" class="option">
+            <i class="material">settings</i> 
+            <span>Settings</span>
+          </a>
+          <a href="/logout" class="option">
+            <i class="material">logout</i> 
+            <span>Log Out</span>
+          </a>
+        </div>
+      </div>
+
+    <% } else { %>
+
+      <a href="/login" class="login">
+        <%= global.lang.menu.login %>
+      </a>
+
+    <% } %>
   </div>
 
   <div class="mobile">
