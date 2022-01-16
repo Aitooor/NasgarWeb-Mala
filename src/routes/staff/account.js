@@ -43,6 +43,7 @@ module.exports = require("../../lib/Routes/exports")(
         ],
         back: "url",
         back_url: "/staff",
+        tab: "profile"
       });
     });
 
@@ -71,6 +72,7 @@ module.exports = require("../../lib/Routes/exports")(
           },
         ],
         back: false,
+        tab: "profile"
       });
     });
 

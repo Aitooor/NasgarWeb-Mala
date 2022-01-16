@@ -164,8 +164,10 @@ export class ElementList<
     }
 
     const elm: K = <K>this.template.cloneNode(true);
-    const allElementsWithSlot: HTMLElement[] = queryAll("*[slot]", elm);
-
+    const _tmpParent = document.createElement("div");
+    _tmpParent.appendChild(elm);
+    const allElementsWithSlot: HTMLElement[] = queryAll("*[slot]", _tmpParent);
+    
     for (const elmWithSlot of allElementsWithSlot) {
       const slot: string = elmWithSlot.getAttribute("slot");
 

@@ -1,7 +1,7 @@
 /// <reference path="../../../../..//node_modules/@types/simplemde/index.d.ts" />
 import Modal from "../../components/modal.js";
 import ElementList from "../../components/list/list.js";
-import { jsonHtml } from "../../common/html.js";
+import { jsonHtml, query, queryAll } from "../../common/html.js";
 import { wait } from "../../common/shop.js";
 import { RecomendedSelectorList } from "../../components/selector_list/selectorList.js";
 import { query as querySelector } from "../../common/html.js";
@@ -42,7 +42,7 @@ const update_template: HTMLTemplateElement =
 
 const update_list = new ElementList<Update, HTMLDivElement>(
   updates_list,
-  "/api/updates",
+  "/api/news",
   { idTarget: "uuid" }
 )
   .setCustomFunctions({
@@ -157,6 +157,7 @@ const modalUpdate = new Modal({
     },
   ],
 });
+
 
 const updateMDE = new SimpleMDE({
   autoDownloadFontAwesome: false,
@@ -291,6 +292,7 @@ function OpenAddModal() {
   modalUpdate.getActions()._.Delete.classes.add("hidden");
 
   // Fields of modal
+  updateMDE.value(" ");
 
   UpdateData(
     [actual_update_data, "title"],
@@ -309,6 +311,7 @@ function OpenAddModal() {
         content: updateMDE.value(),
         date: actual_update_data.date,
       });
+      updateMDE.value(" ");
     } catch (err) {
       alert(err);
       console.error(err);
@@ -338,10 +341,7 @@ function OpenUpdateModal(data: Update) {
   modalUpdate.getActions()._.Delete.classes.remove("hidden");
 
   // Fields of modal
-
   updateMDE.value(data.content);
-  //@ts-ignore
-  window.codemirror = updateMDE.codemirror;
   
   UpdateData(
     [actual_update_data, "title"],
@@ -362,6 +362,7 @@ function OpenUpdateModal(data: Update) {
         content: updateMDE.value(),
         date: actual_update_data.date,
       });
+      updateMDE.value(" ");
     } catch (err) {
       alert(err);
       return;
@@ -397,7 +398,7 @@ function PrePostItem(data: Update) {
 
 async function UpdateItem(data: Update): Promise<Boolean> {
   PrePostItem(data);
-  const res = await fetch("/api/updates", {
+  const res = await fetch("/api/news", {
     method: "PUT",
     credentials: "same-origin",
     headers: {
@@ -416,7 +417,7 @@ async function UpdateItem(data: Update): Promise<Boolean> {
 
 async function AddUpdate(data: Update) {
   PrePostItem(data);
-  const res = await fetch("/api/updates", {
+  const res = await fetch("/api/news", {
     method: "POST",
     credentials: "same-origin",
     headers: {
@@ -431,7 +432,7 @@ async function AddUpdate(data: Update) {
 }
 
 async function RemItem(uuid: string, confirmation: string) {
-  const res = await fetch("/api/updates", {
+  const res = await fetch("/api/news", {
     method: "DELETE",
     credentials: "same-origin",
     headers: {

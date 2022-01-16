@@ -108,7 +108,9 @@ export class ElementList {
             throw new ReferenceError("`template` is not defined.");
         }
         const elm = this.template.cloneNode(true);
-        const allElementsWithSlot = queryAll("*[slot]", elm);
+        const _tmpParent = document.createElement("div");
+        _tmpParent.appendChild(elm);
+        const allElementsWithSlot = queryAll("*[slot]", _tmpParent);
         for (const elmWithSlot of allElementsWithSlot) {
             const slot = elmWithSlot.getAttribute("slot");
             const hasSlotFormatter = elmWithSlot.hasAttribute("data-slot-formatter");

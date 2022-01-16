@@ -1,9 +1,14 @@
 <%- include("../../../partials/head.ejs", { global, url:
 "/staff/shop/categories", title: "Shop categories" }) %> <%-
-include("../../../partials/body.ejs", { global }) %>
+include("../../../partials/body.ejs", { global, tab: "profile" }) %>
 
 <div class="app">
   <div class="header">
+    <div class="buttons">
+      <a href="javascript:void(0)" onclick="window.history.back()"
+        ><i class="material">arrow_back</i></a
+      >
+    </div>
     <span class="title">
       <span class="text"> Categories </span>
       <span class="modifiers">All</span>
@@ -34,9 +39,7 @@ include("../../../partials/body.ejs", { global }) %>
   <div class="field required" data-name="display">
     <span class="title">HTML Display</span>
     <input class="input" placeholder="Display in html" />
-    <div class="preview" data-name="preview">
-      {{ NAME }}
-    </div>
+    <div class="preview" data-name="preview">{{ NAME }}</div>
   </div>
 
   <div class="field required" data-name="description">
