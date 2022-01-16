@@ -13,9 +13,11 @@
         back === "none"? ""       :
         "window.history.back()" : "window.history.back()"; %>
 
+<% const _tab = typeof tab === 'string' ? tab : "home"; %>
+
 <%- include("../partials/head.ejs", { global, url: "/", title: title, styles: [ "prefabs/cards_menu" ], scripts: [] }) %>
 
-<%- include("../partials/body.ejs", { global }) %>
+<%- include("../partials/body.ejs", { global, tab: _tab }) %>
 
 <div class="main">
   <% for(const card of data) { %> 
