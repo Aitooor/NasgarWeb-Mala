@@ -1,5 +1,4 @@
 import { ElementListPaginator } from "../components/list/listPaginator.js";
-import { Pagination } from "../components/pagination.js";
 
 const paginationClass = "list-paginator__";
 
