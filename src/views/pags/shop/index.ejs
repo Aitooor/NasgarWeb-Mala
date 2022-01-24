@@ -20,24 +20,24 @@ function categoryDisplay(category, name) {
         </a>
       </div>
 			<div class="categories">
-				<% for(const category of categories) { %>
-					<% if (category.subcategories?.length > 0) { %>
-						<div class="category">
-              <a href="/shop/category/<%- category.uuid %>" class="category-header">
-                <%- categoryDisplay(category, global.lang.menu.shop[category.name] || category.name) %>
+				<% for(const category_ of categories) { %>
+					<% if (category_.subcategories?.length > 0) { %>
+						<div class="category <%- category_.uuid === category.uuid ? 'active' : '' %> <%- category_.subcategories.some(sub => sub.uuid === category.uuid) ? 'active' : '' %>">
+              <a href="/shop/category/<%- category_.uuid %>" class="category-header">
+                <%- categoryDisplay(category_, global.lang.menu.shop[category_.name] || category_.name) %>
               </a>
 
               <div class="category-content">
-                <% for(const subcategory of category.subcategories) { %>
-                  <a href="/shop/category/<%- subcategory.uuid %>" class="subcategory" >
+                <% for(const subcategory of category_.subcategories) { %>
+                  <a href="/shop/category/<%- subcategory.uuid %>" class="subcategory <%- subcategory.uuid === category.uuid ? 'active' : '' %>" >
                     <%- categoryDisplay(subcategory, global.lang.menu.shop[subcategory.name] || subcategory.name) %>
                   </a>
                 <% } %>
               </div>
             </div>
 					<% } else { %>
-            <a href="/shop/category/<%= category.uuid %>" class="category">
-              <%- categoryDisplay(category, global.lang.menu.shop[category.name] || category.name) %>
+            <a href="/shop/category/<%= category_.uuid %>" class="category <%- category_.uuid === category.uuid ? 'active' : '' %>">
+              <%- categoryDisplay(category_, global.lang.menu.shop[category_.name] || category_.name) %>
             </a>
           <% } %>
         <% } %>

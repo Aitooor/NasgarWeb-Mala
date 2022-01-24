@@ -86,12 +86,25 @@ aside {
 
       &-content {
         padding: 0 0 0 0.5rem;
-        display: flex;
+        display: none;
         gap: 5px;
         flex-direction: column;
 
         .subcategory {
           @category-box();
+          &.active {
+            box-shadow: inset 0 0 0 3px @primary-bg;
+          }
+        }
+      }
+
+      &.active {
+        .category-header {
+          box-shadow: inset 0 0 0 3px @primary-bg;
+        }
+
+        .category-content {
+          display: flex;
         }
       }
     }
@@ -121,7 +134,7 @@ aside {
       display: grid;
       grid-template-columns: 5rem auto 5rem;
 
-      .buttons {        
+      .buttons {
         display: flex;
         gap: 5px;
         align-items: center;
