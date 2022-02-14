@@ -281,7 +281,7 @@ function updateProductDom(product, response, i) {
   me.querySelector(".product-name").innerHTML = response.name;
   const total_span = me.querySelector(".product-total");
 
-  total_span.innerHTML = monetize(product.quantity * response.price);
+  total_span.innerText = monetize(product.quantity * response.price);
 
   me.querySelector(".remove-btn").onclick = () => {
     const index = cart.findIndex((p) => p.uuid === product.uuid);
@@ -312,7 +312,7 @@ function updateProductDom(product, response, i) {
     quantity_input.value = isNaN(quantity) ? "" : quantity;
     cart[i].quantity = quantity || 0;
     reloadTotal();
-    total_span.innerHTML = monetize(cart[i].quantity * response.price);
+    total_span.innerText = monetize(cart[i].quantity * response.price);
   }
 
   function addQuantity(n = 1) {

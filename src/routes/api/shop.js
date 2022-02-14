@@ -16,42 +16,42 @@ const webTable = CONFIG.DB.web;
 module.exports = require("../../lib/Routes/exports")(
   "/",
   (router, waRedirect, db, rcons) => {
-    router.get("/get/bans/recents", StaffMiddleware, async (_req, res) => {
-      /** @type {Array<any>} */
-      const dataCrude = await db().query(
-        "SELECT * FROM bungee.PunishmentHistory;"
-      );
+    // router.get("/get/bans/recents", StaffMiddleware, async (_req, res) => {
+    //   /** @type {Array<any>} */
+    //   const dataCrude = await db().query(
+    //     "SELECT * FROM bungee.PunishmentHistory;"
+    //   );
 
-      const data = [];
-      dataCrude.reverse().forEach((v) => {
-        const now = new Date();
-        const times = parseInt(v.end != "-1" ? v.start : v.end);
-        const time = new Date(times);
-        if (
-          now.getMonth() - time.getMonth() > 0 ||
-          now.getFullYear() - time.getFullYear() > 0
-        )
-          return;
-        if (
-          !(
-            v.punishmentType === "BAN" ||
-            v.punishmentType === "TEMP_BAN" ||
-            v.punishmentType === "IP_BAN"
-          )
-        )
-          return;
-        data.push({
-          username: v.name,
-          reporter: `${v.punishmentType.replace("_", " ")} - ${v.operator}`,
-          message: v.reason,
-          timestamp:
-            timeago(new Date(parseInt(v.start))) +
-            (v.end != "-1" ? " - " + timeago(new Date(parseInt(v.end))) : ""),
-        });
-      });
+    //   const data = [];
+    //   dataCrude.reverse().forEach((v) => {
+    //     const now = new Date();
+    //     const times = parseInt(v.end != "-1" ? v.start : v.end);
+    //     const time = new Date(times);
+    //     if (
+    //       now.getMonth() - time.getMonth() > 0 ||
+    //       now.getFullYear() - time.getFullYear() > 0
+    //     )
+    //       return;
+    //     if (
+    //       !(
+    //         v.punishmentType === "BAN" ||
+    //         v.punishmentType === "TEMP_BAN" ||
+    //         v.punishmentType === "IP_BAN"
+    //       )
+    //     )
+    //       return;
+    //     data.push({
+    //       username: v.name,
+    //       reporter: `${v.punishmentType.replace("_", " ")} - ${v.operator}`,
+    //       message: v.reason,
+    //       timestamp:
+    //         timeago(new Date(parseInt(v.start))) +
+    //         (v.end != "-1" ? " - " + timeago(new Date(parseInt(v.end))) : ""),
+    //     });
+    //   });
 
-      res.type("json").send(data);
-    });
+    //   res.type("json").send(data);
+    // });
 
     const staffMiddleware = middleware([Level.Dev, Level.Admin, Level.Owner], {
       redirect: true

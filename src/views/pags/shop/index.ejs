@@ -5,59 +5,76 @@ function categoryDisplay(category, name) {
   return category.display.replace(/\{\{NAME\}\}/g, name);
 }
 
-%> 
+%>
 
 <%- include("../../partials/head.ejs", {global, title: global.lang.menu.shop.title, url: "/shop/index"}) %>
 <!-- </head> -->
+
 <body>
-	<%- include("../../partials/nav_modern.ejs", { global, tab: "shop", solid: true, transparent_height: 3 }) %>
-	
-	<div class="body centered">
-		<aside>
+  <%- include("../../partials/nav_modern.ejs", { global, tab: "shop", solid: true, transparent_height: 3 }) %>
+
+  <div class="body centered">
+    <aside>
       <div class="cart">
         <a href="/shop/cart" class="btn primary cart-btn">
           <i class="material">shopping_cart</i>
         </a>
       </div>
-			<div class="categories">
-				<% for(const category_ of categories) { %>
-					<% if (category_.subcategories?.length > 0) { %>
-						<div class="category <%- category_.uuid === category.uuid ? 'active' : '' %> <%- category_.subcategories.some(sub => sub.uuid === category.uuid) ? 'active' : '' %>">
-              <a href="/shop/category/<%- category_.uuid %>" class="category-header">
-                <%- categoryDisplay(category_, global.lang.menu.shop[category_.name] || category_.name) %>
-              </a>
+      <div class="categories">
+        <a href="/shop" class="category  <%- category.name === 'MAIN' ? 'active active-from-ssr' : '' %>">Inicio</a>
 
-              <div class="category-content">
-                <% for(const subcategory of category_.subcategories) { %>
-                  <a href="/shop/category/<%- subcategory.uuid %>" class="subcategory <%- subcategory.uuid === category.uuid ? 'active' : '' %>" >
-                    <%- categoryDisplay(subcategory, global.lang.menu.shop[subcategory.name] || subcategory.name) %>
-                  </a>
-                <% } %>
-              </div>
-            </div>
-					<% } else { %>
-            <a href="/shop/category/<%= category_.uuid %>" class="category <%- category_.uuid === category.uuid ? 'active' : '' %>">
-              <%- categoryDisplay(category_, global.lang.menu.shop[category_.name] || category_.name) %>
+        <% for(const category_ of categories) { %>
+        <% if (category_.subcategories?.length > 0) { %>
+        <div class="category <%- category_.uuid === category.uuid || category_.subcategories.some(sub => sub.uuid === category.uuid) ? 'active active-from-ssr' : '' %>">
+          <div class="category-header">
+            <%- categoryDisplay(category_, global.lang.menu.shop[category_.name] || category_.name) %>
+          </div>
+          <!-- <% if(category_.uuid !== category.uuid) { %>
+          <a href="/shop/category/<%- category_.uuid %>" class="category-header">
+            <%- categoryDisplay(category_, global.lang.menu.shop[category_.name] || category_.name) %>
+          </a>
+          <% } else { %> -->
+
+          <!-- <% } %> -->
+
+          <div class="category-content">
+            <% for(const subcategory of category_.subcategories) { %>
+            <% if(subcategory.uuid !== category.uuid) { %>
+            <a href="/shop/category/<%- subcategory.uuid %>" class="subcategory <%- subcategory.uuid === category.uuid ? 'active' : '' %>">
+              <%- categoryDisplay(subcategory, global.lang.menu.shop[subcategory.name] || subcategory.name) %>
             </a>
-          <% } %>
+            <% } else { %>
+            <div class="subcategory <%- subcategory.uuid === category.uuid ? 'active' : '' %>">
+              <%- categoryDisplay(subcategory, global.lang.menu.shop[subcategory.name] || subcategory.name) %>
+            </div>
+            <% } %>
+
+            <% } %>
+          </div>
+        </div>
+        <% } else { %>
+        <a href="/shop/category/<%= category_.uuid %>" class="category <%- category_.uuid === category.uuid ? 'active active-from-ssr' : '' %>">
+          <%- categoryDisplay(category_, global.lang.menu.shop[category_.name] || category_.name) %>
+        </a>
         <% } %>
-			</div>
-		</aside>
-		<div class="mainbox">
-			<main>
-				<div class="title">
-					<div class="buttons">
+        <% } %>
+      </div>
+    </aside>
+    <div class="mainbox">
+      <main>
+        <div class="title">
+          <div class="buttons">
             <% if(category.name !== "MAIN") { %>
-              <a href="#" onclick="history.back()" class="btn"><i class="material">arrow_back</i></a>
-              <a href="/shop" class="btn"><i class="material">home</i></a>
+            <a href="#" onclick="window.history.back()" class="btn"><i class="material">arrow_back</i></a>
+            <a href="/shop" class="btn"><i class="material">home</i></a>
             <% } %>
           </div>
           <span><%- categoryDisplay(category, global.lang.menu.shop[category.name] || category.name) %></span>
           <div class="sep"></div>
-				</div>
-				<div class="info-text">
-					<%- category.description %>
-				</div>
+        </div>
+        <div class="info-text">
+          <%- category.description %>
+        </div>
         <!-- <% if (category.subcategories?.length > 0) { %>
           <div class="subcategories">
             <% for(const subcategory of category.subcategories) { %>
@@ -67,32 +84,31 @@ function categoryDisplay(category, name) {
             <% } %>
           </div>
         <% } %> -->
-				<div class="products">
-					<% products.forEach((product, id) => { %> 
-						<div class="product" title="<%= product.name %>" data-product-id="<%= product.uuid %>" data-commons-onclick="link, /shop/product/<%= product.uuid %> ">
-							<div class="img">
-                <object data="<%= product.images[0] %>" type="image/png">
-                  <img src="https://cdn-143.anonfiles.com/hdW2H7t7wf/b5a7d6db-1639939755/imagen_2021-12-19_113801.png">
-                </object>
-              </div>
-							<div class="product-name"><%= product.name %></div>
-							<div class="footer">
-								<div class="product-price"><%= product.price %></div>
-								<button type="submit" class="add-basket primary hover-anim-ball">
-									<span>Add to basket</span>
-								</button>
-							</div>
-						</div>
-					<% }) %> 
-				</div>
-			</main>
-		</div>
-	</div>
+        <div class="products">
+          <% products.forEach((product, id) => { %>
+          <div class="product" title="<%= product.name %>" data-product-id="<%= product.uuid %>" data-commons-onclick="link, /shop/product/<%= product.uuid %>">
+            <div class="img">
+              <img src="<%= product.images[0] %>" alt="<%= product.name %> Image">
+            </div>
+            <div class="product-name"><%= product.name %></div>
+            <div class="footer">
+              <div class="product-price"><%= product.price %></div>
+              <button class="add-basket primary" data-product-id="<%= product.uuid %>">
+                <span>Add to basket</span>
+              </button>
+            </div>
+          </div>
+          <% }) %>
+        </div>
+      </main>
+    </div>
+  </div>
 
   <footer class="copyright">
     <%- global.lang.footer %>
   </footer>
 
-	<div class="toasts"></div>
+  <div class="toasts"></div>
 </body>
+
 </html>
