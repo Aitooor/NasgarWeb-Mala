@@ -372,3 +372,75 @@ template,
     transform: rotateZ(180deg);
   }
 }
+
+
+// Material icons to mde
+.mde-icons {
+  .icon(@icon) {
+    &::before {
+      .material-icons();
+      content: @icon;
+    }
+  }
+
+  &__bold {
+    .icon('format_bold');
+  }
+
+  &__italic {
+    .icon('format_italic');
+  }
+
+  &__strikethrough {
+    .icon('strikethrough_s');
+  }
+
+  &__code {
+    .icon('code');
+  }
+  
+  &__heading {
+    .icon('title');
+  }
+
+  &__quote {
+    .icon('format_quote');
+  }
+
+  &__unordered-list {
+    .icon('format_list_bulleted');
+  }
+
+  &__ordered-list {
+    .icon('format_list_numbered');
+  }
+
+  &__link {
+    .icon('link');
+  }
+
+  &__image {
+    .icon('image');
+  }
+
+  &__table {
+    .icon('border_all');
+  }
+
+  &__preview {
+    .icon('visibility');
+  }
+
+  &__side-by-side {
+    .icon('compare');
+  }
+
+  &__fullscreen {
+    .icon('fullscreen');
+  }
+  
+  &__guide {
+    .icon('book');
+  }
+}
+
