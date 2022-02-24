@@ -11,7 +11,7 @@
     "sourceMap": true,
     "allowJs": false,
     "target": "ES6",
-    "module": "ES2020",
+    "module": "System",
     "esModuleInterop": true,
     "moduleResolution": "Classic",
     "allowSyntheticDefaultImports": true,
@@ -25,6 +25,11 @@
       "ESNext",
       "ES2015",
       "ES2016"
-    ]
+    ],
+    "paths": {
+      "/js/*": [
+        "./src/public/js/*"
+      ]
+    },
   }
 }
