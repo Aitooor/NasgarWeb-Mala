@@ -1,4 +1,5 @@
 import Modal from "../../../components/modal.js";
+import { query as querySelector } from "../../../common/html.js";
 import { OrdenedElementList } from "../../../components/list/order.js";
 import { monetize, wait } from "../../../common/shop.js";
 
@@ -157,6 +158,108 @@ const modalItem = new Modal({
   ],
 });
 
+const updateMDE = new SimpleMDE({
+  autoDownloadFontAwesome: false,
+  spellChecker: false,
+  element: querySelector<HTMLTextAreaElement>("#content"),
+  toolbar: [
+    {
+      name: "bold",
+      title: "Bold",
+      action: SimpleMDE.toggleBold,
+      className: "mde-icons__bold",
+    },
+    {
+      name: "italic",
+      title: "Italic",
+      action: SimpleMDE.toggleItalic,
+      className: "mde-icons__italic",
+    },
+    {
+      name: "strikethrough",
+      title: "Strikethrough",
+      action: SimpleMDE.toggleStrikethrough,
+      className: "mde-icons__strikethrough",
+    },
+    {
+      name: "code",
+      title: "Code",
+      action: SimpleMDE.toggleCodeBlock,
+      className: "mde-icons__code",
+    },
+    "|",
+    {
+      name: "heading",
+      title: "Heading",
+      action: SimpleMDE.toggleHeadingSmaller,
+      className: "mde-icons__heading",
+    },
+    {
+      name: "quote",
+      title: "Quote",
+      action: SimpleMDE.toggleBlockquote,
+      className: "mde-icons__quote",
+    },
+    {
+      name: "unordered-list",
+      title: "Unordered List",
+      action: SimpleMDE.toggleUnorderedList,
+      className: "mde-icons__unordered-list",
+    },
+    {
+      name: "ordered-list",
+      title: "Ordered List",
+      action: SimpleMDE.toggleOrderedList,
+      className: "mde-icons__ordered-list",
+    },
+    "|",
+    {
+      name: "link",
+      title: "Link",
+      action: SimpleMDE.drawLink,
+      className: "mde-icons__link",
+    },
+    {
+      name: "image",
+      title: "Image",
+      action: SimpleMDE.drawImage,
+      className: "mde-icons__image",
+    },
+    {
+      name: "table",
+      title: "Table",
+      action: SimpleMDE.drawTable,
+      className: "mde-icons__table",
+    },
+    "|",
+    {
+      name: "preview",
+      title: "Preview",
+      action: SimpleMDE.togglePreview,
+      className: "no-disable mde-icons__preview",
+    },
+    {
+      name: "side-by-side",
+      title: "Side by Side",
+      action: SimpleMDE.toggleSideBySide,
+      className: "no-disable mde-icons__side-by-side",
+    },
+    {
+      name: "fullscreen",
+      title: "Fullscreen",
+      action: SimpleMDE.toggleFullScreen,
+      className: "no-disable mde-icons__fullscreen",
+    },
+    "|",
+    {
+      name: "guide",
+      title: "Help",
+      action: "https://simplemde.com/markdown-guide",
+      className: "mde-icons__guide",
+    },
+  ],
+});
+
 // @ts-ignore
 const tm_item_list_modal =
   document.querySelector("template#list-item").content.firstElementChild;
@@ -300,6 +403,8 @@ function OpenAddModal() {
   body._.uuid.classes.add("hidden");
   modalItem.getActions()._.Delete.classes.add("hidden");
 
+  updateMDE.value(" ");
+
   // Fields of modal
   const imageListDOM = body._.images._.list.dom;
   imageListDOM.innerHTML = "";
@@ -357,13 +462,6 @@ function OpenAddModal() {
     parseFloat
   );
 
-  // @ts-ignore
-  UpdateData(
-    [actual_item_data, "description"],
-    body._.description._.textarea,
-    ""
-  );
-
   SetCommandActions(actual_cmds);
 
   /** @type {Modal} modal */
@@ -382,7 +480,7 @@ function OpenAddModal() {
       await AddItem({
         uuid: "",
         name: actual_item_data.name,
-        description: actual_item_data.description,
+        description: updateMDE.value(),
         price: actual_item_data.price,
         exec_cmd: exec_cmd,
         exec_params: exec_params,
@@ -423,6 +521,8 @@ function OpenItemModal(data) {
   uuid_s.dom.innerHTML = "UUID: " + data.uuid;
   uuid_s.classes.remove("hidden");
   modalItem.getActions()._.Delete.classes.remove("hidden");
+
+  updateMDE.value(data.description);
 
   // Fields of modal
   const imageListDOM = body._.images._.list.dom;
@@ -495,12 +595,6 @@ function OpenItemModal(data) {
     parseFloat
   );
 
-  // @ts-ignore
-  UpdateData(
-    [actual_item_data, "description"],
-    body._.description._.textarea,
-    data.description
-  );
 
   SetCommandActions(actual_cmds);
   LoadCommandsOnItemModal(data, actual_cmds);
@@ -522,7 +616,7 @@ function OpenItemModal(data) {
       await UpdateItem({
         uuid: data.uuid,
         name: actual_item_data.name,
-        description: actual_item_data.description,
+        description: updateMDE.value(),
         price: actual_item_data.price,
         exec_cmd: exec_cmd,
         exec_params: exec_params,
