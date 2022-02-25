@@ -1,4 +1,4 @@
-import Fuse from "../../../vendor/fusejs/fuse.js";
+import { default as Fuse } from "../../../vendor/fusejs/fuse.js";
 import { getCache, setCache } from "../../common/cache.js";
 import {
   getAbsolutePosition,
@@ -330,7 +330,7 @@ export class RecomendedSelectorList<T = any> {
     this.lastMouseEvent = event;
     let lastHeight = 0;
     setInterval(() => {
-      if(window.innerHeight !== lastHeight) {
+      if (window.innerHeight !== lastHeight) {
         this._setPos();
         lastHeight = window.innerHeight;
       }

@@ -182,7 +182,7 @@ System.register(["../../../components/modal.js", "../../../components/select.js"
                     uuid: actual_category_data.uuid,
                     name: actual_category_data.name,
                     display: actual_category_data.display,
-                    description: actual_category_data.description,
+                    description: updateMDE.value(),
                     image: actual_category_data.image,
                     min_rank: actual_category_data.min_rank,
                     order: actual_category_data.order,

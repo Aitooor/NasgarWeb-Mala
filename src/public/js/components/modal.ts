@@ -135,12 +135,14 @@ export default class Modal {
   }
  
   open() {
+    document.querySelector("html").style.overflow = "hidden";
     this.element.classList.add("active");
     Modal.parent.classList.add("active");
     this._events.emit("open", [this]);
   }
 
   close() {
+    document.querySelector("html").style.overflow = "inherit";
     this.element.classList.remove("active");
     if(!Modal.allModals.some(_ => _.isOpen))
       Modal.parent.classList.remove("active")
