@@ -19,9 +19,11 @@
     "strict": false,
     "removeComments": true,
     "experimentalDecorators": false,
+    "downlevelIteration": true,
     "typeRoots": [],
     "lib": [
       "DOM",
+      "dom.iterable",
       "ESNext",
       "ES2015",
       "ES2016"

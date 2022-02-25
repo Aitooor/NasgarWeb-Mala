@@ -8,8 +8,11 @@ function categoryDisplay(category, name) {
 %>
 
 <%- include("../../partials/head.ejs", {global, title: global.lang.menu.shop.title, url: "/shop/index"}) %>
-<!-- </head> -->
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"></script>
+<script>window.description = "<%- category.description %>"</script>
+
+</head>
 <body>
   <%- include("../../partials/nav_modern.ejs", { global, tab: "shop", solid: true, transparent_height: 3 }) %>
 
@@ -29,13 +32,6 @@ function categoryDisplay(category, name) {
           <div class="category-header">
             <%- categoryDisplay(category_, global.lang.menu.shop[category_.name] || category_.name) %>
           </div>
-          <!-- <% if(category_.uuid !== category.uuid) { %>
-          <a href="/shop/category/<%- category_.uuid %>" class="category-header">
-            <%- categoryDisplay(category_, global.lang.menu.shop[category_.name] || category_.name) %>
-          </a>
-          <% } else { %> -->
-
-          <!-- <% } %> -->
 
           <div class="category-content">
             <% for(const subcategory of category_.subcategories) { %>
@@ -72,18 +68,9 @@ function categoryDisplay(category, name) {
           <span><%- categoryDisplay(category, global.lang.menu.shop[category.name] || category.name) %></span>
           <div class="sep"></div>
         </div>
-        <div class="info-text">
-          <%- category.description %>
+        <div class="info-text" id="category-description">
+          Rendering category description...
         </div>
-        <!-- <% if (category.subcategories?.length > 0) { %>
-          <div class="subcategories">
-            <% for(const subcategory of category.subcategories) { %>
-              <a href="/shop/category/<%- subcategory.uuid %>" class="btn subcategory" >
-                <%- categoryDisplay(subcategory, global.lang.menu.shop[subcategory.name] || subcategory.name) %>
-              </a>
-            <% } %>
-          </div>
-        <% } %> -->
         <div class="products">
           <% products.forEach((product, id) => { %>
           <div class="product" title="<%= product.name %>" data-product-id="<%= product.uuid %>" data-commons-onclick="link, /shop/product/<%= product.uuid %>">

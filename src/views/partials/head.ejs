@@ -22,9 +22,6 @@
 
   <meta rel="canonical" href="<%- global.const.WEB_HREF %><%- _url %>">
 
-  <!-- <script data-main="/js/<%- js_paths[0] %>.js" src="https://requirejs.org/docs/release/2.3.6/minified/require.js"></script> -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/6.12.1/s.min.js"></script>
-
   <% if(global.const.PRODUCTION) { %>
     <%- include("./css.ejs", { paths: less_paths }) %> 
   <% } else { %>
