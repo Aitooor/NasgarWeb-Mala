@@ -86,7 +86,6 @@ globalThis.copyToClipboard = copyText;
 const openOrg = window.open;
 
 declare global {
-  module globalThis {
     interface Window {
       copy?: (txt: string) => void;
     }
@@ -94,7 +93,7 @@ declare global {
     type copyText = typeof copyText;
     type copyToClipboard = typeof copyText;
     function open(url: string, target?: string): Window;
-  }
+  
 }
 
 globalThis.open = function (url, target = "_self") {
