@@ -1,6 +1,11 @@
 <%- include("../../../partials/head.ejs", { global, url:
-"/staff/shop/categories", title: "Shop categories" }) %> <%-
-include("../../../partials/body.ejs", { global, tab: "profile" }) %>
+"/staff/shop/categories", title: "Shop categories" }) %>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css" />
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+
+<%- include("../../../partials/body.ejs", { global, tab: "profile" }) %>
 
 <div class="app">
   <div class="header">
@@ -44,7 +49,7 @@ include("../../../partials/body.ejs", { global, tab: "profile" }) %>
 
   <div class="field required" data-name="description">
     <span class="title">Description</span>
-    <textarea class="input" placeholder="Description"></textarea>
+    <textarea class="input" id="content"></textarea>
   </div>
 
   <div class="field required" data-name="rank">

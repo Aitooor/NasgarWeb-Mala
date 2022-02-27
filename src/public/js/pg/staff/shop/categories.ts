@@ -1,3 +1,4 @@
+/// <reference path="../../../../../../node_modules/@types/simplemde/index.d.ts" />
 import Modal from "../../../components/modal.js";
 import Select from "../../../components/select.js";
 import ElementList from "../../../components/list/list.js";
@@ -7,6 +8,8 @@ import { RecomendedSelectorList } from "../../../components/selector_list/select
 
 import { query as querySelector } from "../../../common/html.js";
 import { OrdenedElementList } from "../../../components/list/order.js";
+
+const SimpleMDE = window.SimpleMDE;
 
 enum UserRank {
   "Default" = 1,
@@ -159,6 +162,108 @@ const modalCategory = new Modal({
       onClick: (modal) => {
         modalCategory_events._save(modal);
       },
+    },
+  ],
+});
+
+const updateMDE = new SimpleMDE({
+  autoDownloadFontAwesome: false,
+  spellChecker: false,
+  element: querySelector("#content"),
+  toolbar: [
+    {
+      name: "bold",
+      title: "Bold",
+      action: SimpleMDE.toggleBold,
+      className: "mde-icons__bold",
+    },
+    {
+      name: "italic",
+      title: "Italic",
+      action: SimpleMDE.toggleItalic,
+      className: "mde-icons__italic",
+    },
+    {
+      name: "strikethrough",
+      title: "Strikethrough",
+      action: SimpleMDE.toggleStrikethrough,
+      className: "mde-icons__strikethrough",
+    },
+    {
+      name: "code",
+      title: "Code",
+      action: SimpleMDE.toggleCodeBlock,
+      className: "mde-icons__code",
+    },
+    "|",
+    {
+      name: "heading",
+      title: "Heading",
+      action: SimpleMDE.toggleHeadingSmaller,
+      className: "mde-icons__heading",
+    },
+    {
+      name: "quote",
+      title: "Quote",
+      action: SimpleMDE.toggleBlockquote,
+      className: "mde-icons__quote",
+    },
+    {
+      name: "unordered-list",
+      title: "Unordered List",
+      action: SimpleMDE.toggleUnorderedList,
+      className: "mde-icons__unordered-list",
+    },
+    {
+      name: "ordered-list",
+      title: "Ordered List",
+      action: SimpleMDE.toggleOrderedList,
+      className: "mde-icons__ordered-list",
+    },
+    "|",
+    {
+      name: "link",
+      title: "Link",
+      action: SimpleMDE.drawLink,
+      className: "mde-icons__link",
+    },
+    {
+      name: "image",
+      title: "Image",
+      action: SimpleMDE.drawImage,
+      className: "mde-icons__image",
+    },
+    {
+      name: "table",
+      title: "Table",
+      action: SimpleMDE.drawTable,
+      className: "mde-icons__table",
+    },
+    "|",
+    {
+      name: "preview",
+      title: "Preview",
+      action: SimpleMDE.togglePreview,
+      className: "no-disable mde-icons__preview",
+    },
+    {
+      name: "side-by-side",
+      title: "Side by Side",
+      action: SimpleMDE.toggleSideBySide,
+      className: "no-disable mde-icons__side-by-side",
+    },
+    {
+      name: "fullscreen",
+      title: "Fullscreen",
+      action: SimpleMDE.toggleFullScreen,
+      className: "no-disable mde-icons__fullscreen",
+    },
+    "|",
+    {
+      name: "guide",
+      title: "Help",
+      action: "https://simplemde.com/markdown-guide",
+      className: "mde-icons__guide",
     },
   ],
 });
@@ -526,6 +631,8 @@ function OpenAddModal() {
   body._.uuid.classes.add("hidden");
   modalCategory.getActions()._.Delete.classes.add("hidden");
 
+  updateMDE.value(" ")
+
   // Fields of modal
 
   UpdateData(
@@ -547,12 +654,6 @@ function OpenAddModal() {
   body._.display._.input.events.add("input", updateDisplay);
   body._.name._.input.events.add("input", updateDisplay);
   updateDisplay();
-
-  UpdateData(
-    [actual_category_data, "description"],
-    <jsonHtml<HTMLInputElement>>body._.description._.textarea,
-    ""
-  );
 
   UpdateDataSelect(
     [actual_category_data, "min_rank"],
@@ -577,7 +678,7 @@ function OpenAddModal() {
         uuid: "",
         name: actual_category_data.name,
         display: actual_category_data.display,
-        description: actual_category_data.description,
+        description: updateMDE.value(),
         image: actual_category_data.image,
         min_rank: actual_category_data.min_rank,
         order: actual_category_data.order,
@@ -613,6 +714,8 @@ function OpenCategoryModal(data: Category) {
   uuid_s.classes.remove("hidden");
   modalCategory.getActions()._.Delete.classes.remove("hidden");
 
+  updateMDE.value(data.description);
+
   UpdateData(
     [actual_category_data, "name"],
     <jsonHtml<HTMLInputElement>>body._.name._.input,
@@ -632,12 +735,6 @@ function OpenCategoryModal(data: Category) {
   body._.display._.input.events.add("input", updateDisplay);
   body._.name._.input.events.add("input", updateDisplay);
   updateDisplay();
-
-  UpdateData(
-    [actual_category_data, "description"],
-    <jsonHtml<HTMLInputElement>>body._.description._.textarea,
-    actual_category_data.description
-  );
 
   UpdateDataSelect(
     [actual_category_data, "min_rank"],
@@ -664,7 +761,7 @@ function OpenCategoryModal(data: Category) {
         uuid: actual_category_data.uuid,
         name: actual_category_data.name,
         display: actual_category_data.display,
-        description: actual_category_data.description,
+        description: updateMDE.value(),
         image: actual_category_data.image,
         min_rank: actual_category_data.min_rank,
         order: actual_category_data.order,

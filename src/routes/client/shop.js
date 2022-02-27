@@ -108,6 +108,8 @@ module.exports = require("../../lib/Routes/exports")(
       const category = await getMain(db);
       const categories = await getVisibleCategories(db);
 
+      // console.log(JSON.stringify(categories, null, 2));
+
       res.render("pags/shop/index", {
         category: category,
         products: [],

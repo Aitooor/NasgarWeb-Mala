@@ -11,7 +11,7 @@
     "sourceMap": true,
     "allowJs": false,
     "target": "ES6",
-    "module": "ES2020",
+    "module": "System",
     "esModuleInterop": true,
     "moduleResolution": "Classic",
     "allowSyntheticDefaultImports": true,
@@ -19,12 +19,19 @@
     "strict": false,
     "removeComments": true,
     "experimentalDecorators": false,
+    "downlevelIteration": true,
     "typeRoots": [],
     "lib": [
       "DOM",
+      "dom.iterable",
       "ESNext",
       "ES2015",
       "ES2016"
-    ]
+    ],
+    "paths": {
+      "/js/*": [
+        "./src/public/js/*"
+      ]
+    },
   }
 }

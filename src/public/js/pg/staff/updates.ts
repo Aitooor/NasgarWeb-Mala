@@ -1,4 +1,4 @@
-/// <reference path="../../../../..//node_modules/@types/simplemde/index.d.ts" />
+/// <reference path="../../../../../node_modules/@types/simplemde/index.d.ts" />
 import Modal from "../../components/modal.js";
 import ElementList from "../../components/list/list.js";
 import { jsonHtml, query, queryAll } from "../../common/html.js";
