@@ -30,22 +30,38 @@ function initCategories() {
   const asideCategories = [...document.querySelectorAll("aside .category")];
 
   for (const asideCategory of asideCategories) {
+    const parent: HTMLElement =
+      asideCategory.parentElement.parentElement.classList.contains("category")
+        ? asideCategory.parentElement.parentElement
+        : null;
     const header = asideCategory.querySelector(".category-header");
+    const content = asideCategory.querySelector(".category-content");
 
-    if (!header || !header.addEventListener) {
+    if (!header || !content || !header.addEventListener) {
       continue;
     }
 
     header.addEventListener("click", () => {
       try {
         const actual = asideCategory.classList.contains("active");
+        const isParentActive = parent && parent.classList.contains("active");
 
         for (const category of asideCategories) {
           category.classList.remove("active");
+          header.classList.remove("active");
+          content.classList.remove("active");
         }
 
         if (!actual) {
           asideCategory.classList.add("active");
+          header.classList.add("active");
+          content.classList.add("active");
+
+          if (parent) {
+            parent.classList.add("active");
+          }
+        } else if (isParentActive) {
+          parent.classList.add("active");
         }
       } catch (e) {
         console.error(e);

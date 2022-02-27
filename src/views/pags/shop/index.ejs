@@ -5,14 +5,37 @@ function categoryDisplay(category, name) {
   return category.display.replace(/\{\{NAME\}\}/g, name);
 }
 
+function iAmChild(category_, parent = category) {
+  return category_.subcategories.some((sub) => itsMe(sub, parent));
+}
+
+function itsMe(category_, me = category) {
+  return category_.uuid === me.uuid;
+}
+
+function isMyChild(category_, parent = category) {
+  return parent.subcategories.some(sub => sub.uuid === category_.uuid); 
+}
+
+function isActive(category_, className = ' active', parent = category) {
+  return itsMe(category_, parent) || iAmChild(category_, parent) ? className : '';
+}
+
+function hasSubcategories(category = category) {
+  return category.subcategories?.length > 0;
+}
+
 %>
 
 <%- include("../../partials/head.ejs", {global, title: global.lang.menu.shop.title, url: "/shop/index"}) %>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"></script>
-<script>window.description = "<%- category.description %>"</script>
+<script>
+  window.description = "<%- category.description %>"
+</script>
 
 </head>
+
 <body>
   <%- include("../../partials/nav_modern.ejs", { global, tab: "shop", solid: true, transparent_height: 3 }) %>
 
@@ -27,29 +50,50 @@ function categoryDisplay(category, name) {
         <a href="/shop" class="category  <%- category.name === 'MAIN' ? 'active active-from-ssr' : '' %>">Inicio</a>
 
         <% for(const category_ of categories) { %>
-        <% if (category_.subcategories?.length > 0) { %>
-        <div class="category <%- category_.uuid === category.uuid || category_.subcategories.some(sub => sub.uuid === category.uuid) ? 'active active-from-ssr' : '' %>">
+        <% if (hasSubcategories(category_)) { %>
+        <div class="category<%- isActive(category_, ' active active-from-ssr') %>">
           <div class="category-header">
             <%- categoryDisplay(category_, global.lang.menu.shop[category_.name] || category_.name) %>
           </div>
 
           <div class="category-content">
             <% for(const subcategory of category_.subcategories) { %>
-            <% if(subcategory.uuid !== category.uuid) { %>
-            <a href="/shop/category/<%- subcategory.uuid %>" class="subcategory <%- subcategory.uuid === category.uuid ? 'active' : '' %>">
+            <% if(hasSubcategories(subcategory)) {%>
+            <div class="category">
+              <div class="category-header">
+                <%- categoryDisplay(subcategory, global.lang.menu.shop[subcategory.name] || subcategory.name) %>
+              </div>
+
+              <div class="category-content">
+                <% for(const subcategory_ of subcategory.subcategories) { %>
+                <% if(!itsMe(subcategory_)) { %>
+                <a href="/shop/category/<%- subcategory_.uuid %>" class="subcategory<%- isActive(subcategory_) %>">
+                  <%- categoryDisplay(subcategory_, global.lang.menu.shop[subcategory_.name] || subcategory_.name) %>
+                </a>
+                <% } else { %>
+                <div class="subcategory<%- isActive(subcategory_) %>">
+                  <%- categoryDisplay(subcategory_, global.lang.menu.shop[subcategory_.name] || subcategory_.name) %>
+                </div>
+                <% } %>
+                <% } %>
+              </div>
+            </div>
+            <% } else { %>
+            <% if(!itsMe(subcategory)) { %>
+            <a href="/shop/category/<%- subcategory.uuid %>" class="subcategory<%- isActive(subcategory) %>">
               <%- categoryDisplay(subcategory, global.lang.menu.shop[subcategory.name] || subcategory.name) %>
             </a>
             <% } else { %>
-            <div class="subcategory <%- subcategory.uuid === category.uuid ? 'active' : '' %>">
+            <div class="subcategory<%- isActive(subcategory) %>">
               <%- categoryDisplay(subcategory, global.lang.menu.shop[subcategory.name] || subcategory.name) %>
             </div>
             <% } %>
-
+            <%}%>
             <% } %>
           </div>
         </div>
         <% } else { %>
-        <a href="/shop/category/<%= category_.uuid %>" class="category <%- category_.uuid === category.uuid ? 'active active-from-ssr' : '' %>">
+        <a href="/shop/category/<%= category_.uuid %>" class="category <%- isActive(category_, 'active active-from-ssr') %>">
           <%- categoryDisplay(category_, global.lang.menu.shop[category_.name] || category_.name) %>
         </a>
         <% } %>
