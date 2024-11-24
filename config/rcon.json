@@ -1,7 +1,7 @@
 {
   "$schema": "../../../js/node_modules/rcon-cli/tests/schema.json",
   "name": "Nasgar Network - 100",
-  "ip": "142.4.215.212",
+  "ip": "localhost",
   "port": 100,
-  "password": "Aitor19992%"
+  "password": "YOUR_PASSWORD_HERE"
 }
